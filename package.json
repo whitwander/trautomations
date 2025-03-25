@@ -1,0 +1,24 @@
+{
+  "name": "trs-automations",
+  "version": "1.0.0",
+  "description": "",
+  "homepage": "https://github.com/whitwander/trs-automations#readme",
+  "bugs": {
+    "url": "https://github.com/whitwander/trs-automations/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/whitwander/trs-automations.git"
+  },
+  "license": "ISC",
+  "author": "",
+  "type": "commonjs",
+  "main": "run_es.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "dependencies": {
+    "p-limit": "^6.2.0",
+    "puppeteer": "^24.4.0"
+  }
+}
