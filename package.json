@@ -13,12 +13,18 @@
   "license": "ISC",
   "author": "",
   "type": "commonjs",
-  "main": "run_es.js",
+  "main": "index.html",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "start": "nw ."
   },
   "dependencies": {
+    "nw": "^0.97.0",
     "p-limit": "^6.2.0",
     "puppeteer": "^24.4.0"
+  },
+  "window": {
+    "title": "Aplicativo NW.js",
+    "width": 450,
+    "height": 350
   }
 }

@@ -1,0 +1,11 @@
+{
+    "url": "https://pje.tjes.jus.br/pje/ConsultaPublica/listView.seam",
+    "estadoUF": "es",
+    "caixaProcesso": "#fPP\\:numProcesso-inputNumeroProcessoDecoration\\:numProcesso-inputNumeroProcesso",
+    "btnSearch": "#fPP\\:searchProcessos",
+    "tblProcessos": "#fPP\\:processosTable",
+    "btnVerDetalhes": "a[title='Ver Detalhes']",
+    "divDadosProcesso": "#j_id140\\:processoTrfViewView\\:j_id143",
+    "spanMovimentacaoProcesso": "span[id^='_id140:processoEvento:0:j_id501'",
+    "poloAtivoParticipante": "#j_id140\\:processoPartesPoloAtivoResumidoList\\:tb .text-bold"
+}
