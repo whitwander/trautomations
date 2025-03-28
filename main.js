@@ -101,7 +101,7 @@ async function extractFromEsaj(processo, stateId) {
   } catch (error) {
     console.error(`Erro ao processar ${processo}:`, error);
     errorProcesso.add(processo);
-    await saveErrorToFile(processo);  // Adiciona o erro ao arquivo de erros imediatamente
+    await saveErrorToFile(processo);
     return null;
   } finally {
     await browser.close();
@@ -132,7 +132,7 @@ async function saveErrorToFile(processo) {
 
 async function main() {
   await writeCSVHeader();
-  const processosPorEstado = await readJsonFile(inputFilePath);  // Passa o caminho correto para o arquivo JSON
+  const processosPorEstado = await readJsonFile(inputFilePath);
   const estados = Object.keys(processosPorEstado);
   const limit = await importPLimit();
 
