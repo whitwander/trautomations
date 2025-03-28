@@ -5,6 +5,7 @@ const data = require('./variables.json');
 const now = new Date();
 const dateStr = now.toISOString().split('T')[0];
 const inputFile = `dados_processos_${dateStr}.json`;
+// const inputFile = JSON.parse(process.argv[2]); 
 const outputFile = `resultados_${dateStr}.csv`;
 const errorFile = `erros_${dateStr}.txt`;
 
