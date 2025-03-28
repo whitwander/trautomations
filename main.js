@@ -2,11 +2,13 @@ const puppeteer = require('puppeteer');
 const fs = require('fs');
 const data = require('./variables.json');
 
-const inputFile = "processos.json";
+const now = new Date();
+const dateStr = now.toISOString().split('T')[0]; // Formato "YYYY-MM-DD"
+const inputFile = `dados_processos_${dateStr}.json`;
 const outputFile = "resultados.txt";
 const errorFile = "erros.txt";
 
-const CONCURRENT_LIMIT = 3;
+const CONCURRENT_LIMIT = 10;
 
 let errorProcesso = [];
 
