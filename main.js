@@ -2,11 +2,11 @@ const puppeteer = require('puppeteer');
 const fs = require('fs');
 const data = require('./variables.json');
 
-let stateId = "trf5"
+let stateId = "rn"
 
-const inputFile = `processos_${data[stateId].estadoUF}.txt`;
-const outputFile = `resultados_${data[stateId].estadoUF}.txt`;
-const errorFile = `erros_${data[stateId].estadoUF}.txt`;
+const inputFile = `processos.txt`;
+const outputFile = `resultados.txt`;
+const errorFile = `erros.txt`;
 const url = data[stateId].url;
 const caixaProcesso = data[stateId].caixaProcesso;
 const btnSearch = data[stateId].btnSearch;
@@ -31,7 +31,7 @@ async function readInputFile(filePath) {
 }
 
 async function extractFromEsaj(processo) {
-  const browser = await puppeteer.launch({ headless: false });
+  const browser = await puppeteer.launch({ headless: true });
   const page = await browser.newPage();
 
   try {
