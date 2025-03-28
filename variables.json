@@ -7,7 +7,7 @@
         "tblProcessos": "#fPP\\:processosTable",
         "btnVerDetalhes": "a[title='Ver Detalhes']",
         "divDadosProcesso": "#j_id140\\:processoTrfViewView\\:j_id143",
-        "spanMovimentacaoProcesso": "span[id^='_id140:processoEvento:0:j_id501']",
+        "spanMovimentacaoProcesso": "span[id^='j_id140:processoEvento:0:j_id501']",
         "poloAtivoParticipante": "#j_id140\\:processoPartesPoloAtivoResumidoList\\:tb .text-bold",
         "working": "Sim"
     },
@@ -55,7 +55,7 @@
         "tblProcessos": "#fPP\\:processosTable",
         "btnVerDetalhes": "a[title='Ver Detalhes']",
         "divDadosProcesso": "#j_id143\\:processoTrfViewView\\:j_id146",
-        "spanMovimentacaoProcesso": "span[id^='j_id143:processoEvento:0:j_id488']",
+        "spanMovimentacaoProcesso": "span[id^='j_id143:processoEvento:0:j_id504']",
         "poloAtivoParticipante": "#j_id143\\:processoPartesPoloAtivoResumidoList\\:tb .text-bold",
         "working": "Sim"
     },
