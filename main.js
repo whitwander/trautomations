@@ -2,20 +2,19 @@ const puppeteer = require('puppeteer');
 const fs = require('fs');
 const data = require('./variables.json');
 
-let selectedState;
-const log = document.querySelector('.log');
+let stateId = "trf5"
 
-const inputFile = `processos_${data.estadoUF}.txt`;
-const outputFile = `resultados_${data.estadoUF}.txt`;
-const errorFile = `erros_${data.estadoUF}.txt`;
-const url = data.url;
-const caixaProcesso = data.caixaProcesso;
-const btnSearch = data.btnSearch;
-const tblProcessos = data.tblProcessos;
-const btnVerDetalhes = data.btnVerDetalhes;
-const divDadosProcesso = data.divDadosProcesso;
-const spanMovimentacaoProcesso = data.spanMovimentacaoProcesso;
-const poloAtivoParticipante = data.poloAtivoParticipante;
+const inputFile = `processos_${data[stateId].estadoUF}.txt`;
+const outputFile = `resultados_${data[stateId].estadoUF}.txt`;
+const errorFile = `erros_${data[stateId].estadoUF}.txt`;
+const url = data[stateId].url;
+const caixaProcesso = data[stateId].caixaProcesso;
+const btnSearch = data[stateId].btnSearch;
+const tblProcessos = data[stateId].tblProcessos;
+const btnVerDetalhes = data[stateId].btnVerDetalhes;
+const divDadosProcesso = data[stateId].divDadosProcesso;
+const spanMovimentacaoProcesso = data[stateId].spanMovimentacaoProcesso;
+const poloAtivoParticipante = data[stateId].poloAtivoParticipante;
 
 const CONCURRENT_LIMIT = 2;
 
@@ -32,7 +31,7 @@ async function readInputFile(filePath) {
 }
 
 async function extractFromEsaj(processo) {
-  const browser = await puppeteer.launch({ headless: true });
+  const browser = await puppeteer.launch({ headless: false });
   const page = await browser.newPage();
 
   try {
@@ -93,12 +92,10 @@ async function extractFromEsaj(processo) {
 }
 
 async function main() {
-  log.innerHTML = "entrou no main"
   let pendingProcess = await readInputFile(inputFile);
   const limit = await importPLimit();
 
   console.log(`Iniciando processamento de ${pendingProcess.length} processos...`);
-  log.innerHTML = `Iniciando processamento de ${pendingProcess.length} processos...`;
 
   async function processAndSave(processo) {
     const result = await extractFromEsaj(processo);
@@ -119,15 +116,6 @@ async function main() {
   await Promise.all(promises);
 
   console.log('Extração concluída. Verifique os arquivos de saída e o arquivo de entrada atualizado.');
-  log.innerHTML = 'Extração concluída. Verifique os arquivos de saída e o arquivo de entrada atualizado.';
 }
 
-document.getElementById('executar').addEventListener('click', function () {
-  selectedState = document.getElementById('selec').value;
-  
-  data.estadoUF = selectedState;
-
-  main().catch(console.error);
-
-  log.innerHTML = "Excutando..."
-});
+main().catch(console.error);
