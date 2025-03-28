@@ -2,21 +2,11 @@ const puppeteer = require('puppeteer');
 const fs = require('fs');
 const data = require('./variables.json');
 
-let stateId = "rn"
+const inputFile = "processos.json";
+const outputFile = "resultados.txt";
+const errorFile = "erros.txt";
 
-const inputFile = `processos.txt`;
-const outputFile = `resultados.txt`;
-const errorFile = `erros.txt`;
-const url = data[stateId].url;
-const caixaProcesso = data[stateId].caixaProcesso;
-const btnSearch = data[stateId].btnSearch;
-const tblProcessos = data[stateId].tblProcessos;
-const btnVerDetalhes = data[stateId].btnVerDetalhes;
-const divDadosProcesso = data[stateId].divDadosProcesso;
-const spanMovimentacaoProcesso = data[stateId].spanMovimentacaoProcesso;
-const poloAtivoParticipante = data[stateId].poloAtivoParticipante;
-
-const CONCURRENT_LIMIT = 2;
+const CONCURRENT_LIMIT = 3;
 
 let errorProcesso = [];
 
@@ -25,14 +15,36 @@ async function importPLimit() {
   return pLimit(CONCURRENT_LIMIT);
 }
 
-async function readInputFile(filePath) {
-  const data = fs.readFileSync(filePath, 'utf-8');
-  return data.split('\n').map(line => line.trim()).filter(line => line !== '');
+async function readJsonFile(filePath) {
+  try {
+    const data = await fs.promises.readFile(filePath, 'utf-8');
+    const jsonData = JSON.parse(data);
+    return jsonData;
+  } catch (error) {
+    console.error('Erro ao ler o arquivo JSON:', error);
+    return {};
+  }
 }
 
-async function extractFromEsaj(processo) {
+async function extractFromEsaj(processo, stateId) {
   const browser = await puppeteer.launch({ headless: true });
   const page = await browser.newPage();
+
+  const stateConfig = data[stateId];
+
+  if (!stateConfig) {
+    console.log(`Estado ${stateId} não encontrado nas configurações. Pulando para o próximo estado...`);
+    return null;  
+  }
+
+  const url = stateConfig.url;
+  const caixaProcesso = stateConfig.caixaProcesso;
+  const btnSearch = stateConfig.btnSearch;
+  const tblProcessos = stateConfig.tblProcessos;
+  const btnVerDetalhes = stateConfig.btnVerDetalhes;
+  const divDadosProcesso = stateConfig.divDadosProcesso;
+  const spanMovimentacaoProcesso = stateConfig.spanMovimentacaoProcesso;
+  const poloAtivoParticipante = stateConfig.poloAtivoParticipante;
 
   try {
     await page.goto(url, { waitUntil: 'networkidle2' });
@@ -92,28 +104,40 @@ async function extractFromEsaj(processo) {
 }
 
 async function main() {
-  let pendingProcess = await readInputFile(inputFile);
+  const processosPorEstado = await readJsonFile(inputFile);
+
+  const estados = Object.keys(processosPorEstado);
+
   const limit = await importPLimit();
 
-  console.log(`Iniciando processamento de ${pendingProcess.length} processos...`);
-
-  async function processAndSave(processo) {
-    const result = await extractFromEsaj(processo);
-    if (result) {
-      const line = `${result.processo}; Partes e Advogados: ${result.partesAdvogados}; Data de Distribuição: ${result.dataDistribuicao}; Última Movimentação: ${result.ultimaMovimentacao}`;
-      fs.appendFileSync(outputFile, line + '\n', 'utf-8');
-      console.log(`Processo ${processo} processado com sucesso e salvo.`);
-    } else {
-      fs.appendFileSync(errorFile, processo + '\n', 'utf-8');
-      console.log(`Processo ${processo} apresentou erro e foi salvo em erros.`);
+  for (const stateId of estados) {
+    if (!data[stateId]) {
+      console.log(`Estado ${stateId} não encontrado nas configurações. Pulando para o próximo estado...`);
+      continue;  
     }
 
-    pendingProcess = pendingProcess.filter(item => item !== processo);
-    fs.writeFileSync(inputFile, pendingProcess.join('\n'), 'utf-8');
-  }
+    console.log(`Iniciando processamento para o estado ${stateId}...`);
+    const processos = processosPorEstado[stateId];
 
-  const promises = pendingProcess.map(processo => limit(() => processAndSave(processo)));
-  await Promise.all(promises);
+    async function processAndSave(processo) {
+      const result = await extractFromEsaj(processo, stateId);
+      if (result) {
+        const line = `${result.processo}; Partes e Advogados: ${result.partesAdvogados}; Data de Distribuição: ${result.dataDistribuicao}; Última Movimentação: ${result.ultimaMovimentacao}`;
+        fs.appendFileSync(outputFile, line + '\n', 'utf-8');
+        console.log(`Processo ${processo} processado com sucesso e salvo.`);
+      } else {
+        fs.appendFileSync(errorFile, processo + '\n', 'utf-8');
+        console.log(`Processo ${processo} apresentou erro e foi salvo em erros.`);
+      }
+
+      const remainingProcesses = processos.filter(p => p !== processo);
+      processosPorEstado[stateId] = remainingProcesses;
+      fs.writeFileSync(inputFile, JSON.stringify(processosPorEstado, null, 2), 'utf-8');
+    }
+
+    const promises = processos.map(processo => limit(() => processAndSave(processo)));
+    await Promise.all(promises);
+  }
 
   console.log('Extração concluída. Verifique os arquivos de saída e o arquivo de entrada atualizado.');
 }
