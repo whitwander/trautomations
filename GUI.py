@@ -1,6 +1,5 @@
 import ttkbootstrap as ttk, tkinter as tk, pandas as pd, subprocess, json, os
 from tkinter import filedialog, messagebox
-from datetime import datetime
 
 class GUIApp:
     def __init__(self, root):
@@ -36,24 +35,16 @@ class GUIApp:
             if missing_columns := [col for col in ["NÚMERO", "TRIBUNAL/UF"] if col not in df.columns]:
                 return messagebox.showerror("Erro", f"As colunas {missing_columns} não foram encontradas no arquivo!")
             self.process_data = {estado: list(group["NÚMERO"].str.strip()) for estado, group in df.groupby("TRIBUNAL/UF")}
-            self.save_json()
+            self.run_js_script()
         except Exception as e:
             messagebox.showerror("Erro", f"Erro ao processar o arquivo:\n{e}")
 
-    def save_json(self):
-        if not self.process_data:
-            return messagebox.showwarning("Aviso", "Nenhum dado para salvar!")
+    def run_js_script(self):
         try:
-            save_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), f"dados_processos_{datetime.now().strftime('%Y-%m-%d')}.json")
-            with open(save_path, "w", encoding="utf-8") as json_file:
-                json.dump(self.process_data, json_file, indent=4, ensure_ascii=False)
-            self.run_js_script(save_path)
-        except Exception as e:
-            messagebox.showerror("Erro", f"Erro ao salvar JSON:\n{e}")
-
-    def run_js_script(self, filename):
-        try:
-            subprocess.run(["node", os.path.join(os.path.dirname(os.path.abspath(__file__)), "main.js"), filename], check=True)
+            json_data = json.dumps(self.process_data)
+            script_directory = os.path.dirname(os.path.abspath(__file__))
+            script_path = os.path.join(script_directory, "main.js")
+            subprocess.run(["node", script_path, json_data], check=True)
         except subprocess.CalledProcessError as e:
             messagebox.showerror("Erro", f"Erro ao executar o script JS:\n{e}")
 
