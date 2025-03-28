@@ -27,6 +27,14 @@ async function readJsonFile(filePath) {
   }
 }
 
+function sanitizeCSVValue(value) {
+  if (!value) return 'Não informado';
+  return value
+    .replace(/"/g, "'")  
+    .replace(/;/g, ',')   
+    .replace(/\r?\n|\r/g, ' '); 
+}
+
 async function extractFromEsaj(processo, stateId) {
   if (processedProcesses.has(processo)) {
     console.log(`Processo ${processo} já processado. Pulando...`);
@@ -85,7 +93,7 @@ async function extractFromEsaj(processo, stateId) {
     }, stateConfig.poloAtivoParticipante);
 
     await popupPage.close();
-    processedProcesses.add(processo); // Marca o processo como processado
+    processedProcesses.add(processo); 
 
     return { processo, partesAdvogados, dataDistribuicao, ultimaMovimentacao };
 
@@ -99,8 +107,16 @@ async function extractFromEsaj(processo, stateId) {
 }
 
 async function writeCSVHeader() {
-  const header = "Processo;Partes e Advogados;Data de Distribuição;Última Movimentação\n";
+  const header = `\uFEFFProcesso;Partes e Advogados;Data de Distribuição;Última Movimentação\n`; // BOM UTF-8
   fs.writeFileSync(outputFile, header, 'utf-8');
+}
+
+async function saveToCSV(result) {
+  if (!result) return;
+
+  const line = `${result.processo};"${sanitizeCSVValue(result.partesAdvogados)}";${sanitizeCSVValue(result.dataDistribuicao)};${sanitizeCSVValue(result.ultimaMovimentacao)}\n`;
+  
+  fs.appendFileSync(outputFile, line, 'utf-8');
 }
 
 async function main() {
@@ -121,8 +137,7 @@ async function main() {
     async function processAndSave(processo) {
       const result = await extractFromEsaj(processo, stateId);
       if (result) {
-        const line = `${result.processo};"${result.partesAdvogados}";${result.dataDistribuicao};${result.ultimaMovimentacao}`;
-        fs.appendFileSync(outputFile, line + '\n', 'utf-8');
+        await saveToCSV(result);
         console.log(`Processo ${processo} salvo.`);
       } else {
         errorProcesso.add(processo);
@@ -133,16 +148,13 @@ async function main() {
     const promises = processos.map(processo => limit(() => processAndSave(processo)));
     await Promise.all(promises);
 
-    // Atualiza o arquivo JSON apenas uma vez no final do processamento do estado
     processosPorEstado[stateId] = processos.filter(p => !processedProcesses.has(p));
   }
 
-  // Salva processos com erro apenas uma vez no final
   if (errorProcesso.size > 0) {
     fs.writeFileSync(errorFile, Array.from(errorProcesso).join('\n'), 'utf-8');
   }
 
-  // Atualiza o arquivo JSON sem concorrência
   fs.writeFileSync(inputFile, JSON.stringify(processosPorEstado, null, 2), 'utf-8');
 
   console.log('Extração concluída. Verifique os arquivos CSV e de erro.');
