@@ -2,10 +2,20 @@ const puppeteer = require('puppeteer');
 const fs = require('fs');
 const data = require('./variables.json');
 
+const inputFilePath = process.argv[2];
+
+async function readJsonFile(filePath) {
+  try {
+    const json_data = await fs.promises.readFile(filePath, 'utf-8');
+    return JSON.parse(json_data);
+  } catch (error) {
+    console.error('Erro ao ler o arquivo JSON:', error);
+    return {};
+  }
+}
+
 const now = new Date();
 const dateStr = now.toISOString().split('T')[0];
-const inputFile = `dados_processos_${dateStr}.json`;
-// const inputFile = JSON.parse(process.argv[2]); 
 const outputFile = `resultados_${dateStr}.csv`;
 const errorFile = `erros_${dateStr}.txt`;
 
@@ -16,16 +26,6 @@ let processedProcesses = new Set();
 async function importPLimit() {
   const pLimit = (await import('p-limit')).default;
   return pLimit(CONCURRENT_LIMIT);
-}
-
-async function readJsonFile(filePath) {
-  try {
-    const data = await fs.promises.readFile(filePath, 'utf-8');
-    return JSON.parse(data);
-  } catch (error) {
-    console.error('Erro ao ler o arquivo JSON:', error);
-    return {};
-  }
 }
 
 function sanitizeCSVValue(value) {
@@ -101,6 +101,7 @@ async function extractFromEsaj(processo, stateId) {
   } catch (error) {
     console.error(`Erro ao processar ${processo}:`, error);
     errorProcesso.add(processo);
+    await saveErrorToFile(processo);  // Adiciona o erro ao arquivo de erros imediatamente
     return null;
   } finally {
     await browser.close();
@@ -120,9 +121,18 @@ async function saveToCSV(result) {
   fs.appendFileSync(outputFile, line, 'utf-8');
 }
 
+async function saveErrorToFile(processo) {
+  try {
+    fs.appendFileSync(errorFile, `Erro no processo ${processo}\n`, 'utf-8');
+    console.log(`Erro no processo ${processo} registrado no arquivo de erros.`);
+  } catch (err) {
+    console.error('Erro ao registrar no arquivo de erros:', err);
+  }
+}
+
 async function main() {
   await writeCSVHeader();
-  const processosPorEstado = await readJsonFile(inputFile);
+  const processosPorEstado = await readJsonFile(inputFilePath);  // Passa o caminho correto para o arquivo JSON
   const estados = Object.keys(processosPorEstado);
   const limit = await importPLimit();
 
@@ -140,9 +150,6 @@ async function main() {
       if (result) {
         await saveToCSV(result);
         console.log(`Processo ${processo} salvo.`);
-      } else {
-        errorProcesso.add(processo);
-        console.log(`Erro no processo ${processo}, salvo em erros.`);
       }
     }
 
@@ -152,11 +159,7 @@ async function main() {
     processosPorEstado[stateId] = processos.filter(p => !processedProcesses.has(p));
   }
 
-  if (errorProcesso.size > 0) {
-    fs.writeFileSync(errorFile, Array.from(errorProcesso).join('\n'), 'utf-8');
-  }
-
-  fs.writeFileSync(inputFile, JSON.stringify(processosPorEstado, null, 2), 'utf-8');
+  fs.writeFileSync(inputFilePath, JSON.stringify(processosPorEstado, null, 2), 'utf-8');
 
   console.log('Extração concluída. Verifique os arquivos CSV e de erro.');
 }

@@ -1,4 +1,4 @@
-import ttkbootstrap as ttk, tkinter as tk, pandas as pd, subprocess, json, os
+import ttkbootstrap as ttk, tkinter as tk, pandas as pd, subprocess, json, os, tempfile
 from tkinter import filedialog, messagebox
 
 class GUIApp:
@@ -41,12 +41,20 @@ class GUIApp:
 
     def run_js_script(self):
         try:
-            json_data = json.dumps(self.process_data)
+            with tempfile.NamedTemporaryFile(delete=False, mode="w", encoding="utf-8") as temp_file:
+                temp_file.write(json.dumps(self.process_data))
+                temp_file_path = temp_file.name
+            
             script_directory = os.path.dirname(os.path.abspath(__file__))
             script_path = os.path.join(script_directory, "main.js")
-            subprocess.run(["node", script_path, json_data], check=True)
+
+            subprocess.run(["node", script_path, temp_file_path], check=True)
+            os.remove(temp_file_path)
+
         except subprocess.CalledProcessError as e:
             messagebox.showerror("Erro", f"Erro ao executar o script JS:\n{e}")
+        except Exception as e:
+            messagebox.showerror("Erro", f"Erro ao criar o arquivo temporário:\n{e}")
 
 if __name__ == "__main__":
     app = GUIApp(ttk.Window(themename="darkly"))
