@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Processador de Processos</title>
+    <style>
+        body { font-family: Arial, sans-serif; text-align: center; }
+        #status { margin-top: 20px; white-space: pre-line; text-align: left; display: inline-block; }
+        #download { display: none; margin-top: 20px; }
+    </style>
+</head>
+<body>
+    <h1>Envio de Processos</h1>
+    <input type="file" id="fileInput" accept="application/json">
+    <button onclick="uploadFile()">Enviar</button>
+    <div id="status"></div>
+    <a id="download" href="#" download>Baixar CSV</a>
+
+    <script>
+        async function uploadFile() {
+            const fileInput = document.getElementById('fileInput');
+            const statusDiv = document.getElementById('status');
+            const downloadLink = document.getElementById('download');
+            
+            if (!fileInput.files.length) {
+                alert('Selecione um arquivo JSON primeiro!');
+                return;
+            }
+            
+            const file = fileInput.files[0];
+            const reader = new FileReader();
+            
+            reader.onload = async function(event) {
+                const jsonData = JSON.parse(event.target.result);
+                
+                statusDiv.innerHTML = 'Processando...\n';
+                
+                try {
+                    const response = await fetch('http://localhost:3000/extrair', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(jsonData)
+                    });
+                    
+                    const reader = response.body.getReader();
+                    const decoder = new TextDecoder();
+                    
+                    let resultText = '';
+                    
+                    while (true) {
+                        const { done, value } = await reader.read();
+                        if (done) break;
+                        resultText += decoder.decode(value, { stream: true });
+                        statusDiv.innerHTML = resultText;
+                    }
+                    
+                    const finalResult = JSON.parse(resultText);
+                    
+                    if (finalResult.downloadUrl) {
+                        statusDiv.innerHTML += '\nProcessamento concluído!';
+                        downloadLink.href = finalResult.downloadUrl;
+                        downloadLink.style.display = 'block';
+                    } else {
+                        statusDiv.innerHTML += '\nErro ao processar os dados!';
+                    }
+                } catch (error) {
+                    statusDiv.innerHTML += '\nErro na requisição!';
+                }
+            };
+            
+            reader.readAsText(file);
+        }
+    </script>
+</body>
+</html>

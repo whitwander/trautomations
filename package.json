@@ -18,6 +18,8 @@
     "start": "nw ."
   },
   "dependencies": {
+    "cors": "^2.8.5",
+    "express": "^5.1.0",
     "nw": "^0.97.0",
     "p-limit": "^6.2.0",
     "puppeteer": "^24.4.0"
