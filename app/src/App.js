@@ -1,4 +1,5 @@
 import { useState } from "react";
+import "./App.css";
 
 function App() {
   const [status, setStatus] = useState("");
@@ -60,23 +61,21 @@ function App() {
   };
 
   return (
-    <div style={{ textAlign: "center", fontFamily: "Arial, sans-serif" }}>
-      <h1>Envio de Processos</h1>
-      <input type="file" accept="application/json" onChange={uploadFile} />
-      <div
-        style={{ marginTop: "20px", whiteSpace: "pre-line", textAlign: "left", display: "inline-block" }}
-      >
+    <div className="container">
+      <h1 className="container-title">Pesquisa de Processos</h1>
+      <label className="custom-file-upload" for="upload-file">Carregar arquivo CSV</label>
+      <input type="file" accept="application/json" id="upload-file" onChange={uploadFile} />
+      <button className="btn-cancel">Cancelar execução</button>
+      <div>
         {status}
       </div>
       {downloadUrl && (
-        <a href={downloadUrl} download style={{ display: "block", marginTop: "20px" }}>
+        <a href={downloadUrl}>
           Baixar CSV
         </a>
       )}
-      <div
-        style={{ marginTop: "20px", padding: "10px", backgroundColor: "#f4f4f4", borderRadius: "5px" }}
-      >
-        <h3>Logs:</h3>
+      <div className="status">
+        <p className="status-title">Status dos processos</p>
         <pre>{logs.join("\n")}</pre>
       </div>
     </div>
