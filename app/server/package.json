@@ -22,7 +22,8 @@
     "express": "^5.1.0",
     "nw": "^0.97.0",
     "p-limit": "^6.2.0",
-    "puppeteer": "^24.4.0"
+    "puppeteer": "^24.4.0",
+    "react": "^19.1.0"
   },
   "window": {
     "title": "Aplicativo NW.js",
