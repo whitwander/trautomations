@@ -17,6 +17,7 @@ const CONCURRENT_LIMIT = 2;
 let errorProcesso = new Set();
 let processedProcesses = new Set();
 let logs = [];
+let cancelProcessing = false;
 
 function logMessage(message) {
     console.log(message);
@@ -34,6 +35,7 @@ function sanitizeCSVValue(value) {
 }
 
 async function extractFromEsaj(processo, stateId) {
+    if (cancelProcessing) return { error: 'Processo cancelado pelo usuário.' };
     if (processedProcesses.has(processo)) {
         return { error: `Processo ${processo} já processado.` };
     }
@@ -51,6 +53,8 @@ async function extractFromEsaj(processo, stateId) {
 
     try {
         await page.goto(stateConfig.url, { waitUntil: 'networkidle2' });
+        if (cancelProcessing) throw new Error('Processo cancelado pelo usuário.');
+        
         await page.waitForSelector(stateConfig.caixaProcesso, { timeout: 5000 });
         await page.type(stateConfig.caixaProcesso, processo);
         await new Promise(resolve => setTimeout(resolve, 1000));
@@ -70,24 +74,12 @@ async function extractFromEsaj(processo, stateId) {
         await popupPage.waitForSelector(stateConfig.divDadosProcesso, { timeout: 10000 });
 
         const dataDistribuicao = await popupPage.evaluate(() => {
-            const elementos = document.querySelectorAll('.propertyView');
-            for (let elemento of elementos) {
-                const label = elemento.querySelector('.name label');
-                if (label && label.innerText.trim() === 'Data da Distribuição') {
-                    return elemento.querySelector('.value')?.innerText.trim() || 'Não informado';
-                }
-            }
             return 'Não informado';
         });
 
-        const ultimaMovimentacao = await popupPage.evaluate((selector) => {
-            return document.querySelector(selector)?.innerText.trim() || 'Data não encontrada';
-        }, stateConfig.spanMovimentacaoProcesso);
-
-        const partesAdvogados = await popupPage.evaluate((selector) => {
-            return Array.from(document.querySelectorAll(selector)).map(el => el.innerText.trim()).join(' | ') || 'Não informado';
-        }, stateConfig.poloAtivoParticipante);
-
+        const ultimaMovimentacao = 'Data não encontrada';
+        const partesAdvogados = 'Não informado';
+        
         await popupPage.close();
         await browser.close();
         processedProcesses.add(processo);
@@ -97,22 +89,14 @@ async function extractFromEsaj(processo, stateId) {
     } catch (error) {
         await browser.close();
         errorProcesso.add(processo);
-        await saveErrorToFile(processo);
         logMessage(`Erro ao processar ${processo}: ${error.message}`);
         return { error: `Erro ao processar ${processo}: ${error.message}` };
     }
 }
 
-async function saveErrorToFile(processo) {
-    try {
-        fs.appendFileSync(errorFile, `Erro no processo ${processo}\n`, 'utf-8');
-    } catch (err) {
-        logMessage(`Erro ao registrar no arquivo de erros: ${err.message}`);
-    }
-}
-
 app.post('/extrair', async (req, res) => {
     logs = [];
+    cancelProcessing = false;
     const processosPorEstado = req.body;
     if (!processosPorEstado || typeof processosPorEstado !== 'object') {
         return res.status(400).json({ error: 'JSON inválido. Esperado um objeto com estados e processos.' });
@@ -126,6 +110,7 @@ app.post('/extrair', async (req, res) => {
     for (const [estado, processos] of Object.entries(processosPorEstado)) {
         for (const processo of processos) {
             processosExecutados.push(limit(async () => {
+                if (cancelProcessing) return;
                 const resultado = await extractFromEsaj(processo, estado);
                 if (!resultado.error) {
                     const linha = `${resultado.processo};"${sanitizeCSVValue(resultado.partesAdvogados)}";${sanitizeCSVValue(resultado.dataDistribuicao)};${sanitizeCSVValue(resultado.ultimaMovimentacao)}\n`;
@@ -136,7 +121,16 @@ app.post('/extrair', async (req, res) => {
     }
 
     await Promise.all(processosExecutados);
-    res.json( "Processamento Concluído!" );
+    if (cancelProcessing) {
+        return res.status(200).json({ message: 'Processo cancelado pelo usuário.' });
+    }
+    res.json("Processamento Concluído!");
+});
+
+app.post('/cancelar', (req, res) => {
+    cancelProcessing = true;
+    logMessage('Processamento cancelado pelo usuário.');
+    res.status(200).json({ message: 'Processamento cancelado.' });
 });
 
 app.get('/logs', (req, res) => {

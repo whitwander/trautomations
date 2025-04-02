@@ -6,6 +6,7 @@ import processarArquivoXLSX from "./components/Regex"; // Função de processame
 function App() {
   const [status, setStatus] = useState("");
   const [downloadUrl, setDownloadUrl] = useState(null);
+  const [abortController, setAbortController] = useState(null);
 
   const uploadFile = async (event) => {
     const file = event.target.files[0];
@@ -24,10 +25,14 @@ function App() {
 
         setStatus("Arquivo processado. Enviando para o servidor...\n");
 
+        const controller = new AbortController();
+        setAbortController(controller);
+
         const response = await fetch("http://localhost:8080/extrair", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify(processosPorEstado),
+          signal: controller.signal,
         });
 
         const reader = response.body.getReader();
@@ -49,12 +54,31 @@ function App() {
           setStatus((prev) => prev + "\nErro ao processar os dados!");
         }
       } catch (error) {
-        setStatus((prev) => prev + "\nErro na requisição!");
+        if (error.name === "AbortError") {
+          setStatus("Operação cancelada pelo usuário.");
+        } else {
+          setStatus((prev) => prev + "\nErro na requisição!");
+        }
       }
     };
 
     reader.readAsArrayBuffer(file); // Lê o arquivo como ArrayBuffer para XLSX
   };
+
+  const cancelarOperacao = async () => {
+    if (abortController) {
+      abortController.abort();
+      setAbortController(null);
+      setStatus("Operação cancelada.");
+      
+      // Enviar pedido de cancelamento ao servidor
+      await fetch("http://localhost:8080/cancelar", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+      });
+    }
+  };
+  
 
   return (
     <div className="container">
@@ -63,7 +87,7 @@ function App() {
         Carregar arquivo XLSX
       </label>
       <input type="file" accept=".xlsx" id="upload-file" onChange={uploadFile} />
-      <button className="btn-cancel">Cancelar execução</button>
+      <button className="btn-cancel" onClick={cancelarOperacao}>Cancelar execução</button>
       {downloadUrl && (
         <a href={downloadUrl} download>
           Baixar CSV
