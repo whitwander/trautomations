@@ -20,7 +20,6 @@ function App() {
       try {
         setStatus("Processando arquivo...\n");
 
-        // Passa o ArrayBuffer para a função de processamento
         const processosPorEstado = processarArquivoXLSX(e.target.result);
 
         setStatus("Arquivo processado. Enviando para o servidor...\n");
@@ -70,7 +69,7 @@ function App() {
       abortController.abort();
       setAbortController(null);
       setStatus("Operação cancelada.");
-      
+
       // Enviar pedido de cancelamento ao servidor
       await fetch("http://localhost:8080/cancelar", {
         method: "POST",
@@ -78,7 +77,7 @@ function App() {
       });
     }
   };
-  
+
 
   return (
     <div className="container">
@@ -93,10 +92,8 @@ function App() {
           Baixar CSV
         </a>
       )}
-      <div className="status">
-        <p className="status-title">{status}</p>
-        <Logs />
-      </div>
+      <p className="status-title">{status}</p>
+      <Logs />
     </div>
   );
 }

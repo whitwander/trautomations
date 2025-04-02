@@ -13,6 +13,12 @@
   border-radius: 10px;
 }
 
+.box-log{
+  display: flex;
+  flex-direction: column;
+  gap: -10px;
+}
+
 body {
   background-color: aliceblue; 
 }
@@ -68,7 +74,6 @@ input[type="file"] {
 }
 
 .status-title {
-  color: white;
   font-weight: 600;
   font-size: 15px;
 }

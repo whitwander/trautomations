@@ -6,16 +6,14 @@ const data = require('./variables.json');
 const app = express();
 const port = 8080;
 
-app.use(express.json());
+app.use(express.json({ limit: '50mb' }));
 app.use(cors());
+app.use(express.urlencoded({ limit: '50mb', extended: true }));
 
 const now = new Date();
 const dateStr = now.toISOString().split('T')[0];
 const outputFile = `resultados_${dateStr}.csv`;
-const errorFile = `erros_${dateStr}.txt`;
 const CONCURRENT_LIMIT = 2;
-let errorProcesso = new Set();
-let processedProcesses = new Set();
 let logs = [];
 let cancelProcessing = false;
 
@@ -36,20 +34,16 @@ function sanitizeCSVValue(value) {
 
 async function extractFromEsaj(processo, stateId) {
     if (cancelProcessing) return { error: 'Processo cancelado pelo usuário.' };
-    if (processedProcesses.has(processo)) {
-        return { error: `Processo ${processo} já processado.` };
-    }
 
-    logMessage(`Iniciando extração para processo ${processo} do estado ${stateId}`);
-    const browser = await puppeteer.launch({ headless: true });
-    const page = await browser.newPage();
     const stateConfig = data[stateId];
 
     if (!stateConfig) {
-        await browser.close();
-        logMessage(`Erro: Estado ${stateId} não encontrado.`);
+        logMessage(`Estado ${stateId} não encontrado. Pulando para o próximo estado.`);
         return { error: `Estado ${stateId} não encontrado.` };
     }
+
+    const browser = await puppeteer.launch({ headless: true });
+    const page = await browser.newPage();
 
     try {
         await page.goto(stateConfig.url, { waitUntil: 'networkidle2' });
@@ -73,23 +67,18 @@ async function extractFromEsaj(processo, stateId) {
 
         await popupPage.waitForSelector(stateConfig.divDadosProcesso, { timeout: 10000 });
 
-        const dataDistribuicao = await popupPage.evaluate(() => {
-            return 'Não informado';
-        });
-
+        const dataDistribuicao = 'Não informado';
         const ultimaMovimentacao = 'Data não encontrada';
         const partesAdvogados = 'Não informado';
         
         await popupPage.close();
         await browser.close();
-        processedProcesses.add(processo);
 
-        logMessage(`Processo ${processo} extraído com sucesso.`);
+        logMessage(`✓ ${stateId} - Processo ${processo} extraído com sucesso.`);
         return { processo, partesAdvogados, dataDistribuicao, ultimaMovimentacao };
     } catch (error) {
         await browser.close();
-        errorProcesso.add(processo);
-        logMessage(`Erro ao processar ${processo}: ${error.message}`);
+        logMessage(`✗ ${stateId} - Erro no processo ${processo}: ${error.message}`);
         return { error: `Erro ao processar ${processo}: ${error.message}` };
     }
 }
@@ -102,37 +91,45 @@ app.post('/extrair', async (req, res) => {
     if (!processosPorEstado || typeof processosPorEstado !== 'object') {
         return res.status(400).json({ error: 'JSON inválido. Esperado um objeto com estados e processos.' });
     }
-    
-    fs.writeFileSync(outputFile, "Processo;Partes e Advogados;Data de Distribuição;Última Movimentação\n", 'utf-8');
+
+    fs.writeFileSync(outputFile, "Estado;Processo;Partes e Advogados;Data de Distribuição;Última Movimentação\n", 'utf-8');
     
     const limit = await importPLimit();
     const processosExecutados = [];
-    
-    for (const [estado, processos] of Object.entries(processosPorEstado)) {
+
+    for (const estado of Object.keys(processosPorEstado)) {
+        const processos = processosPorEstado[estado];
+        
+        if (!Array.isArray(processos) || processos.length === 0) {
+            logMessage(`⚠️ ${estado} - Nenhum processo válido encontrado.`);
+            continue;
+        }
+
+        logMessage(`🔍 Iniciando processamento para o estado: ${estado}`);
+
         for (const processo of processos) {
             processosExecutados.push(limit(async () => {
                 const resultado = await extractFromEsaj(processo, estado);
                 if (!resultado.error) {
-                    const linha = `${resultado.processo};"${sanitizeCSVValue(resultado.partesAdvogados)}";${sanitizeCSVValue(resultado.dataDistribuicao)};${sanitizeCSVValue(resultado.ultimaMovimentacao)}\n`;
+                    const linha = `${estado};${resultado.processo};"${sanitizeCSVValue(resultado.partesAdvogados)}";${sanitizeCSVValue(resultado.dataDistribuicao)};${sanitizeCSVValue(resultado.ultimaMovimentacao)}\n`;
                     fs.appendFileSync(outputFile, linha, 'utf-8');
                 }
             }));
         }
     }
-    
+
     await Promise.all(processosExecutados);
+
     if (cancelProcessing) {
         return res.status(200).json({ message: 'Processo cancelado pelo usuário.' });
     }
-    res.json("Processamento Concluído!");   
-});
 
+    res.json({ message: "Processamento Concluído!" });
+});
 
 app.post('/cancelar', (req, res) => {
     cancelProcessing = true;
-    processedProcesses.clear();
-    errorProcesso.clear();
-    logMessage('Processamento cancelado pelo usuário.');
+    logMessage('🚨 Processamento cancelado pelo usuário.');
     res.status(200).json({ message: 'Processamento cancelado.' });
 });
 
@@ -149,5 +146,5 @@ app.get('/download', (req, res) => {
 });
 
 app.listen(port, () => {
-    logMessage(`Servidor Online`);
+    logMessage(`🚀 Servidor Online na porta ${port}`);
 });

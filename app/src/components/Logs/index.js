@@ -1,15 +1,20 @@
-import { useEffect, useState } from 'react';
-import "./index.css"
+import { useEffect, useState, useRef } from 'react';
+import "./index.css";
 
 export default function LogViewer() {
   const [logs, setLogs] = useState([]);
+  const logsEndRef = useRef(null);
 
   useEffect(() => {
     const fetchLogs = async () => {
       try {
         const response = await fetch('http://localhost:8080/logs');
         const data = await response.json();
-        setLogs(data.logs);
+
+        setLogs((prevLogs) => {
+          const newLogs = [...prevLogs, ...data.logs]; // Acumula logs antigos + novos
+          return [...new Set(newLogs)]; // Remove duplicados
+        });
       } catch (error) {
         console.error('Erro ao buscar logs:', error);
       }
@@ -20,13 +25,19 @@ export default function LogViewer() {
     return () => clearInterval(interval);
   }, []);
 
+  // Scroll automático para o final ao receber novos logs
+  useEffect(() => {
+    logsEndRef.current?.scrollIntoView({ behavior: "smooth" });
+  }, [logs]);
+
   return (
     <div className="log-container">
-      {[...new Set(logs)].slice(-6).map((log, index) => (
-        <p key={index} className="p-log">
-          {`- ${log}`}
+      {logs.map((log, index) => (
+        <p key={`${log}-${index}`} className="p-log">
+          {log}
         </p>
       ))}
+      <div ref={logsEndRef} />
     </div>
   );
 }

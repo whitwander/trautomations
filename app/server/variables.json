@@ -95,9 +95,9 @@
         "poloAtivoParticipante": "#j_id132\\:processoPartesPoloAtivoResumidoList\\:tb .text-bold",
         "working": "time out"
     },
-    "RN": {
+    "RNoff": {
         "url": "https://pje1gconsulta.tjrn.jus.br/consultapublica/ConsultaPublica/listView.seam",
-        "estadoUF": "rn",
+        "estadoUF": "rnoff",
         "caixaProcesso": "#fPP\\:numProcesso-inputNumeroProcessoDecoration\\:numProcesso-inputNumeroProcesso",
         "btnSearch": "#fPP\\:searchProcessos",
         "tblProcessos": "#fPP\\:processosTable",
