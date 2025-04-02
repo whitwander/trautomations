@@ -1,6 +1,7 @@
 import { useState } from "react";
 import "./App.css";
-import Logs from "./components/Logs"; // Importando o componente de logs
+import Logs from "./components/Logs"; // Componente de logs
+import processarArquivoXLSX from "./components/Regex"; // Importando a função de processamento
 
 function App() {
   const [status, setStatus] = useState("");
@@ -9,20 +10,24 @@ function App() {
   const uploadFile = async (event) => {
     const file = event.target.files[0];
     if (!file) {
-      alert("Selecione um arquivo JSON primeiro!");
+      alert("Selecione um arquivo CSV primeiro!");
       return;
     }
 
     const reader = new FileReader();
     reader.onload = async (e) => {
-      const jsonData = JSON.parse(e.target.result);
-      setStatus("Processando...\n");
-
       try {
+        setStatus("Processando arquivo...\n");
+
+        // Processar o arquivo XLSX e obter JSON formatado
+        const processosPorEstado = processarArquivoXLSX(file);
+
+        setStatus("Arquivo processado. Enviando para o servidor...\n");
+
         const response = await fetch("http://localhost:8080/extrair", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(jsonData),
+          body: JSON.stringify(processosPorEstado),
         });
 
         const reader = response.body.getReader();
@@ -48,7 +53,7 @@ function App() {
       }
     };
 
-    reader.readAsText(file);
+    reader.readAsArrayBuffer(file); // Lê o arquivo como ArrayBuffer para XLSX
   };
 
   return (
@@ -57,12 +62,12 @@ function App() {
       <label className="custom-file-upload" htmlFor="upload-file">
         Carregar arquivo CSV
       </label>
-      <input type="file" accept="application/json" id="upload-file" onChange={uploadFile} />
+      <input type="file" accept=".xlsx" id="upload-file" onChange={uploadFile} />
       <button className="btn-cancel">Cancelar execução</button>
       {downloadUrl && (
         <a href={downloadUrl} download>
           Baixar CSV
-        </a>  
+        </a>
       )}
       <div className="status">
         <p className="status-title">{status}</p>

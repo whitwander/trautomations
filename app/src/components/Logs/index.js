@@ -21,20 +21,12 @@ export default function LogViewer() {
   }, []);
 
   return (
-    <div className='log-container'>
-      <div>
-        {logs.length === 0 ? (
-          <p className="text-gray-500">Nenhum log disponível.</p>
-        ) : (
-          <div>
-            {logs.map((log, index) => (
-              <p key={index} className='p-log'>
-                {`> ${log}`}
-              </p>
-            ))}
-          </div>
-        )}
-      </div>
+    <div className="log-container" >
+      {logs.slice(-6).map((log, index) => (
+        <p key={index} className='p-log'>
+          {`- ${log}`}
+        </p>
+      ))}
     </div>
   );
 }
