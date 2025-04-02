@@ -1,11 +1,10 @@
-const XLSX = require('xlsx');
+import * as XLSX from "xlsx";
 
 function extrairEstadoComSigla(numeroProcesso) {
     const regex = /\.([0-9]{2})\./;
     const match = numeroProcesso.match(regex);
 
     if (match && match[1]) {
-        const codigoEstado = match[1];
         const estados = {
             '01': 'AC', '02': 'AL', '03': 'AP', '04': 'AM', '05': 'BA',
             '06': 'CE', '07': 'DF', '08': 'ES', '09': 'GO', '10': 'MA',
@@ -14,23 +13,23 @@ function extrairEstadoComSigla(numeroProcesso) {
             '21': 'RS', '22': 'RO', '23': 'RR', '24': 'SC', '25': 'SP',
             '26': 'SE', '27': 'TO'
         };
-        return estados[codigoEstado] || null;
+        return estados[match[1]] || null;
     }
     return null;
 }
 
-function processarArquivoXLSX(caminhoArquivo) {
+function processarArquivoXLSX(arrayBuffer) {
     try {
-        const workbook = XLSX.readFile(caminhoArquivo);
+        const workbook = XLSX.read(arrayBuffer, { type: "array" });
         const sheetName = workbook.SheetNames[0];
         const sheet = workbook.Sheets[sheetName];
         const processosPorEstado = {};
         
         const dados = XLSX.utils.sheet_to_json(sheet, { header: 1 });
-        
+
         dados.forEach((linha) => {
             linha.forEach((celula) => {
-                if (typeof celula === 'string' && celula.includes('-')) {
+                if (typeof celula === "string" && celula.includes("-")) {
                     const estadoSigla = extrairEstadoComSigla(celula);
                     if (estadoSigla) {
                         if (!processosPorEstado[estadoSigla]) {
@@ -40,11 +39,11 @@ function processarArquivoXLSX(caminhoArquivo) {
                     }
                 }
             });
-        });
+        }); 
 
         return processosPorEstado;
     } catch (error) {
-        console.error('Erro ao processar o arquivo XLSX:', error);
+        console.error("Erro ao processar o arquivo XLSX:", error);
         return {};
     }
 }

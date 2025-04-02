@@ -21,9 +21,9 @@ export default function LogViewer() {
   }, []);
 
   return (
-    <div className="log-container" >
-      {logs.slice(-6).map((log, index) => (
-        <p key={index} className='p-log'>
+    <div className="log-container">
+      {[...new Set(logs)].slice(-6).map((log, index) => (
+        <p key={index} className="p-log">
           {`- ${log}`}
         </p>
       ))}

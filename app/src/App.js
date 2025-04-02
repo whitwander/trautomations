@@ -1,7 +1,7 @@
 import { useState } from "react";
 import "./App.css";
 import Logs from "./components/Logs"; // Componente de logs
-import processarArquivoXLSX from "./components/Regex"; // Importando a função de processamento
+import processarArquivoXLSX from "./components/Regex"; // Função de processamento
 
 function App() {
   const [status, setStatus] = useState("");
@@ -10,7 +10,7 @@ function App() {
   const uploadFile = async (event) => {
     const file = event.target.files[0];
     if (!file) {
-      alert("Selecione um arquivo CSV primeiro!");
+      alert("Selecione um arquivo XLSX primeiro!");
       return;
     }
 
@@ -19,8 +19,8 @@ function App() {
       try {
         setStatus("Processando arquivo...\n");
 
-        // Processar o arquivo XLSX e obter JSON formatado
-        const processosPorEstado = processarArquivoXLSX(file);
+        // Passa o ArrayBuffer para a função de processamento
+        const processosPorEstado = processarArquivoXLSX(e.target.result);
 
         setStatus("Arquivo processado. Enviando para o servidor...\n");
 
@@ -60,7 +60,7 @@ function App() {
     <div className="container">
       <h1 className="container-title">Pesquisa de Processos</h1>
       <label className="custom-file-upload" htmlFor="upload-file">
-        Carregar arquivo CSV
+        Carregar arquivo XLSX
       </label>
       <input type="file" accept=".xlsx" id="upload-file" onChange={uploadFile} />
       <button className="btn-cancel">Cancelar execução</button>

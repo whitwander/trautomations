@@ -71,9 +71,9 @@
         "poloAtivoParticipante": "#j_id140\\:processoPartesPoloAtivoResumidoList\\:tb .text-bold",
         "working": "Não pesquisa"
     },
-    "RJ": {
+    "RJoff": {
         "url": "https://tjrj.pje.jus.br/1g/ConsultaPublica/listView.seam",
-        "estadoUF": "rj",
+        "estadoUF": "rjoff",
         "caixaProcesso": "#fPP\\:numProcesso-inputNumeroProcessoDecoration\\:numProcesso-inputNumeroProcesso",
         "btnSearch": "#fPP\\:searchProcessos",
         "tblProcessos": "#fPP\\:processosTable",

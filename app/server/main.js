@@ -152,5 +152,5 @@ app.get('/download', (req, res) => {
 });
 
 app.listen(port, () => {
-    logMessage(`API rodando em http://localhost:${port}`);
+    logMessage(`Servidor Online`);
 });
