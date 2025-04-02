@@ -2,6 +2,19 @@
 
 Este projeto utiliza **Puppeteer** para extrair informações sobre processos judiciais a partir de sites de tribunais estaduais.
 
+## Estados Pesquisados:
+
+- Espírito Santo/ES
+- Minas Gerais/MG
+- Ceará/CE
+- Distrito Federal/DF
+- Maranhão/MA
+- Paraíba/PB
+- Piauí/PI
+- TRF1
+- TRF5
+
+
 ## 📌 Funcionalidades
 
 - Acessa sites de tribunais estaduais configurados no arquivo `variables.json`
