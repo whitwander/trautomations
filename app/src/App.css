@@ -58,8 +58,8 @@ input[type="file"] {
 
 .status {
   background-color: rgb(0, 0, 0);
-  width: 500px;
-  height: 300px;
+  width: 600px;
+  height: 350px;
   border-radius: 10px;
   display: flex;
   justify-content: center;
@@ -69,6 +69,6 @@ input[type="file"] {
 
 .status-title {
   color: white;
-  font-weight: 500;
+  font-weight: 600;
   font-size: 15px;
 }

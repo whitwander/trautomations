@@ -96,7 +96,8 @@ async function extractFromEsaj(processo, stateId) {
 
 app.post('/extrair', async (req, res) => {
     logs = [];
-    cancelProcessing = false;
+    console.log("Recebido do frontend:", JSON.stringify(req.body, null, 2));
+
     const processosPorEstado = req.body;
     if (!processosPorEstado || typeof processosPorEstado !== 'object') {
         return res.status(400).json({ error: 'JSON inválido. Esperado um objeto com estados e processos.' });
@@ -110,7 +111,6 @@ app.post('/extrair', async (req, res) => {
     for (const [estado, processos] of Object.entries(processosPorEstado)) {
         for (const processo of processos) {
             processosExecutados.push(limit(async () => {
-                if (cancelProcessing) return;
                 const resultado = await extractFromEsaj(processo, estado);
                 if (!resultado.error) {
                     const linha = `${resultado.processo};"${sanitizeCSVValue(resultado.partesAdvogados)}";${sanitizeCSVValue(resultado.dataDistribuicao)};${sanitizeCSVValue(resultado.ultimaMovimentacao)}\n`;
@@ -119,16 +119,19 @@ app.post('/extrair', async (req, res) => {
             }));
         }
     }
-
+    
     await Promise.all(processosExecutados);
     if (cancelProcessing) {
         return res.status(200).json({ message: 'Processo cancelado pelo usuário.' });
     }
-    res.json("Processamento Concluído!");
+    res.json("Processamento Concluído!");   
 });
+
 
 app.post('/cancelar', (req, res) => {
     cancelProcessing = true;
+    processedProcesses.clear();
+    errorProcesso.clear();
     logMessage('Processamento cancelado pelo usuário.');
     res.status(200).json({ message: 'Processamento cancelado.' });
 });
