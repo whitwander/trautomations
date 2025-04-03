@@ -2,7 +2,7 @@ const express = require('express');
 const cors = require('cors');
 const puppeteer = require('puppeteer');
 const fs = require('fs');
-const data = require('./variables.json');
+const variables = require('./variables.json');
 const app = express();
 const port = 8080;
 
@@ -16,6 +16,12 @@ const errorFile = `erros_${dateStr}.txt`;
 const CONCURRENT_LIMIT = 2;
 let errorProcesso = new Set();
 let processedProcesses = new Set();
+let logs = [];
+
+function logMessage(message) {
+    console.log(message);
+    logs.push(message);
+}
 
 async function importPLimit() {
     const pLimit = (await import('p-limit')).default;
@@ -32,24 +38,45 @@ async function extractFromEsaj(processo, stateId) {
         return { error: `Processo ${processo} já processado.` };
     }
 
+    logMessage(`Iniciando extração para processo ${processo} do estado ${stateId}`);
     const browser = await puppeteer.launch({ headless: true });
     const page = await browser.newPage();
-    const stateConfig = data[stateId];
+    const stateConfig = variables[stateId];
 
     if (!stateConfig) {
         await browser.close();
-        return { error: `Estado ${stateId} não encontrado.` };
+        logMessage(`Erro: Estado ${stateId} não encontrado no arquivo de configuração.`);
+        return { error: `Estado ${stateId} não encontrado no arquivo de configuração.` };
+    }
+    
+    if (stateConfig.working?.trim().toLowerCase() !== "sim") {
+        await browser.close();
+        logMessage(`Verificando estado: ${stateId}, working: ${stateConfig.working}`);
+        logMessage(`Erro: Estado ${stateId} não está disponível para processamento.`);
+        return { error: `Estado ${stateId} não está disponível para processamento.` };
     }
 
     try {
+        page.on('dialog', async (dialog) => {
+            logMessage(`Alerta detectado: "${dialog.message()}" - Clicando em OK.`);
+            await dialog.accept();
+        });
+
         await page.goto(stateConfig.url, { waitUntil: 'networkidle2' });
-        await page.waitForSelector(stateConfig.caixaProcesso, { timeout: 5000 });
+        await page.waitForSelector(stateConfig.caixaProcesso, { timeout: 15000 });
         await page.type(stateConfig.caixaProcesso, processo);
         await new Promise(resolve => setTimeout(resolve, 1000));
         await page.click(stateConfig.btnSearch);
-        await page.waitForSelector(stateConfig.tblProcessos, { timeout: 10000 });
 
-        await page.waitForSelector(stateConfig.btnVerDetalhes, { timeout: 5000 });
+        try {
+            await page.waitForSelector(stateConfig.tblProcessos, { timeout: 30000 });
+        } catch (error) {
+            logMessage(`Nenhum resultado encontrado para o processo ${processo} ou alerta foi acionado.`);
+            await browser.close();
+            return { error: `Nenhum resultado encontrado para o processo ${processo}.` };
+        }
+
+        await page.waitForSelector(stateConfig.btnVerDetalhes, { timeout: 15000 });
         const linkDetalhes = await page.$(stateConfig.btnVerDetalhes);
         if (!linkDetalhes) throw new Error('Botão "Ver Detalhes" não encontrado');
 
@@ -84,11 +111,13 @@ async function extractFromEsaj(processo, stateId) {
         await browser.close();
         processedProcesses.add(processo);
 
+        logMessage(`Processo ${processo} extraído com sucesso.`);
         return { processo, partesAdvogados, dataDistribuicao, ultimaMovimentacao };
     } catch (error) {
         await browser.close();
         errorProcesso.add(processo);
         await saveErrorToFile(processo);
+        logMessage(`Erro ao processar ${processo}: ${error.message}`);
         return { error: `Erro ao processar ${processo}: ${error.message}` };
     }
 }
@@ -102,6 +131,9 @@ async function saveErrorToFile(processo) {
 }
 
 app.post('/extrair', async (req, res) => {
+    logs = [];
+    console.log("Recebido do frontend:", JSON.stringify(req.body, null, 2));
+
     const processosPorEstado = req.body;
     if (!processosPorEstado || typeof processosPorEstado !== 'object') {
         return res.status(400).json({ error: 'JSON inválido. Esperado um objeto com estados e processos.' });
@@ -128,6 +160,10 @@ app.post('/extrair', async (req, res) => {
     res.json({ message: 'Processamento concluído!', downloadUrl: `http://localhost:${port}/download` });
 });
 
+app.get('/logs', (req, res) => {
+    res.json({ logs });
+});
+
 app.get('/download', (req, res) => {
     res.download(outputFile, 'resultados.csv', (err) => {
         if (err) {
@@ -137,5 +173,5 @@ app.get('/download', (req, res) => {
 });
 
 app.listen(port, () => {
-    console.log(`API rodando em http://localhost:${port}`);
+    logMessage(`Servidor Online`);
 });
