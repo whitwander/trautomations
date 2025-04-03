@@ -81,15 +81,12 @@ function App() {
   return (
     <div className="container">
       <h1 className="container-title">Pesquisa de Processos</h1>
-      <label className="custom-file-upload" htmlFor="upload-file">
-        Carregar arquivo XLSX
-      </label>
+      <h2 className="container-state">ES / MG / CE / DF / MA / PB / TRF1 / TRF5</h2>
+      <label className="custom-file-upload" htmlFor="upload-file">Carregar arquivo XLSX</label>
       <input type="file" accept=".xlsx" id="upload-file" onChange={uploadFile} />
       <button className="btn-cancel" onClick={cancelarOperacao}>Cancelar execução</button>
       {downloadUrl && (
-        <a href={downloadUrl} download>
-          Baixar CSV
-        </a>
+        <a href={downloadUrl} download>Baixar CSV</a>
       )}
       <p className="status-title">{status}</p>
       <div className="status">
