@@ -38,7 +38,6 @@ async function extractFromEsaj(processo, stateId) {
         return { error: `Processo ${processo} já processado.` };
     }
 
-    logMessage(`Iniciando extração para processo ${processo} do estado ${stateId}`);
     const browser = await puppeteer.launch({ headless: true });
     const page = await browser.newPage();
     const stateConfig = variables[stateId];
@@ -111,13 +110,13 @@ async function extractFromEsaj(processo, stateId) {
         await browser.close();
         processedProcesses.add(processo);
 
-        logMessage(`Processo ${processo} extraído com sucesso.`);
+        logMessage(`√ Processo ${processo} extraído com sucesso.`);
         return { processo, partesAdvogados, dataDistribuicao, ultimaMovimentacao };
     } catch (error) {
         await browser.close();
         errorProcesso.add(processo);
         await saveErrorToFile(processo);
-        logMessage(`Erro ao processar ${processo}: ${error.message}`);
+        logMessage(`⨉ Erro ao processar ${processo}: ${error.message}`);
         return { error: `Erro ao processar ${processo}: ${error.message}` };
     }
 }
