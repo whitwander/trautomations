@@ -142,7 +142,7 @@ app.post('/extrair', async (req, res) => {
         return res.status(400).json({ error: 'JSON inválido. Esperado um objeto com estados e processos.' });
     }
     
-    fs.writeFileSync(outputFile, "Processo;Partes e Advogados;Data de Distribuição;Última Movimentação\n", 'utf-8');
+    fs.writeFileSync(outputFile, "Estado;Processo;Partes e Advogados;Data de Distribuição;Última Movimentação\n", 'utf-8');
     
     const limit = await importPLimit();
     const processosExecutados = [];
@@ -153,7 +153,7 @@ app.post('/extrair', async (req, res) => {
                 if (cancelProcessing) return;
                 const resultado = await extractFromEsaj(processo, estado);
                 if (!resultado.error) {
-                    const linha = `${resultado.processo};"${sanitizeCSVValue(resultado.partesAdvogados)}";${sanitizeCSVValue(resultado.dataDistribuicao)};${sanitizeCSVValue(resultado.ultimaMovimentacao)}\n`;
+                    const linha = `${sanitizeCSVValue(estado)};${resultado.processo};"${sanitizeCSVValue(resultado.partesAdvogados)}";${sanitizeCSVValue(resultado.dataDistribuicao)};${sanitizeCSVValue(resultado.ultimaMovimentacao)}\n`;
                     fs.appendFileSync(outputFile, linha, 'utf-8');
                 }
             }));
