@@ -1,7 +1,7 @@
 import { useState } from "react";
 import "./App.css";
-import Logs from "./components/Logs"; // Componente de logs
-import processarArquivoXLSX from "./components/Regex"; // Função de processamento
+import Logs from "./components/Logs"; 
+import processarArquivoXLSX from "./components/Regex"; 
 
 function App() {
   const [status, setStatus] = useState("");
@@ -61,7 +61,7 @@ function App() {
       }
     };
 
-    reader.readAsArrayBuffer(file); // Lê o arquivo como ArrayBuffer para XLSX
+    reader.readAsArrayBuffer(file); 
   };
 
   const cancelarOperacao = async () => {
@@ -70,7 +70,6 @@ function App() {
       setAbortController(null);
       setStatus("Operação cancelada.");
 
-      // Enviar pedido de cancelamento ao servidor
       await fetch("http://localhost:8080/cancelar", {
         method: "POST",
         headers: { "Content-Type": "application/json" },

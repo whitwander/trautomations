@@ -13,7 +13,7 @@ export default function LogViewer() {
 
         setLogs((prevLogs) => {
           const newLogs = [...prevLogs, ...data.logs];
-          return Array.from(new Set(newLogs)); // Remove duplicatas mantendo a ordem
+          return Array.from(new Set(newLogs));
         });        
       } catch (error) {
         console.error('Erro ao buscar logs:', error);
@@ -25,7 +25,6 @@ export default function LogViewer() {
     return () => clearInterval(interval);
   }, []);
 
-  // Scroll automático para o final ao receber novos logs
   useEffect(() => {
     if (logsEndRef.current) {
       logsEndRef.current.scrollTop = logsEndRef.current.scrollHeight;

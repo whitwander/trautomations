@@ -2,24 +2,24 @@
     color: white;
     background-color: rgb(0, 0, 0);
     width: 500px;
-    height: 300px;
+    height: 250px;
     font-weight: 400;
     border-radius: 10px;
     display: flex;
     flex-direction: column;
-    align-items: flex-start; /* Alinhar os logs à esquerda */
-    padding: 10px; /* Adicionar um padding interno */
-    max-height: 350px;
+    align-items: flex-start; 
+    padding: 10px; 
+    max-height: 250px;
     overflow-y: auto;
-    gap: 2px; /* Reduzir o espaçamento entre logs */
+    gap: 2px; 
 }
 
 .p-log {
     font-size: 14px;
     font-family: 'roboto', sans-serif;
-    margin: 2px 0; /* Reduzir espaçamento vertical */
-    white-space: pre-wrap; /* Garantir que os logs não quebrem de forma inesperada */
-    word-break: break-word; /* Quebra palavras muito longas */
+    margin: 2px 0; 
+    white-space: pre-wrap; 
+    word-break: break-word; 
 }
 
 
