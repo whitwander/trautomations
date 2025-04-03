@@ -93,7 +93,9 @@ function App() {
         </a>
       )}
       <p className="status-title">{status}</p>
-      <Logs />
+      <div className="status">
+        <Logs />
+      </div>
     </div>
   );
 }

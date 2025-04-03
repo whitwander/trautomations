@@ -8,7 +8,7 @@ function extrairEstadoComSigla(numeroProcesso) {
         const estados = {
             '01': 'AC', '02': 'AL', '03': 'AP', '04': 'AM', '05': 'BA',
             '06': 'CE', '07': 'DF', '08': 'ES', '09': 'GO', '10': 'MA',
-            '11': 'MS', '12': 'MT', '13': 'MG', '14': 'PA', '15': 'PB',
+            '11': 'MT', '12': 'MS', '13': 'MG', '14': 'PA', '15': 'PB',
             '16': 'PR', '17': 'PE', '18': 'PI', '19': 'RJ', '20': 'RN',
             '21': 'RS', '22': 'RO', '23': 'RR', '24': 'SC', '25': 'SP',
             '26': 'SE', '27': 'TO'
