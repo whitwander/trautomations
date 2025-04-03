@@ -12,9 +12,9 @@ export default function LogViewer() {
         const data = await response.json();
 
         setLogs((prevLogs) => {
-          const newLogs = [...prevLogs, ...data.logs]; // Acumula logs antigos + novos
-          return [...new Set(newLogs)]; // Remove duplicados
-        });
+          const newLogs = [...prevLogs, ...data.logs];
+          return Array.from(new Set(newLogs)); // Remove duplicatas mantendo a ordem
+        });        
       } catch (error) {
         console.error('Erro ao buscar logs:', error);
       }
@@ -27,8 +27,16 @@ export default function LogViewer() {
 
   // Scroll automático para o final ao receber novos logs
   useEffect(() => {
-    logsEndRef.current?.scrollIntoView({ behavior: "smooth" });
+    if (logsEndRef.current) {
+      logsEndRef.current.scrollTop = logsEndRef.current.scrollHeight;
+    }
   }, [logs]);
+
+  useEffect(() => {
+    setTimeout(() => {
+      logsEndRef.current?.scrollIntoView({ behavior: "smooth", block: "end" });
+    }, 100);
+  }, [logs]);  
 
   return (
     <div className="log-container">

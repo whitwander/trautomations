@@ -110,7 +110,7 @@ async function extractFromEsaj(processo, stateId) {
         await browser.close();
         processedProcesses.add(processo);
 
-        logMessage(`√ Processo ${processo} extraído com sucesso.`);
+        logMessage(`√ Processo ${stateId} ${processo} extraído com sucesso.`);
         return { processo, partesAdvogados, dataDistribuicao, ultimaMovimentacao };
     } catch (error) {
         await browser.close();

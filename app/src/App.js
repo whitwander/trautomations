@@ -78,7 +78,6 @@ function App() {
     }
   };
 
-
   return (
     <div className="container">
       <h1 className="container-title">Pesquisa de Processos</h1>
