@@ -66,3 +66,13 @@ input[type="file"] {
   font-weight: 600;
   font-size: 15px;
 }
+
+.link {
+  color: blue; 
+  text-decoration: none; 
+}
+
+.link:hover {
+  color: darkblue; /* Cor ao passar o mouse */
+  text-decoration: underline; /* Adiciona sublinhado ao passar o mouse */
+}

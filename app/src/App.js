@@ -47,7 +47,7 @@ function App() {
 
         const finalResult = JSON.parse(resultText);
         if (finalResult.downloadUrl) {
-          setStatus((prev) => prev + "\nProcessamento concluído!");
+          setStatus("\nProcessamento concluído!");
           setDownloadUrl(finalResult.downloadUrl);
         } else {
           setStatus((prev) => prev + "\nErro ao processar os dados!");
@@ -81,12 +81,12 @@ function App() {
   return (
     <div className="container">
       <h1 className="container-title">Pesquisa de Processos</h1>
-      <h2 className="container-state">ES / MG / CE / DF / MA / PB / TRF1 / TRF5</h2>
+      <h2 className="container-state">ES / MG / CE / DF / MA / PB / PI / TRF1 / TRF5</h2>
       <label className="custom-file-upload" htmlFor="upload-file">Carregar arquivo XLSX</label>
       <input type="file" accept=".xlsx" id="upload-file" onChange={uploadFile} />
       <button className="btn-cancel" onClick={cancelarOperacao}>Cancelar execução</button>
       {downloadUrl && (
-        <a href={downloadUrl} download>Baixar Resultados</a>
+        <a className="link" href={downloadUrl} download>Baixar Resultados</a>
       )}
       <p className="status-title">{status}</p>
       <div className="status">
