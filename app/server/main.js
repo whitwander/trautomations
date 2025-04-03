@@ -6,7 +6,8 @@ const variables = require('./variables.json');
 const app = express();
 const port = 8080;
 
-app.use(express.json());
+app.use(express.json({ limit: "100mb" }));
+app.use(express.urlencoded({ limit: "100mb", extended: true }));
 app.use(cors());
 
 const now = new Date();
