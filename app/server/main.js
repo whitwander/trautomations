@@ -17,6 +17,7 @@ const CONCURRENT_LIMIT = 2;
 let errorProcesso = new Set();
 let processedProcesses = new Set();
 let logs = [];
+let cancelProcessing = false;
 
 function logMessage(message) {
     console.log(message);
@@ -34,6 +35,7 @@ function sanitizeCSVValue(value) {
 }
 
 async function extractFromEsaj(processo, stateId) {
+    if (cancelProcessing) return { error: 'Processo cancelado pelo usuário.' };
     if (processedProcesses.has(processo)) {
         return { error: `Processo ${processo} já processado.` };
     }
@@ -62,6 +64,7 @@ async function extractFromEsaj(processo, stateId) {
         });
 
         await page.goto(stateConfig.url, { waitUntil: 'networkidle2' });
+        if (cancelProcessing) throw new Error('Processo cancelado pelo usuário.');
         await page.waitForSelector(stateConfig.caixaProcesso, { timeout: 15000 });
         await page.type(stateConfig.caixaProcesso, processo);
         await new Promise(resolve => setTimeout(resolve, 1000));
@@ -131,6 +134,7 @@ async function saveErrorToFile(processo) {
 
 app.post('/extrair', async (req, res) => {
     logs = [];
+    cancelProcessing = false;
     console.log("Recebido do frontend:", JSON.stringify(req.body, null, 2));
 
     const processosPorEstado = req.body;
@@ -146,6 +150,7 @@ app.post('/extrair', async (req, res) => {
     for (const [estado, processos] of Object.entries(processosPorEstado)) {
         for (const processo of processos) {
             processosExecutados.push(limit(async () => {
+                if (cancelProcessing) return;
                 const resultado = await extractFromEsaj(processo, estado);
                 if (!resultado.error) {
                     const linha = `${resultado.processo};"${sanitizeCSVValue(resultado.partesAdvogados)}";${sanitizeCSVValue(resultado.dataDistribuicao)};${sanitizeCSVValue(resultado.ultimaMovimentacao)}\n`;
@@ -169,6 +174,12 @@ app.get('/download', (req, res) => {
             res.status(500).send({ error: 'Erro ao baixar o arquivo' });
         }
     });
+});
+
+app.post('/cancelar', (req, res) => {
+    cancelProcessing = true;
+    logMessage('Processamento cancelado pelo usuário.');
+    res.status(200).json({ message: 'Processamento cancelado.' });
 });
 
 app.listen(port, () => {
