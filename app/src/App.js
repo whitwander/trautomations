@@ -86,7 +86,7 @@ function App() {
       <input type="file" accept=".xlsx" id="upload-file" onChange={uploadFile} />
       <button className="btn-cancel" onClick={cancelarOperacao}>Cancelar execução</button>
       {downloadUrl && (
-        <a href={downloadUrl} download>Baixar CSV</a>
+        <a href={downloadUrl} download>Baixar Resultados</a>
       )}
       <p className="status-title">{status}</p>
       <div className="status">

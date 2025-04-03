@@ -114,7 +114,7 @@
         "divDadosProcesso": "#j_id140\\:processoTrfViewView\\:j_id143",
         "spanMovimentacaoProcesso": "span[id^='j_id140:processoEvento:0:j_id501']",
         "poloAtivoParticipante": "#j_id140\\:processoPartesPoloAtivoResumidoList\\:tb .text-bold",
-        "working": "Não pesquisa"
+        "working": "sim"
     },
     "RJ": {
         "url": "https://tjrj.pje.jus.br/1g/ConsultaPublica/listView.seam",

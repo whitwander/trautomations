@@ -53,8 +53,7 @@ async function extractFromEsaj(processo, stateId) {
     
     if (stateConfig.working?.trim().toLowerCase() !== "sim") {
         await browser.close();
-        logMessage(`Verificando estado: ${stateId}, working: ${stateConfig.working}`);
-        logMessage(`Erro: Estado ${stateId} não está disponível para processamento.`);
+        logMessage(`Estado ${stateId} não está disponível para processamento.`);
         return { error: `Estado ${stateId} não está disponível para processamento.` };
     }
 
@@ -174,7 +173,7 @@ app.get('/download', (req, res) => {
         if (err) {
             res.status(500).send({ error: 'Erro ao baixar o arquivo' });
         }
-    });
+    }); 
 });
 
 app.post('/cancelar', (req, res) => {
