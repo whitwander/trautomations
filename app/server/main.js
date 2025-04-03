@@ -2,6 +2,7 @@ const express = require('express');
 const cors = require('cors');
 const puppeteer = require('puppeteer');
 const fs = require('fs');
+const path = require('path');
 const variables = require('./variables.json');
 const app = express();
 const port = 8080;
@@ -11,9 +12,16 @@ app.use(express.urlencoded({ limit: "100mb", extended: true }));
 app.use(cors());
 
 const now = new Date();
-const dateStr = now.toISOString().split('T')[0];
-const outputFile = `resultados_${dateStr}.csv`;
-const errorFile = `erros_${dateStr}.txt`;
+const dateStr = `${now.getDate().toString().padStart(2, '0')}-${(now.getMonth() + 1).toString().padStart(2, '0')}-${now.getFullYear()}`;
+
+const resultsDir = path.join(__dirname, `../../resultados/${dateStr}`);
+if (!fs.existsSync(resultsDir)) {
+    fs.mkdirSync(resultsDir, { recursive: true });
+}
+
+const outputFile = path.join(resultsDir, `resultados_${dateStr}.csv`);
+const errorFile = path.join(resultsDir, `erros_${dateStr}.txt`);
+
 const CONCURRENT_LIMIT = 2;
 let errorProcesso = new Set();
 let processedProcesses = new Set();
@@ -53,7 +61,7 @@ async function extractFromEsaj(processo, stateId) {
     
     if (stateConfig.working?.trim().toLowerCase() !== "sim") {
         await browser.close();
-        logMessage(`Estado ${stateId} não está disponível para processamento.`);
+        logMessage(`Erro: Estado ${stateId} não está disponível para processamento.`);
         return { error: `Estado ${stateId} não está disponível para processamento.` };
     }
 
@@ -173,7 +181,7 @@ app.get('/download', (req, res) => {
         if (err) {
             res.status(500).send({ error: 'Erro ao baixar o arquivo' });
         }
-    }); 
+    });
 });
 
 app.post('/cancelar', (req, res) => {
