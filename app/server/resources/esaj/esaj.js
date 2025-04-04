@@ -1,5 +1,7 @@
 const puppeteer = require('puppeteer');
 const { log, isCancelado } = require('../../utils/logger');
+const navegarEAbrirDetalhes = require('./navegarEAbrirDetalhes');
+const extrairDados = require('./extrairDados');
 
 async function extractFromEsaj(processo, stateConfig) {
     if (isCancelado()) return { error: 'Processo cancelado pelo usuário.' };
@@ -28,4 +30,4 @@ async function extractFromEsaj(processo, stateConfig) {
     }
 }
 
-module.exports = extrairEsaj;
+module.exports = extractFromEsaj;

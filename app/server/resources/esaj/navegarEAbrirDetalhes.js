@@ -20,4 +20,4 @@ async function navegarEAbrirDetalhes(page, config, processo) {
     return popupPage;
 }
 
-module.exports = navegarEAbrirDetalhes;  
+module.exports = { navegarEAbrirDetalhes };

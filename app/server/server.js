@@ -19,7 +19,6 @@ const {
   salvarErroTXT
 } = require('./utils/fileWriter');
 
-const path = require('path');
 const variables = require('./variables.json');
 const app = express();
 
@@ -39,12 +38,12 @@ app.post('/extrair', async (req, res) => {
     for (const processo of processos) {
       const result = await extrator(processo, config, {
         onLog: msg => log(msg),
-        onError: err => salvarErro(processo, err),
+        onError: err => salvarErroTXT(processo, err),
         cancelProcessing: () => cancelFlags[estado],
       });
 
       if (!result.error) {
-        salvarCSV(result);
+        salvarLinhaCSV(result, estado);
       }
     }
   }

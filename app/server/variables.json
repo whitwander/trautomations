@@ -73,6 +73,7 @@
         "working":"Não verificado"
     },
     "MG": {
+        "tipoSistema": "esaj",
         "url": "https://pje-consulta-publica.tjmg.jus.br/",
         "estadoUF": "mg",
         "caixaProcesso": "#fPP\\:numProcesso-inputNumeroProcessoDecoration\\:numProcesso-inputNumeroProcesso",
