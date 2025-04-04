@@ -22,7 +22,7 @@
     "express": "^5.1.0",
     "nw": "^0.97.0",
     "p-limit": "^6.2.0",
-    "puppeteer": "^24.5.0",
+    "puppeteer": "^24.6.0",
     "react": "^19.1.0"
   },
   "window": {

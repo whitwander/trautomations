@@ -49,7 +49,7 @@ async function extractFromEsaj(processo, stateId) {
         return { error: `Processo ${processo} já processado.` };
     }
 
-    const browser = await puppeteer.launch({ headless: true });
+    const browser = await puppeteer.launch({ headless: true, product: 'chrome', executablePath: puppeteer.executablePath() });
     const page = await browser.newPage();
     const stateConfig = variables[stateId];
 
