@@ -2,7 +2,22 @@ const fs = require('fs');
 const cors = require('cors');
 const express = require('express');
 const escolherExtrator = require('./resources');
-const { salvarCSV, salvarErro, log } = require('./utils/logger');
+
+const {
+  log,
+  getLogs,
+  clearLogs,
+  cancelarProcessamento,
+  isCancelado,
+  resetarCancelamento
+} = require('./utils/logger');
+
+const {
+  criarPastaResultados,
+  salvarCabecalhoCSV,
+  salvarLinhaCSV,
+  salvarErroTXT
+} = require('./utils/fileWriter');
 
 const path = require('path');
 const variables = require('./variables.json');
@@ -38,7 +53,6 @@ app.post('/extrair', async (req, res) => {
 });
 
 app.post('/cancelar', (req, res) => {
-  // define a flag por estado ou geral
   cancelFlags["todos"] = true;
   res.sendStatus(200);
 });
