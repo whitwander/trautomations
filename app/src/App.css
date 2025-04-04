@@ -8,24 +8,21 @@
 
 .container-title {
   font-weight: 600;
+  font-size: 30px;
   background-color: rgb(209, 227, 243);
-  padding: 4px 10px;
+  padding: 2px 15px;
   border-radius: 10px;
 }
 
 .container-state {
   font-weight: 500;
-  font-size: 18px;
-  color: white;
+  font-size: 16px;
+  color: rgb(232, 232, 232);
 }
 
 .box-btn {
   display: flex;
   gap: 15px;
-}
-
-body {
-  background-color: rgb(39, 37, 37); 
 }
 
 input[type="file"] {
@@ -72,14 +69,15 @@ input[type="file"] {
 .status-title {
   font-weight: 600;
   font-size: 15px;
+  color: white;
 }
 
 .link {
-  color: blue; 
-  text-decoration: none; 
+  color: rgb(196, 196, 237); 
+  text-decoration: none;
+  margin-top: 10px; 
 }
 
 .link:hover {
-  color: darkblue; 
-  text-decoration: underline; 
+  color: rgb(154, 111, 255); 
 }

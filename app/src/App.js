@@ -80,7 +80,7 @@ function App() {
   return (
     <div className="container">
       <h1 className="container-title">Pesquisa de Processos</h1>
-      <h2 className="container-state">ES / MG / CE / DF / MA / PB / PI / TRF1 / TRF5</h2>
+      <h2 className="container-state">CE | DF | ES | MA | MG | PB | PI | TRF1 | TRF5</h2>
       <div className="box-btn">
         <label className="custom-file-upload" htmlFor="upload-file">Carregar arquivo XLSX</label>
         <input type="file" accept=".xlsx" id="upload-file" onChange={uploadFile} />
