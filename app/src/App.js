@@ -4,7 +4,7 @@ import Logs from "./components/Logs";
 import processarArquivoXLSX from "./components/Regex";
 
 function App() {
-  const [status, setStatus] = useState("");
+  const [status, setStatus] = useState("-");
   const [downloadUrl, setDownloadUrl] = useState(null);
   const [abortController, setAbortController] = useState(null);
 
@@ -86,11 +86,12 @@ function App() {
         <input type="file" accept=".xlsx" id="upload-file" onChange={uploadFile} />
         <button className="btn-cancel" onClick={cancelarOperacao}>Cancelar execução</button>
       </div>
+
       {downloadUrl && (
         <a className="link" href={downloadUrl} download>Baixar Resultados</a>
       )}
-      <p className="status-title">{status}</p>
       <div className="status">
+        <p className="status-title">{status}</p>
         <Logs />
       </div>
     </div>
