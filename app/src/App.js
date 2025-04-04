@@ -1,7 +1,7 @@
 import { useState } from "react";
 import "./App.css";
-import Logs from "./components/Logs"; 
-import processarArquivoXLSX from "./components/Regex"; 
+import Logs from "./components/Logs";
+import processarArquivoXLSX from "./components/Regex";
 
 function App() {
   const [status, setStatus] = useState("");
@@ -61,7 +61,7 @@ function App() {
       }
     };
 
-    reader.readAsArrayBuffer(file); 
+    reader.readAsArrayBuffer(file);
   };
 
   const cancelarOperacao = async () => {
@@ -81,9 +81,11 @@ function App() {
     <div className="container">
       <h1 className="container-title">Pesquisa de Processos</h1>
       <h2 className="container-state">ES / MG / CE / DF / MA / PB / PI / TRF1 / TRF5</h2>
-      <label className="custom-file-upload" htmlFor="upload-file">Carregar arquivo XLSX</label>
-      <input type="file" accept=".xlsx" id="upload-file" onChange={uploadFile} />
-      <button className="btn-cancel" onClick={cancelarOperacao}>Cancelar execução</button>
+      <div className="box-btn">
+        <label className="custom-file-upload" htmlFor="upload-file">Carregar arquivo XLSX</label>
+        <input type="file" accept=".xlsx" id="upload-file" onChange={uploadFile} />
+        <button className="btn-cancel" onClick={cancelarOperacao}>Cancelar execução</button>
+      </div>
       {downloadUrl && (
         <a className="link" href={downloadUrl} download>Baixar Resultados</a>
       )}

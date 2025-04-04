@@ -8,7 +8,7 @@
 
 .container-title {
   font-weight: 600;
-  background-color: rgb(219, 237, 253);
+  background-color: rgb(209, 227, 243);
   padding: 4px 10px;
   border-radius: 10px;
 }
@@ -16,11 +16,16 @@
 .container-state {
   font-weight: 500;
   font-size: 18px;
-  color: gray;
+  color: white;
+}
+
+.box-btn {
+  display: flex;
+  gap: 15px;
 }
 
 body {
-  background-color: aliceblue; 
+  background-color: rgb(39, 37, 37); 
 }
 
 input[type="file"] {
@@ -29,11 +34,12 @@ input[type="file"] {
 
 .custom-file-upload {
   border: 1px solid #919191;
-  border-radius: 100px;
+  border-radius: 10px;
   display: inline-block;
   padding: 8px 16px;
   cursor: pointer;
   font-weight: 500;
+  color: antiquewhite;
 }
 
 .custom-file-upload:hover {
@@ -44,7 +50,8 @@ input[type="file"] {
 
 .btn-cancel {
   border: 1px solid #919191;
-  border-radius: 100px;
+  color: antiquewhite;
+  border-radius: 10px;
   font-size: 16px;
   display: inline-block;
   padding: 8px 16px;
