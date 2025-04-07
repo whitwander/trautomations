@@ -15,8 +15,9 @@
         "working":"Não verificado"
     },
     "CE": {
-        "url": "https://pje-consulta.tjce.jus.br/pje1grau/ConsultaPublica/listView.seam",
         "estadoUF": "ce",
+        "tipoSistema": "esaj",
+        "url": "https://pje-consulta.tjce.jus.br/pje1grau/ConsultaPublica/listView.seam",
         "caixaProcesso": "#fPP\\:numProcesso-inputNumeroProcessoDecoration\\:numProcesso-inputNumeroProcesso",
         "btnSearch": "#fPP\\:searchProcessos",
         "tblProcessos": "#fPP\\:processosTable",
@@ -72,6 +73,7 @@
         "working":"Não verificado"
     },
     "MG": {
+        "tipoSistema": "esaj",
         "url": "https://pje-consulta-publica.tjmg.jus.br/",
         "estadoUF": "mg",
         "caixaProcesso": "#fPP\\:numProcesso-inputNumeroProcessoDecoration\\:numProcesso-inputNumeroProcesso",
