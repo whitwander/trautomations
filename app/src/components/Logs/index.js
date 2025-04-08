@@ -12,9 +12,9 @@ export default function LogViewer() {
         const data = await response.json();
 
         setLogs((prevLogs) => {
-          const newLogs = [...prevLogs, ...data.logs];
-          return Array.from(new Set(newLogs));
-        });        
+          const combinedLogs = [...prevLogs, ...data.logs];
+          return Array.from(new Set(combinedLogs));
+        });
       } catch (error) {
         console.error('Erro ao buscar logs:', error);
       }
@@ -26,16 +26,10 @@ export default function LogViewer() {
   }, []);
 
   useEffect(() => {
-    if (logsEndRef.current) {
-      logsEndRef.current.scrollTop = logsEndRef.current.scrollHeight;
-    }
-  }, [logs]);
-
-  useEffect(() => {
     setTimeout(() => {
       logsEndRef.current?.scrollIntoView({ behavior: "smooth", block: "end" });
     }, 100);
-  }, [logs]);  
+  }, [logs]);
 
   return (
     <div className="log-container">

@@ -1,19 +1,22 @@
+:root {
+  --cor-primaria: #76ABAE;
+  --cor-secundaria: #31363F;
+  --cor-texto: #EEEEEE;
+  --cor-fundo: #222831;
+} 
+
 body {
   margin: 0;
   padding: 0;
-  color: #F1EFEC;
-  background-color: #030303; 
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
-    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
-    sans-serif;
+  color: var(--cor-texto);
+  background-color: var(--cor-fundo); 
+  font-family: "Roboto";
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
 
 button {
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
-    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
-    sans-serif;
+  font-family: "Roboto";
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }

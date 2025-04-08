@@ -56,4 +56,9 @@ app.post('/cancelar', (req, res) => {
   res.sendStatus(200);
 });
 
+app.get('/logs', (req, res) => {
+  res.json(getLogs());
+});
+
+
 app.listen(8080, () => console.log("API no ar 🚀"));

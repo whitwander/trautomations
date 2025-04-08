@@ -9,7 +9,7 @@
 .container-title {
   font-weight: 600;
   font-size: 30px;
-  background-color: #123458;
+  background-color: var(--cor-primaria);
   padding: 2px 15px;
   border-radius: 10px;
 }
@@ -17,7 +17,7 @@
 .container-state {
   font-weight: 500;
   font-size: 16px;
-  color: rgb(232, 232, 232);
+  color: var(--cor-texto);
 }
 
 .box-btn {
@@ -31,25 +31,28 @@ input[type="file"] {
 }
 
 .custom-file-upload {
-  border: 1px solid #919191;
+  border: 2px solid var(--cor-primaria);
   border-radius: 10px;
-  display: inline-block;
+  display: flex;
   padding: 8px 16px;
   cursor: pointer;
   font-weight: 500;
-  color: #123458;
-  background-color: #D4C9BE;
+  color: var(--cor-texto);
+  background-color: var(--cor-secundaria);
+  justify-content: center;
+  align-items: center;
+  gap: 8px;
 }
 
 .custom-file-upload:hover {
-  background-color: #123458;
-  border-color: #123458;
+  background-color: var(--cor-primaria);
+  border-color: var(--cor-primaria);
   transition: 0.3s;
-  color: white;
+  color: var(--cor-texto);
 }
 
 .btn-cancel {
-  border: 1px solid #919191;
+  border: 2px solid var(--cor-primaria);
   border-radius: 10px;
   font-size: 16px;
   display: inline-block;
@@ -58,8 +61,8 @@ input[type="file"] {
   font-weight: 500;
   overflow: hidden;
   outline: none;
-  background-color: #D4C9BE;
-  color: #123458;
+  background-color: var(--cor-secundaria);
+  color: var(--cor-texto);
 }
 
 .btn-cancel:hover {
@@ -73,7 +76,7 @@ input[type="file"] {
   display: flex;
   flex-direction: column;
   align-items: center;
-  background-color: #123458;
+  background-color: var(--cor-primaria);
   border-radius: 10px 10px 10px 10px;
   padding: 5px;
 }
@@ -81,20 +84,24 @@ input[type="file"] {
 .status-title {
   font-weight: 600;
   font-size: 15px;
-  color: #F1EFEC;
-  background-color: #123458;
+  color: var(--cor-texto);
+  background-color: var(--cor-primaria);
 }
 
 .link {
-  border: 1px solid #919191;
-  color: #123458; 
+  border: 2px solid var(--cor-primaria);
+  color: var(--cor-primaria); 
   font-weight: 500;
   padding: 5px 10px;
   text-decoration: none;
-  background-color: #D4C9BE;
+  background-color: var(--cor-secundaria);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 8px;
 }
 
 .link:hover {
-  color: #D4C9BE; 
-  background-color: #123458;
+  color: var(--cor-secundaria); 
+  background-color: var(--cor-primaria);
 }

@@ -2,6 +2,7 @@ import { useState } from "react";
 import "./App.css";
 import Logs from "./components/Logs";
 import processarArquivoXLSX from "./components/Regex";
+import { Download, ArchiveRestore } from 'lucide-react';
 
 function App() {
   const [status, setStatus] = useState("-");
@@ -82,13 +83,13 @@ function App() {
       <h1 className="container-title">Pesquisa de Processos</h1>
       <h2 className="container-state">CE | DF | ES | MA | MG | PB | PI | TRF1 | TRF5</h2>
       <div className="box-btn">
-        <label className="custom-file-upload" htmlFor="upload-file">Carregar arquivo XLSX</label>
+        <label className="custom-file-upload" htmlFor="upload-file"><ArchiveRestore size={"18px"}/>Carregar arquivo XLSX</label>
         <input type="file" accept=".xlsx" id="upload-file" onChange={uploadFile} />
         <button className="btn-cancel" onClick={cancelarOperacao}>Cancelar execução</button>
       </div>
 
       {downloadUrl && (
-        <a className="link" href={downloadUrl} download>Baixar Resultados</a>
+        <a className="link" href={downloadUrl} download><Download size={"18px"}/> Baixar Resultados</a>
       )}
       <div className="status">
         <p className="status-title">{status}</p>
