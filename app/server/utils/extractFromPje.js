@@ -26,13 +26,13 @@ async function extractFromPje(processo, stateId) {
     if (!stateConfig) {
         await browser.close();
         logMessage(`Erro: Estado ${stateId} não encontrado no arquivo de configuração.`);
-        return { error: `Estado ${stateId} não encontrado no arquivo de configuração.` };
+        return { error: `${stateId} - não existe` };
     }
 
     if (stateConfig.working?.trim().toLowerCase() !== "sim") {
         await browser.close();
         logMessage(`Erro: Estado ${stateId} não está disponível para processamento.`);
-        return { error: `Estado ${stateId} não está disponível para processamento.` };
+        return { error: `${stateId} - ${stateId.working}` };
     }
 
     try {
@@ -53,7 +53,7 @@ async function extractFromPje(processo, stateId) {
         } catch {
             logMessage(`Nenhum resultado encontrado para o processo ${processo} ou alerta foi acionado.`);
             await browser.close();
-            return { error: `Nenhum resultado encontrado para o processo ${processo}.` };
+            return { error: `${processo} sem resultado.` };
         }
 
         await page.waitForSelector(constantesSitePje.btnVerDetalhes, { timeout: 15000 });
@@ -102,4 +102,6 @@ async function extractFromPje(processo, stateId) {
     }
 }
 
-module.exports = {extractFromPje}
+module.exports = {
+    extractFromPje
+}
