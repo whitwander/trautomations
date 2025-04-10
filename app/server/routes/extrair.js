@@ -12,7 +12,7 @@ router.post('/', async (req, res) => {
         return res.status(400).json({ error: 'JSON inválido. Esperado um objeto com estados e processos.' });
     }
 
-    fs.writeFileSync(outputFile, "Estado;Processo;Partes e Advogados;Data de Distribuição;Última Movimentação\n", 'utf-8');
+    fs.writeFileSync(outputFile, "Estado;Processo;Partes e Advogados;Data de Distribuição;Arquivado;Última Movimentação;Audiência\n", 'latin1');
     const limit = await importPLimit();
     const processosExecutados = [];
 
@@ -22,8 +22,15 @@ router.post('/', async (req, res) => {
                 if (global.cancelProcessing) return;
                 const resultado = await extractFromEsaj(processo, estado);
                 if (!resultado.error) {
-                    const linha = `${sanitizeCSVValue(estado)};${resultado.processo};"${sanitizeCSVValue(resultado.partesAdvogados)}";${sanitizeCSVValue(resultado.dataDistribuicao)};${sanitizeCSVValue(resultado.ultimaMovimentacao)}\n`;
-                    fs.appendFileSync(outputFile, linha, 'utf-8');
+                    const linha = `
+                        ${sanitizeCSVValue(estado)};
+                        ${resultado.processo};
+                        ${sanitizeCSVValue(resultado.partesAdvogados)};
+                        ${sanitizeCSVValue(resultado.dataDistribuicao)};
+                        Arquivado?
+                        ${sanitizeCSVValue(resultado.ultimaMovimentacao)};
+                        Audiência?\n`;
+                    fs.appendFileSync(outputFile, linha, 'latin1');
                 }
             }));
         }
