@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const fs = require('fs');
-const { extractFromEsaj, sanitizeCSVValue, importPLimit, outputFile, logMessage, setCancelFlag } = require('../utils/extrairUtils');
+const { extractFromPje, sanitizeCSVValue, importPLimit, outputFile, logMessage, setCancelFlag } = require('../utils/extrairUtils');
 
 router.post('/', async (req, res) => {
     global.logs = []; // <-- limpa os logs globais no início
@@ -20,7 +20,7 @@ router.post('/', async (req, res) => {
         for (const processo of processos) {
             processosExecutados.push(limit(async () => {
                 if (global.cancelProcessing) return;
-                const resultado = await extractFromEsaj(processo, estado);
+                const resultado = await extractFromPje(processo, estado);
                 if (!resultado.error) {
                     const linha = `
                         ${sanitizeCSVValue(estado)};

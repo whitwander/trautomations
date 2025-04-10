@@ -10,10 +10,11 @@ app.use(express.json({ limit: "100mb" }));
 app.use(express.urlencoded({ limit: "100mb", extended: true }));
 
 // Rotas
-app.use('/extrair', require('./routes/extrair'));
+app.use('/extrairPje', require('./routes/extrairPje'));
 app.use('/logs', require('./routes/logs'));
 app.use('/download', require('./routes/download'));
 app.use('/cancelar', require('./routes/cancelar'));
+app.use('/extrairEsaj', require('./routes/extrairEsaj'))
 
 app.listen(port, () => {
     console.log(`Servidor rodando em http://localhost:${port}`);

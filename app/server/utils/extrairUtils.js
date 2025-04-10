@@ -47,7 +47,7 @@ async function saveErrorToFile(processo) {
     }
 }
 
-async function extractFromEsaj(processo, stateId) {
+async function extractFromPje(processo, stateId) {
     if (global.cancelProcessing) return { error: 'Processo cancelado pelo usuário.' };
     if (processedProcesses.has(processo)) {
         return { error: `Processo ${processo} já processado.` };
@@ -137,7 +137,7 @@ async function extractFromEsaj(processo, stateId) {
 }
 
 module.exports = {
-    extractFromEsaj,
+    extractFromPje,
     sanitizeCSVValue,
     importPLimit,
     resultsDir,
