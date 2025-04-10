@@ -6,8 +6,6 @@ const { extractFromEsaj, sanitizeCSVValue, importPLimit, outputFile, logMessage,
 router.post('/', async (req, res) => {
     global.logs = []; // <-- limpa os logs globais no início
     setCancelFlag(false);
-    logMessage("Recebido do frontend:");
-    logMessage(JSON.stringify(req.body, null, 2));
 
     const processosPorEstado = req.body;
     if (!processosPorEstado || typeof processosPorEstado !== 'object') {
@@ -33,6 +31,7 @@ router.post('/', async (req, res) => {
 
     await Promise.all(processosExecutados);
     res.json({ message: 'Processamento concluído!', downloadUrl: `http://localhost:8080/download` });
+    logMessage("✔ Processo finalizado!")
 });
 
 module.exports = router;
