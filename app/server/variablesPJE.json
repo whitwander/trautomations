@@ -1,77 +1,83 @@
 {
-    "PJE": {
-        "caixaProcesso": "#fPP\\:numProcesso-inputNumeroProcessoDecoration\\:numProcesso-inputNumeroProcesso",
-        "btnSearch": "#fPP\\:searchProcessos",
-        "tblProcessos": "#fPP\\:processosTable",
-        "btnVerDetalhes": "a[title='Ver Detalhes']"
-    },
     "CE": {
+        "url": "https://pje-consulta.tjce.jus.br/pje1grau/ConsultaPublica/listView.seam",
         "divDadosProcesso": "#j_id131\\:processoTrfViewView\\:j_id134",
         "spanMovimentacaoProcesso": "span[id^='j_id131:processoEvento:0:j_id505']",
         "poloAtivoParticipante": "#j_id131\\:processoPartesPoloAtivoResumidoList\\:tb .text-bold",
         "working": "sim"
     },
     "DF": {
+        "url": "https://pje-consultapublica.tjdft.jus.br/consultapublica/ConsultaPublica/listView.seam",
         "divDadosProcesso": "#j_id151\\:processoTrfViewView\\:j_id154",
         "spanMovimentacaoProcesso": "span[id^='j_id151:processoEvento:0:j_id520']",
         "poloAtivoParticipante": "#j_id151\\:processoPartesPoloAtivoResumidoList\\:tb .text-bold",
         "working": "sim"
     },
     "ES": {
+        "url": "https://pje.tjes.jus.br/pje/ConsultaPublica/listView.seam",
         "divDadosProcesso": "#j_id140\\:processoTrfViewView\\:j_id143",
         "spanMovimentacaoProcesso": "span[id^='j_id140:processoEvento:0:j_id501']",
         "poloAtivoParticipante": "#j_id140\\:processoPartesPoloAtivoResumidoList\\:tb .text-bold",
         "working": "sim"
     },
     "MA": {
+        "url": "https://pje.tjma.jus.br/pje/ConsultaPublica/listView.seam",
         "divDadosProcesso": "#j_id143\\:processoTrfViewView\\:j_id146",
         "spanMovimentacaoProcesso": "span[id^='j_id143:processoEvento:0:j_id504']",
         "poloAtivoParticipante": "#j_id143\\:processoPartesPoloAtivoResumidoList\\:tb .text-bold",
         "working": "sim"
     },
     "MG": {
+        "url": "https://pje-consulta-publica.tjmg.jus.br/",
         "divDadosProcesso": "#j_id134\\:processoTrfViewView\\:j_id137",
         "spanMovimentacaoProcesso": "span[id^='j_id134:processoEvento:0:j_id495']",
         "poloAtivoParticipante": "#j_id134\\:processoPartesPoloAtivoResumidoList\\:tb .text-bold",
         "working": "sim"
     },
     "PB": {
+        "url": "https://consultapublica.tjpb.jus.br/pje/ConsultaPublica/listView.seam",
         "divDadosProcesso": "#j_id132\\:processoTrfViewView\\:j_id135",
         "spanMovimentacaoProcesso": "span[id^='j_id132:processoEvento:0:j_id493']",
         "poloAtivoParticipante": "#j_id132\\:processoPartesPoloAtivoResumidoList\\:tb .text-bold",
         "working": "time out"
     },
     "PI": {
+        "url": "https://pje.tjpi.jus.br/1g/ConsultaPublica/listView.seam",
         "divDadosProcesso": "#j_id140\\:processoTrfViewView\\:j_id143",
         "spanMovimentacaoProcesso": "span[id^='j_id140:processoEvento:0:j_id501']",
         "poloAtivoParticipante": "#j_id140\\:processoPartesPoloAtivoResumidoList\\:tb .text-bold",
         "working": "sim"
     },
     "RJ": {
+        "url": "https://tjrj.pje.jus.br/1g/ConsultaPublica/listView.seam",
         "divDadosProcesso": "#j_id131\\:processoTrfViewView\\:j_id134",
         "spanMovimentacaoProcesso": "span[id^='j_id131:processoEvento:0:j_id492']",
         "poloAtivoParticipante": "#j_id131\\:processoPartesPoloAtivoResumidoList\\:tb .text-bold",
         "working": "Não pesquisa"
     },
     "RN": {
+        "url": "https://pje1gconsulta.tjrn.jus.br/consultapublica/ConsultaPublica/listView.seam",
         "divDadosProcesso": "#j_id132\\:processoTrfViewView\\:j_id135",
         "spanMovimentacaoProcesso": "span[id^='j_id132:processoEvento:0:j_id493']",
         "poloAtivoParticipante": "#j_id132\\:processoPartesPoloAtivoResumidoList\\:tb .text-bold",
         "working": "timeout em caixaProcesso"
     },
     "TRF1": {
+        "url": "https://pje1g.trf1.jus.br/consultapublica/ConsultaPublica/listView.seam",
         "divDadosProcesso": "#j_id136\\:processoTrfViewView\\:j_id139",
         "spanMovimentacaoProcesso": "span[id^='j_id136:processoEvento:0:j_id502']",
         "poloAtivoParticipante": "#j_id136\\:processoPartesPoloAtivoResumidoTableBinding\\:tb .text-bold",
         "working": "sim"
     },
     "TRF3": {
+        "url": "https://pje1g.trf3.jus.br/pje/ConsultaPublica/listView.seam",
         "divDadosProcesso": "#j_id142\\:processoTrfViewView\\:j_id145",
         "spanMovimentacaoProcesso": "span[id^='j_id142:processoEvento:0:j_id503']",
         "poloAtivoParticipante": "#j_id142\\:processoPartesPoloAtivoResumidoList\\:tb .text-bold",
         "working": "ERR_HTTP2_PROTOCOL_ERROR time out"
     },
     "TRF5": {
+        "url": "https://pje1g.trf5.jus.br/pje/ConsultaPublica/listView.seam",
         "divDadosProcesso": "#j_id140\\:processoTrfViewView\\:j_id143",
         "spanMovimentacaoProcesso": "span[id^='j_id140:processoEvento:0:j_id501']",
         "poloAtivoParticipante": "#j_id140\\:processoPartesPoloAtivoResumidoList\\:tb .text-bold",

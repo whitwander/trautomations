@@ -1,6 +1,14 @@
-const puppeteer = require('puppeteer');
-const variables = require('../variables.json');
 const { saveErrorToFile, logMessage } = require('../utils/extrairUtils')
+const puppeteer = require('puppeteer');
+
+const variables = require('../variablesPJE.json');
+const constantesSitePje = {
+    "caixaProcesso": "#fPP\\:numProcesso-inputNumeroProcessoDecoration\\:numProcesso-inputNumeroProcesso",
+    "btnSearch": "#fPP\\:searchProcessos",
+    "tblProcessos": "#fPP\\:processosTable",
+    "btnVerDetalhes": "a[title='Ver Detalhes']"
+}
+
 
 let processedProcesses = new Set();
 let errorProcesso = new Set();
@@ -33,23 +41,23 @@ async function extractFromPje(processo, stateId) {
             await dialog.accept();
         });
 
-        await page.goto(stateConfig.url, { waitUntil: 'networkidle2' });
+        await page.goto(stateConfig.url, { waitUntil: 'domcontentloaded' });
         if (global.cancelProcessing) throw new Error('Processo cancelado pelo usuário.');
-        await page.waitForSelector(stateConfig.caixaProcesso, { timeout: 15000 });
-        await page.type(stateConfig.caixaProcesso, processo);
+        await page.waitForSelector(constantesSitePje.caixaProcesso, { timeout: 15000 });
+        await page.type(constantesSitePje.caixaProcesso, processo);
         await new Promise(resolve => setTimeout(resolve, 1000));
-        await page.click(stateConfig.btnSearch);
+        await page.click(constantesSitePje.btnSearch);
 
         try {
-            await page.waitForSelector(stateConfig.tblProcessos, { timeout: 30000 });
+            await page.waitForSelector(constantesSitePje.tblProcessos, { timeout: 30000 });
         } catch {
             logMessage(`Nenhum resultado encontrado para o processo ${processo} ou alerta foi acionado.`);
             await browser.close();
             return { error: `Nenhum resultado encontrado para o processo ${processo}.` };
         }
 
-        await page.waitForSelector(stateConfig.btnVerDetalhes, { timeout: 15000 });
-        const linkDetalhes = await page.$(stateConfig.btnVerDetalhes);
+        await page.waitForSelector(constantesSitePje.btnVerDetalhes, { timeout: 15000 });
+        const linkDetalhes = await page.$(constantesSitePje.btnVerDetalhes);
         if (!linkDetalhes) throw new Error('Botão "Ver Detalhes" não encontrado');
 
         const popupPromise = new Promise(resolve => browser.once('targetcreated', resolve));
