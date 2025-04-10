@@ -1,7 +1,8 @@
 const express = require('express');
 const router = express.Router();
 const fs = require('fs');
-const { extractFromPje, sanitizeCSVValue, importPLimit, outputFile, logMessage, setCancelFlag } = require('../utils/extrairUtils');
+const { sanitizeCSVValue, importPLimit, outputFile, logMessage, setCancelFlag } = require('../utils/extrairUtils');
+const { extractFromPje } = require('../utils/extractFromPje');
 
 router.post('/', async (req, res) => {
     global.logs = []; // <-- limpa os logs globais no início
