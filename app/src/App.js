@@ -19,6 +19,11 @@ function App() {
     const reader = new FileReader();
     reader.onload = async (e) => {
       try {
+        if (tipoSistema === '-') {
+          alert("Selecione o tipo de sistema (e-SAJ ou PJe) antes de continuar!");
+          return;
+        }
+
         setStatus("Processando arquivo...\n");
 
         const processosPorEstado = processarArquivoXLSX(e.target.result);
@@ -28,7 +33,8 @@ function App() {
         const controller = new AbortController();
         setAbortController(controller);
 
-        const response = await fetch("http://localhost:8080/extrairPje", {
+        const rota = tipoSistema === "esaj" ? "extrairEsaj" : "extrairPje"
+        const response = await fetch(`http://localhost:8080/${rota}`, {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify(processosPorEstado),
@@ -78,18 +84,34 @@ function App() {
     }
   };
 
+  const [tipoSistema, setTipoSistema] = useState('-');
+
+
   return (
     <div className="container">
       <h1 className="container-title">Pesquisa de Processos</h1>
-      <h2 className="container-state">CE | DF | ES | MA | MG | PB | PI | TRF1 | TRF5</h2>
+      <div className="select-container">
+        <select
+          id="tipoSistema"
+          value={tipoSistema}
+          onChange={(e) => setTipoSistema(e.target.value)}
+        >
+          <option value="-"> Selecione</option>
+          <option value="esaj">e-SAJ</option>
+          <option value="pje">PJe</option>
+        </select>
+        {tipoSistema === '-' && <p>- </p>}
+        {tipoSistema === 'esaj' && <p>SP | MS </p>}
+        {tipoSistema === 'pje' && <p>CE | DF | ES | MA | MG | PB | PI | TRF1 | TRF5</p>}
+      </div>
       <div className="box-btn">
-        <label className="custom-file-upload" htmlFor="upload-file"><ArchiveRestore size={"18px"}/>Carregar arquivo XLSX</label>
+        <label className="custom-file-upload" htmlFor="upload-file"><ArchiveRestore size={"18px"} />Carregar arquivo XLSX</label>
         <input type="file" accept=".xlsx" id="upload-file" onChange={uploadFile} />
         <button className="btn-cancel" onClick={cancelarOperacao}>Cancelar execução</button>
       </div>
 
       {downloadUrl && (
-        <a className="link" href={downloadUrl} download><Download size={"18px"}/> Baixar Resultados</a>
+        <a className="link" href={downloadUrl} download><Download size={"18px"} /> Baixar Resultados</a>
       )}
       <div className="status">
         <p className="status-title">{status}</p>
