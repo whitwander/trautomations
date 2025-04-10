@@ -28,7 +28,7 @@ function App() {
         const controller = new AbortController();
         setAbortController(controller);
 
-        const response = await fetch("http://localhost:8080/extrair", {
+        const response = await fetch("http://localhost:8080/extrairPje", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify(processosPorEstado),
