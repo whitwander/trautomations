@@ -1,6 +1,6 @@
-# Extração de Dados de Processos Judiciais com Puppeteer
+# Extração de Dados de Processos Judiciais com React e Puppeteer
 
-Este projeto utiliza **Puppeteer** para extrair informações sobre processos judiciais a partir de sites de tribunais estaduais.
+Este projeto utiliza **Puppeteer** para extrair informações sobre processos judiciais a partir de sites de tribunais estaduais, e utiliza React como Front-End.
 
 ## Estados Pesquisados:
 
@@ -42,13 +42,13 @@ Este projeto utiliza as seguintes bibliotecas:
 
 1. Clone este repositório:
    ```bash
-   git clone https://github.com/seu-usuario/seu-repositorio.git
-   cd seu-repositorio
+   git clone https://github.com/whitwander/trs-automations.git
+   cd trs-automations
    ```
 
-2. Instale as dependências:
+2. Execute o comando duas vezes, uma para o React e outra para o servidor em Express nas pastas (App e Server) e instale as dependências:
    ```bash
-   npm install puppeteer p-limit
+   npm install
    ```
 
 ---
@@ -56,16 +56,7 @@ Este projeto utiliza as seguintes bibliotecas:
 ## 🚀 Como Usar
 
 ### 1️⃣ Preparar o arquivo de entrada
-Crie um arquivo JSON contendo os processos a serem consultados. O formato esperado é:
-
-```json
-{
-  "SP": ["0000001-00.2023.8.26.0000", "0000002-00.2023.8.26.0000"],
-  "RJ": ["1000001-00.2023.8.19.0000"]
-}
-```
-
-Nomeie o arquivo seguindo o padrão `dados_processos_YYYY-MM-DD.json` (exemplo: `dados_processos_2025-03-28.json`).
+Crie um arquivo CSV ou XLSX contendo os processos a serem consultados um abaixo do outro independente da ordem dos seus estados.
 
 ### 2️⃣ Configurar `variables.json`
 Este arquivo deve conter os seletores e URLs dos sites dos tribunais estaduais. Exemplo:
@@ -89,7 +80,12 @@ Este arquivo deve conter os seletores e URLs dos sites dos tribunais estaduais. 
 
 Para iniciar a extração de dados utilize a interface gráfica inserindo um CSV com os dados, ou execute no terminal para rodar somente o código em JS:
 ```bash
-node main.js
+node server.js
+```
+E iniciar o Front-End React na pasta App: 
+
+```bash
+npm start
 ```
 
 ---
