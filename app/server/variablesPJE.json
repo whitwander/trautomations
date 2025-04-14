@@ -37,7 +37,7 @@
     "MG": {
         "url": "https://pje-consulta-publica.tjmg.jus.br/",
         "divDadosProcesso": "#j_id134\\:processoTrfViewView\\:j_id137",
-        "spanMovimentacaoProcesso": "span[id^='j_id134:processoEvento:0:j_id495']",
+        "tbodyMovimentacaoProcesso": "#j_id134\\:processoEvento\\:tb",
         "poloAtivoParticipante": "#j_id134\\:processoPartesPoloAtivoResumidoList\\:tb .text-bold",
         "working": "sim"
     },

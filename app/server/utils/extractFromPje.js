@@ -79,9 +79,42 @@ async function extractFromPje(processo, stateId) {
             return 'Não informado';
         });
 
-        const ultimaMovimentacao = await popupPage.evaluate((selector) => {
-            return document.querySelector(selector)?.innerText.trim() || 'Data não encontrada';
-        }, stateConfig.spanMovimentacaoProcesso);
+        const { ultimaMovimentacao, arquivado, audiencia } = await popupPage.evaluate((selector) => {
+            const container = document.querySelector(selector);
+            if (!container) {
+                return {
+                    ultimaMovimentacao: 'Data não encontrada',
+                    arquivado: 'não verificado',
+                    audiencia: 'não verificado'
+                };
+            }
+        
+            const linhas = Array.from(container.querySelectorAll('tr'));
+            if (linhas.length === 0) {
+                return {
+                    ultimaMovimentacao: 'Data não encontrada',
+                    arquivado: 'não',
+                    audiencia: 'não'
+                };
+            }
+        
+            const ultima = linhas[0].innerText.trim();
+        
+            const achouArquivado = linhas.some(linha =>
+                linha.innerText.toLowerCase().includes('arquivado definitivamente')
+            );
+        
+            const linhaAudiencia = linhas.find(linha => {
+                const texto = linha.innerText.toLowerCase();
+                return texto.includes('audiência') || texto.includes('audiencia');
+            });
+        
+            return {
+                ultimaMovimentacao: ultima,
+                arquivado: achouArquivado ? 'sim' : 'não',
+                audiencia: linhaAudiencia ? linhaAudiencia.innerText.trim() : 'não'
+            };
+        }, stateConfig.tbodyMovimentacaoProcesso);
 
         const partesAdvogados = await popupPage.evaluate((selector) => {
             return Array.from(document.querySelectorAll(selector)).map(el => el.innerText.trim()).join(' | ') || 'Não informado';
@@ -92,7 +125,7 @@ async function extractFromPje(processo, stateId) {
         processedProcesses.add(processo);
 
         logMessage(`√ Processo ${stateId} ${processo} extraído com sucesso.`);
-        return { processo, partesAdvogados, dataDistribuicao, ultimaMovimentacao };
+        return { processo, partesAdvogados, dataDistribuicao, ultimaMovimentacao, arquivado, audiencia };
     } catch (error) {
         await browser.close();
         errorProcesso.add(processo);
