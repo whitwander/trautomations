@@ -11,10 +11,11 @@ app.use(express.urlencoded({ limit: "100mb", extended: true }));
 
 // Rotas
 app.use('/extrairPje', require('./routes/extrairPje'));
-app.use('/logs', require('./routes/logs'));
-app.use('/download', require('./routes/download'));
-app.use('/cancelar', require('./routes/cancelar'));
 app.use('/extrairEsaj', require('./routes/extrairEsaj'))
+app.use('/logs', require('./routes/logs'));
+app.use('/download-pje', require('./routes/download-pje'));
+app.use('/download-esaj', require('./routes/download-esaj'));
+app.use('/cancelar', require('./routes/cancelar'));
 
 app.listen(port, () => {
     console.log(`Servidor rodando em http://localhost:${port}`);
