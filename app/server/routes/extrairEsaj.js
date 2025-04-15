@@ -7,8 +7,18 @@ const { logMessage } = require('../utils/extrairUtils');
 
 const url = 'https://esaj.tjsp.jus.br/cpopg/open.do';
 const CONCURRENT_LIMIT = 2;
-const outputFile = path.join(__dirname, '../resultados_sp.csv');
-const errorFile = path.join(__dirname, '../erros_sp.txt');
+
+// Salva na pasta de resultados // *Fazer globalmente
+const now = new Date();
+const dateStr = `${now.getDate().toString().padStart(2, '0')}-${(now.getMonth() + 1).toString().padStart(2, '0')}-${now.getFullYear()}`;
+const resultsDir = path.join(__dirname, `../../resultados/ESAJ-${dateStr}`);
+
+if (!fs.existsSync(resultsDir)) {
+    fs.mkdirSync(resultsDir, { recursive: true });
+}
+
+const outputFile = path.join(resultsDir, `resultados_${dateStr}.csv`);
+const errorFile = path.join(resultsDir, `erros_${dateStr}.txt`);
 
 async function importPLimit() {
   const pLimit = (await import('p-limit')).default;
@@ -73,7 +83,8 @@ router.post('/', async (req, res) => {
   const processAndSave = async (processo) => {
     const result = await extractFromEsaj(processo);
     if (result) {
-      logMessage(`√ Processo ${processo} extraído com sucesso.`);
+      // trocar sp log quando incluir MS
+      logMessage(`√ Processo SP ${processo} extraído com sucesso.`);
       const linha = `${result.processo};"${result.partesAdvogados}";"${result.valorCausa}";"${result.dataDistribuicao}";"${result.ultimaMovimentacao} - ${result.descricaoMovimentacao}"\n`;
       fs.appendFileSync(outputFile, linha, 'latin1');
       resultados.push(result);

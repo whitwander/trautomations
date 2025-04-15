@@ -8,7 +8,7 @@ global.cancelProcessing = false;
 const now = new Date();
 const dateStr = `${now.getDate().toString().padStart(2, '0')}-${(now.getMonth() + 1).toString().padStart(2, '0')}-${now.getFullYear()}`;
 
-const resultsDir = path.join(__dirname, `../../resultados/${dateStr}`);
+const resultsDir = path.join(__dirname, `../../resultados/PJE-${dateStr}`);
 if (!fs.existsSync(resultsDir)) {
     fs.mkdirSync(resultsDir, { recursive: true });
 }
