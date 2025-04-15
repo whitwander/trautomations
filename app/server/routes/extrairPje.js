@@ -5,7 +5,7 @@ const { sanitizeCSVValue, importPLimit, outputFile, logMessage, setCancelFlag } 
 const { extractFromPje } = require('../utils/extractFromPje');
 
 router.post('/', async (req, res) => {
-    global.logs = []; // <-- limpa os logs globais no início
+    global.logs = [];
     setCancelFlag(false);
 
     const processosPorEstado = req.body;
@@ -23,14 +23,14 @@ router.post('/', async (req, res) => {
                 if (global.cancelProcessing) return;
                 const resultado = await extractFromPje(processo, estado);
                 if (!resultado.error) {
-                    const linha = `
-                        ${sanitizeCSVValue(estado)};
-                        ${resultado.processo};
-                        ${sanitizeCSVValue(resultado.partesAdvogados)};
-                        ${sanitizeCSVValue(resultado.dataDistribuicao)};
-                        Arquivado?
-                        ${sanitizeCSVValue(resultado.ultimaMovimentacao)};
-                        Audiência?\n`;
+                    const linha = 
+                        `${sanitizeCSVValue(estado)};` +
+                        `${resultado.processo};` +
+                        `${sanitizeCSVValue(resultado.partesAdvogados)};` +
+                        `${sanitizeCSVValue(resultado.dataDistribuicao)};` +
+                        `${resultado.arquivado};` +
+                        `${sanitizeCSVValue(resultado.ultimaMovimentacao)};` +
+                        `${resultado.audiencia}\n`;
                     fs.appendFileSync(outputFile, linha, 'latin1');
                 }
             }));

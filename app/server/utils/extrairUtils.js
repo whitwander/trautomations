@@ -26,8 +26,12 @@ function setCancelFlag(value) {
 }
 
 function sanitizeCSVValue(value) {
-    if (!value) return 'Não informado';
-    return value.replace(/"/g, "'").replace(/;/g, ',').replace(/\r?\n|\r/g, ' ');
+    if (!value) return '';
+    return value
+        .replace(/[\r\n]+/g, ' ')     // remove quebras de linha
+        .replace(/;/g, ',')           // evita conflito com separador ;
+        .normalize("NFD")             // remove acentos
+        .replace(/[\u0300-\u036f]/g, '');
 }
 
 async function importPLimit() {
