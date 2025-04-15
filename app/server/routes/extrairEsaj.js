@@ -6,6 +6,7 @@ const path = require('path');
 const { logMessage } = require('../utils/extrairUtils');
 
 const url = 'https://esaj.tjsp.jus.br/cpopg/open.do';
+// const url = 'https://esaj.tjms.jus.br/cpopg5/open.do';
 const CONCURRENT_LIMIT = 2;
 
 // Salva na pasta de resultados // *Fazer globalmente
