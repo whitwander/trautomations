@@ -88,7 +88,7 @@ async function extractFromPje(processo, stateId) {
                     audiencia: 'não verificado'
                 };
             }
-
+        
             const linhas = Array.from(container.querySelectorAll('tr'));
             if (linhas.length === 0) {
                 return {
@@ -97,9 +97,9 @@ async function extractFromPje(processo, stateId) {
                     audiencia: 'não'
                 };
             }
-
+        
             const ultima = linhas[0].innerText.trim();
-
+        
             const achouArquivado = linhas.some(linha =>
                 linha.innerText.toLowerCase().includes('arquivado definitivamente')
             );
@@ -108,7 +108,7 @@ async function extractFromPje(processo, stateId) {
                 const texto = linha.innerText.toLowerCase();
                 return texto.includes('audiência') || texto.includes('audiencia');
             });
-
+        
             return {
                 ultimaMovimentacao: ultima,
                 arquivado: achouArquivado ? 'sim' : 'não',
