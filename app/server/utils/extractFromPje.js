@@ -79,13 +79,18 @@ async function extractFromPje(processo, stateId) {
             return 'Não informado';
         });
 
+        await popupPage.waitForSelector(stateConfig.tbodyMovimentacaoProcesso, {
+            visible: true,
+            timeout: 15000
+        });
+
         const { ultimaMovimentacao, arquivado, audiencia } = await popupPage.evaluate((selector) => {
             const container = document.querySelector(selector);
             if (!container) {
                 return {
-                    ultimaMovimentacao: 'Data não encontrada',
-                    arquivado: 'não verificado',
-                    audiencia: 'não verificado'
+                    ultimaMovimentacao: 'não foi possível verificar',
+                    arquivado: 'não foi possível verificar',
+                    audiencia: 'não foi possível verificar'
                 };
             }
         
