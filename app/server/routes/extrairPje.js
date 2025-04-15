@@ -23,7 +23,7 @@ router.post('/', async (req, res) => {
                 if (global.cancelProcessing) return;
                 const resultado = await extractFromPje(processo, estado);
                 if (!resultado.error) {
-                    const linha = 
+                    const linha =
                         `${sanitizeCSVValue(estado)};` +
                         `${resultado.processo};` +
                         `${sanitizeCSVValue(resultado.partesAdvogados)};` +
