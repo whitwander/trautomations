@@ -27,6 +27,7 @@ function App() {
         setStatus("Processando arquivo...\n");
 
         const processosPorEstado = processarArquivoXLSX(e.target.result);
+        console.log(processosPorEstado)
 
         setStatus("Arquivo processado. Enviando para o servidor...\n");
 

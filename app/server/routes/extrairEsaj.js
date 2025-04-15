@@ -12,11 +12,10 @@ const errorFile = path.join(__dirname, '../erros_sp.txt');
 
 async function importPLimit() {
   const pLimit = (await import('p-limit')).default;
-  return pLimit(CONCURRENT_LIMIT);
+  return pLimit(CONCURRENT_LIMIT);      
 }
 
 async function extractFromEsaj(processo) {
-  const digitoProcesso = "26";
   const browser = await puppeteer.launch({ headless: true });
   const page = await browser.newPage();
 
@@ -55,29 +54,31 @@ async function extractFromEsaj(processo) {
 }
 
 router.post('/', async (req, res) => {
-  const { processos } = req.body;
+  const { SP } = req.body;
 
-  if (!Array.isArray(processos) || processos.length === 0) {
-    return res.status(400).json({ error: 'Informe um array de processos em "processos".' });
+  if (!Array.isArray(SP) || SP.length === 0) {
+    return res.status(400).json({ error: 'Informe um array de processos dentro da chave "SP".' });
   }
+
+  const processos = SP; // array de strings vindo do JSON
 
   const limit = await importPLimit();
   const resultados = [];
   const erros = [];
 
-  // Garante que os arquivos existam
   if (!fs.existsSync(outputFile)) {
-    fs.writeFileSync(outputFile, 'Processo;Partes e Advogados;Valor da Causa;Data de Distribuição;Última Movimentação\n', 'utf-8');
+    fs.writeFileSync(outputFile, 'Processo;Partes e Advogados;Valor da Causa;Data de Distribuição;Última Movimentação\n', 'latin1');
   }
 
   const processAndSave = async (processo) => {
     const result = await extractFromEsaj(processo);
     if (result) {
+      logMessage(`√ Processo ${processo} extraído com sucesso.`);
       const linha = `${result.processo};"${result.partesAdvogados}";"${result.valorCausa}";"${result.dataDistribuicao}";"${result.ultimaMovimentacao} - ${result.descricaoMovimentacao}"\n`;
-      fs.appendFileSync(outputFile, linha, 'utf-8');
+      fs.appendFileSync(outputFile, linha, 'latin1');
       resultados.push(result);
     } else {
-      fs.appendFileSync(errorFile, processo + '\n', 'utf-8');
+      fs.appendFileSync(errorFile, processo + '\n', 'latin1');
       erros.push(processo);
     }
   };
@@ -85,13 +86,9 @@ router.post('/', async (req, res) => {
   const promises = processos.map(p => limit(() => processAndSave(p)));
   await Promise.all(promises);
 
-  res.json({
-    mensagem: 'Extração concluída.',
-    total: processos.length,
-    sucesso: resultados.length,
-    erros: erros.length,
-    arquivoResultado: 'http://localhost:8080/download-sp', // exemplo
-  });
+  res.json({ message: 'Processamento concluído!', downloadUrl: `http://localhost:8080/download-esaj` });
+  logMessage("✔ Processo finalizado!")
 });
+
 
 module.exports = router;
