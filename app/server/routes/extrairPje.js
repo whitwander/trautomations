@@ -21,9 +21,10 @@ router.post('/', async (req, res) => {
         for (const processo of processos) {
             processosExecutados.push(limit(async () => {
                 if (global.cancelProcessing) return;
+                
                 const resultado = await extractFromPje(processo, estado);
                 if (!resultado.error) {
-                    const linha = 
+                    const linha =
                         `${sanitizeCSVValue(estado)};` +
                         `${resultado.processo};` +
                         `${sanitizeCSVValue(resultado.partesAdvogados)};` +

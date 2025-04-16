@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const { outputFile } = require('../utils/extrairUtils');
+const { outputFile } = require('../utils/extractFromEsaj');
 
 router.get('/', (req, res) => {
     res.download(outputFile, 'resultados.csv', (err) => {

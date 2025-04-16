@@ -108,7 +108,7 @@ async function extractFromPje(processo, stateId) {
             const achouArquivado = linhas.some(linha =>
                 linha.innerText.toLowerCase().includes('arquivado definitivamente')
             );
-        
+
             const linhaAudiencia = linhas.find(linha => {
                 const texto = linha.innerText.toLowerCase();
                 return texto.includes('audiência') || texto.includes('audiencia');
