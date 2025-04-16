@@ -103,7 +103,7 @@ function App() {
         </select>
         {tipoSistema === '-' && <p>- </p>}
         {tipoSistema === 'esaj' && <p className="state-list">SP | MS </p>}
-        {tipoSistema === 'pje' && <p className="state-list">CE | DF | ES | MA | MG | PB | PI | TRF1 | TRF5</p>}
+        {tipoSistema === 'pje' && <p className="state-list">AP | CE | DF | ES | MA | MG | PB | PI | RO | RN | TRF1/3/5 e 6</p>}
       </div>
       <div className="box-btn">
         <label className="custom-file-upload" htmlFor="upload-file"><ArchiveRestore size={"18px"} />Carregar arquivo XLSX</label>
