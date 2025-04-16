@@ -4,7 +4,7 @@
         "divDadosProcesso": "#j_id140\\:processoTrfViewView\\:j_id143",
         "tbodyMovimentacaoProcesso": "#j_id140\\:processoEvento\\:tb",
         "poloAtivoParticipante": "#j_id140\\:processoPartesPoloAtivoResumidoList\\:tb .text-bold",
-        "working": "Em teste"
+        "working": "sim"
     },
     "CE": {
         "url": "https://pje-consulta.tjce.jus.br/pje1grau/ConsultaPublica/listView.seam",
@@ -53,7 +53,7 @@
         "divDadosProcesso": "#j_id141\\:processoTrfViewView\\:j_id144",
         "tbodyMovimentacaoProcesso": "#j_id141\\:processoEvento\\:tb",
         "poloAtivoParticipante": "#j_id141\\:processoPartesPoloAtivoResumidoList\\:tb .text-bold",
-        "working": "em teste"
+        "working": "sim"
     },
     "PI": {
         "url": "https://pje.tjpi.jus.br/1g/ConsultaPublica/listView.seam",
@@ -70,18 +70,18 @@
         "working": "Não pesquisa"
     },
     "RN": {
-        "url": "https://pje1gconsulta.tjrn.jus.br/consultapublica/ConsultaPublica/listView.seam",
+        "url": "https://pje1gconsul ta.tjrn.jus.br/consultapublica/ConsultaPublica/listView.seam",
         "divDadosProcesso": "#j_id132\\:processoTrfViewView\\:j_id135",
         "tbodyMovimentacaoProcesso": "#j_id132\\:processoEvento\\:tb",
         "poloAtivoParticipante": "#j_id132\\:processoPartesPoloAtivoResumidoList\\:tb .text-bold",
-        "working": "timeout em caixaProcesso"
+        "working": "sim"
     },
     "RO": {
         "url": "https://pjepg-consulta.tjro.jus.br/consulta/ConsultaPublica/listView.seam",
         "divDadosProcesso": "#j_id142\\:processoTrfViewView\\:j_id145",
         "tbodyMovimentacaoProcesso": "#j_id142\\:processoEvento\\:tb",
         "poloAtivoParticipante": "#j_id142\\:processoPartesPoloAtivoResumidoList\\:tb .text-bold",
-        "working": "em teste"
+        "working": "sim"
     },
     "TRF1": {
         "url": "https://pje1g.trf1.jus.br/consultapublica/ConsultaPublica/listView.seam",
@@ -105,7 +105,7 @@
         "working": "sim"
     },
     "TRF6": {
-        "url": "https://pje1g.trf3.jus.br/pje/ConsultaPublica/listView.seam",
+        "url": "https://pje1g.trf6.jus.br/consultapublica/ConsultaPublica/listView.seam",
         "divDadosProcesso": "#j_id145\\:processoTrfViewView\\:j_id148",
         "tbodyMovimentacaoProcesso": "#j_id145\\:processoEvento\\:tb",
         "poloAtivoParticipante": "#j_id145\\:processoPartesPoloAtivoResumidoList\\:tb .text-bold",
