@@ -12,7 +12,7 @@ router.post('/', async (req, res) => {
         return res.status(400).json({ error: 'JSON inválido. Esperado um objeto com estados e processos.' });
     }
 
-    fs.writeFileSync(outputFile, 'Estado;Processo;Partes e Advogados;Valor da Causa;Data de Distribuição;Última Movimentação\n', 'latin1');
+    fs.writeFileSync(outputFile, 'Estado;Processo;Partes e Advogados;Valor da Causa;Situação Processo;Data de Distribuição;Última Movimentação\n', 'latin1');
 
     const limit = await importPLimit();
     const promessas = [];
@@ -23,7 +23,7 @@ router.post('/', async (req, res) => {
                 const result = await extractFromEsaj(processo, estado);
                 if (result) {
                     logMessage(`√ Processo ${estado} ${processo} extraído com sucesso.`);
-                    const linha = `${estado};${result.processo};"${result.partesAdvogados}";"${result.valorCausa}";"${result.dataDistribuicao}";"${result.ultimaMovimentacao} - ${result.descricaoMovimentacao}"\n`;
+                    const linha = `${estado};${result.processo};"${result.partesAdvogados}";"${result.valorCausa}";"${result.situacaoProcesso}";"${result.dataDistribuicao}";"${result.ultimaMovimentacao} - ${result.descricaoMovimentacao}"\n`;
                     fs.appendFileSync(outputFile, linha, 'latin1');
                 } else {
                     fs.appendFileSync(errorFile, `${estado} - ${processo}\n`, 'latin1');
