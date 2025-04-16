@@ -129,3 +129,14 @@ select:focus {
   flex-direction: column;
   align-items: center;
 }
+
+.state-list{
+  background-color: var(--cor-secundaria);
+  padding: 8px;
+  border-radius: 5px;
+}
+
+option, select {
+  color: var(--cor-texto);
+  font-family: "roboto";
+}
