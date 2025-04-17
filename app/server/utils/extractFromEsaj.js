@@ -7,6 +7,9 @@ const CONCURRENT_LIMIT = 2;
 const URLS_POR_ESTADO = {
     SP: 'https://esaj.tjsp.jus.br/cpopg/open.do',
     MS: 'https://esaj.tjms.jus.br/cpopg5/open.do',
+    AC: 'https://esaj.tjac.jus.br/cpopg/open.do',
+    AL: 'https://www2.tjal.jus.br/cpopg/open.do',
+    AM: 'https://consultasaj.tjam.jus.br/cpopg/open.do'
 };
 
 const now = new Date();
