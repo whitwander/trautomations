@@ -42,13 +42,19 @@ async function extractFromEsaj(processo, estado) {
     try {
         await page.goto(url, { waitUntil: 'networkidle2' });
 
-        let processoFormatado;
+        const regras = {
+            SP: /\.8\.26\./,
+            MS: /\.8\.12\./,
+            AC: /\.8\.01\./,
+            AL: /\.8\.02\./,
+            AM: /\.8\.04\./,
+        };
 
-        if (estado === "SP") {
-            processoFormatado = processo.replace(/\.8\.26\./, '');
-        } else {
-            processoFormatado = processo.replace(/\.8\.12\./, '');
-        }
+        let processoFormatado = processo
+
+        if (regras[estado]) {
+            processoFormatado = processo.replace(regras[estado], '');
+          }
 
         await page.type('#numeroDigitoAnoUnificado', processoFormatado, { delay: 100 });
         await page.click('#botaoConsultarProcessos');
