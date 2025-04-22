@@ -14,7 +14,7 @@ let processedProcesses = new Set();
 let errorProcesso = new Set();
 
 async function extractFromPje(processo, stateId) {
-    if (global.cancelProcessing) return { error: 'Processo cancelado pelo usuário.' };
+    if (global.cancelProcessing) return;
     if (processedProcesses.has(processo)) {
         return { error: `Processo ${processo} já processado.` };
     }

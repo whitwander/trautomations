@@ -102,7 +102,7 @@ function App() {
           <option value="pje">PJe</option>
         </select>
         {tipoSistema === '-' && <p>- </p>}
-        {tipoSistema === 'esaj' && <p className="state-list">SP | MS </p>}
+        {tipoSistema === 'esaj' && <p className="state-list">AC | AL | AM | MS | SP </p>}
         {tipoSistema === 'pje' && <p className="state-list">AP | CE | DF | ES | MA | MG | PB | PI | RO | RN | TRF1/3/5 e 6</p>}
       </div>
       <div className="box-btn">

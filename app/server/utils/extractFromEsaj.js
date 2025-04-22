@@ -29,6 +29,7 @@ async function importPLimit() {
 }
 
 async function extractFromEsaj(processo, estado) {
+    if (global.cancelProcessing) return
     const url = URLS_POR_ESTADO[estado];
 
     if (!url) {

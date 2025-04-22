@@ -20,6 +20,7 @@ router.post('/', async (req, res) => {
     for (const [estado, processos] of Object.entries(processosPorEstado)) {
         for (const processo of processos) {
             promessas.push(limit(async () => {
+                if (global.cancelProcessing) return
                 const result = await extractFromEsaj(processo, estado);
                 if (result) {
                     logMessage(`√ Processo ${estado} ${processo} extraído com sucesso.`);
@@ -35,7 +36,12 @@ router.post('/', async (req, res) => {
     await Promise.all(promessas);
 
     res.json({ message: 'Processamento concluído!', downloadUrl: `http://localhost:8080/download-esaj` });
-    logMessage("✔ Processo finalizado!");
+
+    if (global.cancelProcessing){
+        logMessage("❌ Processo cancelado!")
+    } else {
+        logMessage("✔ Processo finalizado!")
+    }
 });
 
 module.exports = router;
