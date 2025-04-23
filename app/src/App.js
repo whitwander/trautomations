@@ -8,6 +8,13 @@ function App() {
   const [status, setStatus] = useState("-");
   const [downloadUrl, setDownloadUrl] = useState(null);
   const [abortController, setAbortController] = useState(null);
+  const [tipoSistema, setTipoSistema] = useState('-');
+
+  // Estados para checkboxes
+  const [incluirPartes, setIncluirPartes] = useState(true);
+  const [incluirData, setIncluirData] = useState(true);
+  const [incluirSituacao, setIncluirSituacao] = useState(true);
+  const [incluirUltima, setIncluirUltima] = useState(true);
 
   const uploadFile = async (event) => {
     const file = event.target.files[0];
@@ -27,14 +34,21 @@ function App() {
         setStatus("Processando arquivo...\n");
 
         const processosPorEstado = processarArquivoXLSX(e.target.result);
-        console.log(processosPorEstado)
+
+        // Adiciona a config dos checkboxes ao JSON
+        processosPorEstado.config = {
+          incluirPartesAdvogados: incluirPartes,
+          incluirDataDistribuicao: incluirData,
+          incluirArquivado: incluirSituacao,
+          incluirUltimaMovimentacao: incluirUltima
+        };
 
         setStatus("Arquivo processado. Enviando para o servidor...\n");
 
         const controller = new AbortController();
         setAbortController(controller);
 
-        const rota = tipoSistema === "esaj" ? "extrairEsaj" : "extrairPje"
+        const rota = tipoSistema === "esaj" ? "extrairEsaj" : "extrairPje";
         const response = await fetch(`http://localhost:8080/${rota}`, {
           method: "POST",
           headers: { "Content-Type": "application/json" },
@@ -85,35 +99,57 @@ function App() {
     }
   };
 
-  const [tipoSistema, setTipoSistema] = useState('-');
-
-
   return (
     <div className="container">
-      <h1 className="container-title">Pesquisa de Processos</h1>
-      <div className="select-container">
-        <select
-          id="tipoSistema"
-          value={tipoSistema}
-          onChange={(e) => setTipoSistema(e.target.value)}
-        >
-          <option value="-"> Selecione</option>
-          <option value="esaj">e-SAJ</option>
-          <option value="pje">PJe</option>
-        </select>
-        {tipoSistema === '-' && <p>- </p>}
-        {tipoSistema === 'esaj' && <p className="state-list">AC | AL | AM | MS | SP </p>}
-        {tipoSistema === 'pje' && <p className="state-list">AP | CE | DF | ES | MA | MG | PB | PI | RO | RN | TRF1/3/5 e 6</p>}
-      </div>
-      <div className="box-btn">
-        <label className="custom-file-upload" htmlFor="upload-file"><ArchiveRestore size={"18px"} />Carregar arquivo XLSX</label>
-        <input type="file" accept=".xlsx" id="upload-file" onChange={uploadFile} />
-        <button className="btn-cancel" onClick={cancelarOperacao}>Cancelar execução</button>
+      <div className="left-side-box">
+        <h1 className="container-title">Pesquisa de Processos</h1>
+
+        <div className="select-container">
+          <select
+            id="tipoSistema"
+            value={tipoSistema}
+            onChange={(e) => setTipoSistema(e.target.value)}
+          >
+            <option value="-">Selecione</option>
+            <option value="esaj">e-SAJ</option>
+            <option value="pje">PJe</option>
+          </select>
+
+          {tipoSistema === '-' && <p>-</p>}
+          {tipoSistema === 'esaj' && <p className="state-list">AC | AL | AM | MS | SP</p>}
+          {tipoSistema === 'pje' && <p className="state-list">AP | CE | DF | ES | MA | MG | PB | PI | RO | RN | TRFs</p>}
+        </div>
+
+        <div className="box-select">
+          <div>
+            <input type="checkbox" id="partes" checked={incluirPartes} onChange={() => setIncluirPartes(!incluirPartes)} />
+            <label htmlFor="partes">Partes e Advogados</label>
+          </div>
+          <div>
+            <input type="checkbox" id="data" checked={incluirData} onChange={() => setIncluirData(!incluirData)} />
+            <label htmlFor="data">Data de distribuição</label>
+          </div>
+          <div>
+            <input type="checkbox" id="situacao" checked={incluirSituacao} onChange={() => setIncluirSituacao(!incluirSituacao)} />
+            <label htmlFor="situacao">Situação do processo</label>
+          </div>
+          <div>
+            <input type="checkbox" id="ultima" checked={incluirUltima} onChange={() => setIncluirUltima(!incluirUltima)} />
+            <label htmlFor="ultima">Última movimentação</label>
+          </div>
+        </div>
+
+        <div className="box-btn">
+          <label className="custom-file-upload" htmlFor="upload-file"><ArchiveRestore size={"18px"} />Carregar arquivo XLSX</label>
+          <input type="file" accept=".xlsx" id="upload-file" onChange={uploadFile} />
+          <button className="btn-cancel" onClick={cancelarOperacao}>Cancelar execução</button>
+        </div>
+
+        {downloadUrl && (
+          <a className="link" href={downloadUrl} download><Download size={"18px"} /> Baixar Resultados</a>
+        )}
       </div>
 
-      {downloadUrl && (
-        <a className="link" href={downloadUrl} download><Download size={"18px"} /> Baixar Resultados</a>
-      )}
       <div className="status">
         <p className="status-title">{status}</p>
         <Logs />

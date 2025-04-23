@@ -2,8 +2,8 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  flex-direction: column;
-  gap: 8px;
+  gap: 50px;
+  height: 100vh
 }
 
 .container-title {
@@ -139,4 +139,32 @@ select:focus {
 option, select {
   color: var(--cor-texto);
   font-family: "roboto";
+}
+
+.box-select {
+  display: flex;
+  flex-direction: column;
+  width: 250px;
+  padding: 20px;
+  margin: 20px;
+  font-size: 18px;
+  background-color: var(--cor-secundaria);
+  border-radius: 10px;
+}
+
+.box-select label{
+  margin-left: 8px;
+}
+
+.box-select input{
+  width: 20px;
+  height: 15px;
+  cursor: pointer;
+}
+
+.left-side-box {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
 }
