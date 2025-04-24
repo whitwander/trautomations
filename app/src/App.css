@@ -119,6 +119,7 @@
 
 .select-container label {
   margin-bottom: 5px;
+  font-size: 18px;
 }
 
 .state-list{
@@ -149,11 +150,7 @@
 
 .box-select p {
   font-weight: 500;
-  font-size: 20px;
-}
-
-.box-select-title {
-  margin-bottom: 20px;
+  font-size: 18px;
 }
 
 .left-side-box {

@@ -8,13 +8,16 @@ global.cancelProcessing = false;
 const now = new Date();
 const dateStr = `${now.getDate().toString().padStart(2, '0')}-${(now.getMonth() + 1).toString().padStart(2, '0')}-${now.getFullYear()}`;
 
-const resultsDir = path.join(__dirname, `../../resultados/PJE-${dateStr}`);
-if (!fs.existsSync(resultsDir)) {
-    fs.mkdirSync(resultsDir, { recursive: true });
-}
+//alterar pasta 
+const pasta = `N:\\resultados\\PJE-${dateStr}`;
 
-const outputFile = path.join(resultsDir, `resultados_${dateStr}.csv`);
-const errorFile = path.join(resultsDir, `erros_${dateStr}.txt`);
+if (!fs.existsSync(pasta)) {
+  fs.mkdirSync(pasta, { recursive: true });
+} 
+
+const outputFile = path.join(pasta, `PJE_${dateStr}.csv`);
+const errorFile = path.join(pasta, `PJE-erros_${dateStr}.txt`);
+
 
 function logMessage(message) {
     console.log(message);
@@ -51,7 +54,6 @@ module.exports = {
     saveErrorToFile,
     sanitizeCSVValue,
     importPLimit,
-    resultsDir,
     outputFile,
     errorFile,
     logMessage,

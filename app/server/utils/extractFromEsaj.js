@@ -20,8 +20,8 @@ if (!fs.existsSync(resultsDir)) {
     fs.mkdirSync(resultsDir, { recursive: true });
 }
 
-const outputFile = path.join(resultsDir, `resultados_${dateStr}.csv`);
-const errorFile = path.join(resultsDir, `erros_${dateStr}.txt`);
+const outputFile = path.join(resultsDir, `ESAJ_${dateStr}.csv`);
+const errorFile = path.join(resultsDir, `ESAJ-erros_${dateStr}.txt`);
 
 async function importPLimit() {
     const pLimit = (await import('p-limit')).default;

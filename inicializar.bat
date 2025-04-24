@@ -9,4 +9,4 @@ REM Abre um novo terminal e executa npm start
 start "Iniciando npm start" cmd /k "cd /d %PASTA_NPM% && npm start"
 
 REM Abre um novo terminal e executa node main.js
-start "Iniciando node main.js" cmd /k "cd /d %PASTA_NODE% && node main.js"
+start "Iniciando node server.js" cmd /k "cd /d %PASTA_NODE% && node server.js"
