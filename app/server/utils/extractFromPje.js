@@ -68,6 +68,7 @@ async function extractFromPje(processo, stateId) {
 
         await popupPage.waitForSelector(stateConfig.divDadosProcesso, { timeout: 10000 });
 
+        //Data de distribuição
         const dataDistribuicao = await popupPage.evaluate(() => {
             const elementos = document.querySelectorAll('.propertyView');
             for (let elemento of elementos) {
@@ -84,6 +85,7 @@ async function extractFromPje(processo, stateId) {
             timeout: 15000
         });
 
+        //Última movimentação, arquivado e audiência
         const { ultimaMovimentacao, arquivado, audiencia } = await popupPage.evaluate((selector) => {
             const container = document.querySelector(selector);
             if (!container) {
@@ -121,6 +123,7 @@ async function extractFromPje(processo, stateId) {
             };
         }, stateConfig.tbodyMovimentacaoProcesso);
 
+        //Partes e advogados
         const partesAdvogados = await popupPage.evaluate((selector) => {
             return Array.from(document.querySelectorAll(selector)).map(el => el.innerText.trim()).join(' | ') || 'Não informado';
         }, stateConfig.poloAtivoParticipante);

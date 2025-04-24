@@ -13,14 +13,12 @@ router.post('/', async (req, res) => {
         return res.status(400).json({ error: 'JSON inválido. Esperado um objeto com estados e processos.' });
     }
 
-    // Separa as configurações
     const { config = {}, ...estados } = processosPorEstado;
     const incluirPartesAdvogados = config.incluirPartesAdvogados !== false;
     const incluirDataDistribuicao = config.incluirDataDistribuicao !== false;
     const incluirArquivado = config.incluirArquivado !== false;
     const incluirUltimaMovimentacao = config.incluirUltimaMovimentacao !== false;
 
-    // Monta cabeçalho CSV dinamicamente
     let header = "Estado;Processo;";
     if (incluirPartesAdvogados) header += "Partes e Advogados;";
     if (incluirDataDistribuicao) header += "Data de Distribuição;";
@@ -51,7 +49,7 @@ router.post('/', async (req, res) => {
                     if (incluirUltimaMovimentacao)
                         linha += `${sanitizeCSVValue(resultado.ultimaMovimentacao)};`;
 
-                    linha += `${resultado.audiencia}\n`;
+                    linha += `${sanitizeCSVValue(resultado.audiencia)}\n`;
                     fs.appendFileSync(outputFile, linha, 'latin1');
                 }
             }));

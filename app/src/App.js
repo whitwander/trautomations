@@ -10,7 +10,6 @@ function App() {
   const [abortController, setAbortController] = useState(null);
   const [tipoSistema, setTipoSistema] = useState('-');
 
-  // Estados para checkboxes
   const [incluirPartes, setIncluirPartes] = useState(true);
   const [incluirData, setIncluirData] = useState(true);
   const [incluirSituacao, setIncluirSituacao] = useState(true);
@@ -100,59 +99,63 @@ function App() {
   };
 
   return (
-    <div className="container">
-      <div className="left-side-box">
-        <h1 className="container-title">Pesquisa de Processos</h1>
+    <div className="main-container">
+      <h1 className="container-title">Pesquisa de Processos</h1>
+      <div className="container">
+        <div className="left-side-box">
+          <div className="select-container">
+            <label>Selecione o sistema: </label>
+            <select
+              id="tipoSistema"
+              value={tipoSistema}
+              onChange={(e) => setTipoSistema(e.target.value)}
+            >
+              <option value="-">Selecione</option>
+              <option value="esaj">e-SAJ</option>
+              <option value="pje">PJe</option>
+            </select>
+            
 
-        <div className="select-container">
-          <select
-            id="tipoSistema"
-            value={tipoSistema}
-            onChange={(e) => setTipoSistema(e.target.value)}
-          >
-            <option value="-">Selecione</option>
-            <option value="esaj">e-SAJ</option>
-            <option value="pje">PJe</option>
-          </select>
+            {tipoSistema === '-' && <p className="state-list">-</p>}
+            {tipoSistema === 'esaj' && <p className="state-list">AC | AL | AM | MS | SP</p>}
+            {tipoSistema === 'pje' && <p className="state-list">AP | CE | DF | ES | MA | MG | PB | PI | RO | RN | TRFs</p>}
+          </div>
 
-          {tipoSistema === '-' && <p>-</p>}
-          {tipoSistema === 'esaj' && <p className="state-list">AC | AL | AM | MS | SP</p>}
-          {tipoSistema === 'pje' && <p className="state-list">AP | CE | DF | ES | MA | MG | PB | PI | RO | RN | TRFs</p>}
+          <div className="box-select">
+            <p className="box-select-title">Informações para extrair:</p>
+            <div>
+              <input type="checkbox" id="partes" checked={incluirPartes} onChange={() => setIncluirPartes(!incluirPartes)} />
+              <label htmlFor="partes">Partes e Advogados</label>
+            </div>
+            <div>
+              <input type="checkbox" id="data" checked={incluirData} onChange={() => setIncluirData(!incluirData)} />
+              <label htmlFor="data">Data de distribuição</label>
+            </div>
+            <div>
+              <input type="checkbox" id="situacao" checked={incluirSituacao} onChange={() => setIncluirSituacao(!incluirSituacao)} />
+              <label htmlFor="situacao">Situação do processo</label>
+            </div>
+            <div>
+              <input type="checkbox" id="ultima" checked={incluirUltima} onChange={() => setIncluirUltima(!incluirUltima)} />
+              <label htmlFor="ultima">Última movimentação</label>
+            </div>
+          </div>
+
+          <div className="box-btn">
+            <label className="custom-file-upload" htmlFor="upload-file"><ArchiveRestore size={"18px"} />Carregar arquivo XLSX</label>
+            <input type="file" accept=".xlsx" id="upload-file" onChange={uploadFile} />
+            <button className="btn-cancel" onClick={cancelarOperacao}>Cancelar execução</button>
+          </div>
+
+          {downloadUrl && (
+            <a className="link" href={downloadUrl} download><Download size={"18px"} /> Baixar Resultados</a>
+          )}
         </div>
 
-        <div className="box-select">
-          <div>
-            <input type="checkbox" id="partes" checked={incluirPartes} onChange={() => setIncluirPartes(!incluirPartes)} />
-            <label htmlFor="partes">Partes e Advogados</label>
-          </div>
-          <div>
-            <input type="checkbox" id="data" checked={incluirData} onChange={() => setIncluirData(!incluirData)} />
-            <label htmlFor="data">Data de distribuição</label>
-          </div>
-          <div>
-            <input type="checkbox" id="situacao" checked={incluirSituacao} onChange={() => setIncluirSituacao(!incluirSituacao)} />
-            <label htmlFor="situacao">Situação do processo</label>
-          </div>
-          <div>
-            <input type="checkbox" id="ultima" checked={incluirUltima} onChange={() => setIncluirUltima(!incluirUltima)} />
-            <label htmlFor="ultima">Última movimentação</label>
-          </div>
+        <div className="status">
+          <p className="status-title">{status}</p>
+          <Logs />
         </div>
-
-        <div className="box-btn">
-          <label className="custom-file-upload" htmlFor="upload-file"><ArchiveRestore size={"18px"} />Carregar arquivo XLSX</label>
-          <input type="file" accept=".xlsx" id="upload-file" onChange={uploadFile} />
-          <button className="btn-cancel" onClick={cancelarOperacao}>Cancelar execução</button>
-        </div>
-
-        {downloadUrl && (
-          <a className="link" href={downloadUrl} download><Download size={"18px"} /> Baixar Resultados</a>
-        )}
-      </div>
-
-      <div className="status">
-        <p className="status-title">{status}</p>
-        <Logs />
       </div>
     </div>
   );

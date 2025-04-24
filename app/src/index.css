@@ -21,6 +21,32 @@ button {
   -moz-osx-font-smoothing: grayscale;
 }
 
+option, select {
+  color: var(--cor-texto);
+  font-family: "roboto";
+}
+
+select {
+  padding: 3px 3px;
+  font-size: 16px;
+  border: 1px solid var(--cor-secundaria);
+  border-radius: 6px;
+  background-color: var(--cor-primaria);
+  appearance: none; /* remove setinha padrão (pode customizar) */
+  cursor: pointer;
+  transition: border 0.3s ease;
+  width: 150px;
+  text-align: center;
+}
+
+select:focus {
+  outline: none;
+}
+
+input[type="file"] {
+  display: none;
+}
+
 code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;

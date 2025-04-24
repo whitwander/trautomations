@@ -1,17 +1,25 @@
-.container {
+.main-container {
   display: flex;
+  flex-direction: column;
   justify-content: center;
-  align-items: center;
+  align-items:center ;
   gap: 50px;
   height: 100vh
 }
 
-.container-title {
+.main-container h1 {
   font-weight: 600;
   font-size: 30px;
   background-color: var(--cor-primaria);
   padding: 2px 15px;
   border-radius: 10px;
+}
+
+.container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 50px;
 }
 
 .container-state {
@@ -24,10 +32,6 @@
   display: flex;
   gap: 15px;
   margin-bottom: 10px;
-}
-
-input[type="file"] {
-  display: none;
 }
 
 .custom-file-upload {
@@ -106,28 +110,15 @@ input[type="file"] {
   background-color: var(--cor-primaria);
 }
 
-select {
-  padding: 6px 6px;
-  font-size: 16px;
-  border: 1px solid var(--cor-secundaria);
-  border-radius: 6px;
-  background-color: var(--cor-primaria);
-  appearance: none; /* remove setinha padrão (pode customizar) */
-  cursor: pointer;
-  transition: border 0.3s ease;
-  width: 100px;
-  text-align: center;
-}
-
-select:focus {
-  outline: none;
-}
-
 .select-container {
   display: flex;
   justify-content: center;
   flex-direction: column;
   align-items: center;
+}
+
+.select-container label {
+  margin-bottom: 5px;
 }
 
 .state-list{
@@ -136,17 +127,11 @@ select:focus {
   border-radius: 5px;
 }
 
-option, select {
-  color: var(--cor-texto);
-  font-family: "roboto";
-}
-
 .box-select {
   display: flex;
   flex-direction: column;
-  width: 250px;
-  padding: 20px;
-  margin: 20px;
+  padding: 10px;
+  margin: 15px;
   font-size: 18px;
   background-color: var(--cor-secundaria);
   border-radius: 10px;
@@ -160,6 +145,15 @@ option, select {
   width: 20px;
   height: 15px;
   cursor: pointer;
+}
+
+.box-select p {
+  font-weight: 500;
+  font-size: 20px;
+}
+
+.box-select-title {
+  margin-bottom: 20px;
 }
 
 .left-side-box {
