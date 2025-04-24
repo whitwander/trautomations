@@ -14,14 +14,15 @@ const URLS_POR_ESTADO = {
 
 const now = new Date();
 const dateStr = `${now.getDate().toString().padStart(2, '0')}-${(now.getMonth() + 1).toString().padStart(2, '0')}-${now.getFullYear()}`;
-const resultsDir = path.join(__dirname, `../../resultados/ESAJ-${dateStr}`);
+//alterar pasta 
+const pasta = `N:\\resultados\\ESAJ-${dateStr}`;
 
-if (!fs.existsSync(resultsDir)) {
-    fs.mkdirSync(resultsDir, { recursive: true });
-}
+if (!fs.existsSync(pasta)) {
+  fs.mkdirSync(pasta, { recursive: true });
+} 
 
-const outputFile = path.join(resultsDir, `ESAJ_${dateStr}.csv`);
-const errorFile = path.join(resultsDir, `ESAJ-erros_${dateStr}.txt`);
+const outputFile = path.join(pasta, `ESAJ_${dateStr}.csv`);
+const errorFile = path.join(pasta, `ESAJ-erros_${dateStr}.txt`);
 
 async function importPLimit() {
     const pLimit = (await import('p-limit')).default;
