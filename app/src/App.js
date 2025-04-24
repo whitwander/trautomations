@@ -5,10 +5,10 @@ import processarArquivoXLSX from "./components/Regex";
 import { Download, ArchiveRestore } from 'lucide-react';
 
 function App() {
-  const [status, setStatus] = useState("-");
+  const [status, setStatus] = useState("...");
   const [downloadUrl, setDownloadUrl] = useState(null);
   const [abortController, setAbortController] = useState(null);
-  const [tipoSistema, setTipoSistema] = useState('-');
+  const [tipoSistema, setTipoSistema] = useState('esaj');
 
   const [incluirPartes, setIncluirPartes] = useState(true);
   const [incluirData, setIncluirData] = useState(true);
@@ -110,13 +110,10 @@ function App() {
               value={tipoSistema}
               onChange={(e) => setTipoSistema(e.target.value)}
             >
-              <option value="-">Selecione</option>
               <option value="esaj">e-SAJ</option>
               <option value="pje">PJe</option>
             </select>
-            
-
-            {tipoSistema === '-' && <p className="state-list">-</p>}
+        
             {tipoSistema === 'esaj' && <p className="state-list">AC | AL | AM | MS | SP</p>}
             {tipoSistema === 'pje' && <p className="state-list">AP | CE | DF | ES | MA | MG | PB | PI | RO | RN | TRFs</p>}
           </div>

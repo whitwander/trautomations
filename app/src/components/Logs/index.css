@@ -4,14 +4,14 @@
     color: var(--cor-texto);
     background-color: var(--cor-secundaria);
     width: 450px;
-    height: 250px;
+    height: 300px;
     font-weight: 500;
     border-radius: 0 0 10px 10px;
     display: flex;
     flex-direction: column;
     align-items: flex-start;
     padding: 10px;
-    max-height: 250px;
+    max-height: 300px;
     overflow-y: auto;
     gap: 2px;
     box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.5); 
