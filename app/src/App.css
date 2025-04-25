@@ -32,6 +32,7 @@
   display: flex;
   gap: 15px;
   margin-bottom: 10px;
+  flex-direction: column;
 }
 
 .custom-file-upload {
@@ -45,7 +46,7 @@
   background-color: var(--cor-secundaria);
   justify-content: center;
   align-items: center;
-  gap: 8px;
+  gap: 5px;
 }
 
 .custom-file-upload:hover {
@@ -59,7 +60,9 @@
   border: 2px solid var(--cor-primaria);
   border-radius: 10px;
   font-size: 16px;
-  display: inline-block;
+  display: flex;
+  justify-content: center;
+  gap: 5px;
   padding: 8px 16px;
   cursor: pointer;
   font-weight: 500;
