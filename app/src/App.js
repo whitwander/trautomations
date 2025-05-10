@@ -115,7 +115,7 @@ function App() {
             </select>
         
             {tipoSistema === 'esaj' && <p className="state-list">AC | AL | AM | MS | SP</p>}
-            {tipoSistema === 'pje' && <p className="state-list">AP | CE | DF | ES | MA | MG | PB | PI | RO | RN | TRFs</p>}
+            {tipoSistema === 'pje' && <p className="state-list">AP | CE | DF | ES | MA | MG <br/>PB | PI | RO | RN | TRFs</p>}
           </div>
 
           <div className="box-select">

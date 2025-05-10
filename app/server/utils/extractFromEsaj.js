@@ -15,7 +15,7 @@ const URLS_POR_ESTADO = {
 const now = new Date();
 const dateStr = `${now.getDate().toString().padStart(2, '0')}-${(now.getMonth() + 1).toString().padStart(2, '0')}-${now.getFullYear()}`;
 //alterar pasta 
-const pasta = `N:\\resultados\\ESAJ-${dateStr}`;
+const pasta = `C:\\Users\\Victor Mikhael\\Desktop\\Resultados\\ResultadosESAJ-${dateStr}`;
 
 if (!fs.existsSync(pasta)) {
   fs.mkdirSync(pasta, { recursive: true });
