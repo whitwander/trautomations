@@ -16,6 +16,7 @@ app.use('/logs', require('./routes/logs'));
 app.use('/download-pje', require('./routes/download-pje'));
 app.use('/download-esaj', require('./routes/download-esaj'));
 app.use('/cancelar', require('./routes/cancelar'));
+app.use('/extrair-unificado', require('./routes/processarEstados'));
 
 app.listen(port, () => {
     console.log(`Servidor rodando em http://localhost:${port}`);

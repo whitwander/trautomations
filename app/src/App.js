@@ -8,7 +8,6 @@ function App() {
   const [status, setStatus] = useState("...");
   const [downloadUrl, setDownloadUrl] = useState(null);
   const [abortController, setAbortController] = useState(null);
-  const [tipoSistema, setTipoSistema] = useState('esaj');
 
   const [incluirPartes, setIncluirPartes] = useState(true);
   const [incluirData, setIncluirData] = useState(true);
@@ -25,16 +24,12 @@ function App() {
     const reader = new FileReader();
     reader.onload = async (e) => {
       try {
-        if (tipoSistema === '-') {
-          alert("Selecione o tipo de sistema (e-SAJ ou PJe) antes de continuar!");
-          return;
-        }
-
         setStatus("Processando arquivo...\n");
 
         const processosPorEstado = processarArquivoXLSX(e.target.result);
+        console.log("processosPorEstado", processosPorEstado);
 
-        // Adiciona a config dos checkboxes ao JSON
+
         processosPorEstado.config = {
           incluirPartesAdvogados: incluirPartes,
           incluirDataDistribuicao: incluirData,
@@ -47,8 +42,7 @@ function App() {
         const controller = new AbortController();
         setAbortController(controller);
 
-        const rota = tipoSistema === "esaj" ? "extrairEsaj" : "extrairPje";
-        const response = await fetch(`http://localhost:8080/${rota}`, {
+        const response = await fetch(`http://localhost:8080/extrair-unificado`, {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify(processosPorEstado),
@@ -103,7 +97,7 @@ function App() {
       <h1 className="container-title">Pesquisa de Processos</h1>
       <div className="container">
         <div className="left-side-box">
-          <div className="select-container">
+          {/* <div className="select-container">
             <label>Selecione o sistema: </label>
             <select
               id="tipoSistema"
@@ -116,7 +110,7 @@ function App() {
         
             {tipoSistema === 'esaj' && <p className="state-list">AC | AL | AM | MS | SP</p>}
             {tipoSistema === 'pje' && <p className="state-list">AP | CE | DF | ES | MA | MG <br/>PB | PI | RO | RN | TRFs</p>}
-          </div>
+          </div> */}
 
           <div className="box-select">
             <p className="box-select-title">Informações para extrair:</p>

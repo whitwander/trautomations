@@ -16,7 +16,7 @@
     },
     "CE": {
         "estadoUF": "ce",
-        "tipoSistema": "esaj",
+        "tipoSistema": "pje",
         "url": "https://pje-consulta.tjce.jus.br/pje1grau/ConsultaPublica/listView.seam",
         "caixaProcesso": "#fPP\\:numProcesso-inputNumeroProcessoDecoration\\:numProcesso-inputNumeroProcesso",
         "btnSearch": "#fPP\\:searchProcessos",
@@ -29,6 +29,7 @@
     },
     "DF": {
         "url": "https://pje-consultapublica.tjdft.jus.br/consultapublica/ConsultaPublica/listView.seam",
+        "tipoSistema": "pje",
         "estadoUF": "df",
         "caixaProcesso": "#fPP\\:numProcesso-inputNumeroProcessoDecoration\\:numProcesso-inputNumeroProcesso",
         "btnSearch": "#fPP\\:searchProcessos",
@@ -41,6 +42,7 @@
     },
     "ES" :{ 
         "url": "https://pje.tjes.jus.br/pje/ConsultaPublica/listView.seam",
+        "tipoSistema": "pje",
         "estadoUF": "es",
         "caixaProcesso": "#fPP\\:numProcesso-inputNumeroProcessoDecoration\\:numProcesso-inputNumeroProcesso",
         "btnSearch": "#fPP\\:searchProcessos",
@@ -56,6 +58,7 @@
     },
     "MA": {
         "url": "https://pje.tjma.jus.br/pje/ConsultaPublica/listView.seam",
+        "tipoSistema": "pje",
         "estadoUF": "ma",
         "caixaProcesso": "#fPP\\:numProcesso-inputNumeroProcessoDecoration\\:numProcesso-inputNumeroProcesso",
         "btnSearch": "#fPP\\:searchProcessos",
@@ -73,7 +76,7 @@
         "working":"Não verificado"
     },
     "MG": {
-        "tipoSistema": "esaj",
+        "tipoSistema": "pje",
         "url": "https://pje-consulta-publica.tjmg.jus.br/",
         "estadoUF": "mg",
         "caixaProcesso": "#fPP\\:numProcesso-inputNumeroProcessoDecoration\\:numProcesso-inputNumeroProcesso",
@@ -90,6 +93,7 @@
     },
     "PB": {
         "url": "https://consultapublica.tjpb.jus.br/pje/ConsultaPublica/listView.seam",
+        "tipoSistema": "pje",
         "estadoUF": "pb",
         "caixaProcesso": "#fPP\\:numProcesso-inputNumeroProcessoDecoration\\:numProcesso-inputNumeroProcesso",
         "btnSearch": "#fPP\\:searchProcessos",
@@ -108,6 +112,7 @@
     },
     "PI": {
         "url": "https://pje.tjpi.jus.br/1g/ConsultaPublica/listView.seam",
+        "tipoSistema": "pje",
         "estadoUF": "pi",
         "caixaProcesso": "#fPP\\:numProcesso-inputNumeroProcessoDecoration\\:numProcesso-inputNumeroProcesso",
         "btnSearch": "#fPP\\:searchProcessos",
@@ -120,6 +125,7 @@
     },
     "RJ": {
         "url": "https://tjrj.pje.jus.br/1g/ConsultaPublica/listView.seam",
+        "tipoSistema": "pje",
         "estadoUF": "rjoff",
         "caixaProcesso": "#fPP\\:numProcesso-inputNumeroProcessoDecoration\\:numProcesso-inputNumeroProcesso",
         "btnSearch": "#fPP\\:searchProcessos",
@@ -132,6 +138,7 @@
     },
     "RN": {
         "url": "https://pje1gconsulta.tjrn.jus.br/consultapublica/ConsultaPublica/listView.seam",
+        "tipoSistema": "pje",
         "estadoUF": "rnoff",
         "caixaProcesso": "#fPP\\:numProcesso-inputNumeroProcessoDecoration\\:numProcesso-inputNumeroProcesso",
         "btnSearch": "#fPP\\:searchProcessos",
@@ -165,6 +172,7 @@
     },
     "TRF1": {
         "url": "https://pje1g.trf1.jus.br/consultapublica/ConsultaPublica/listView.seam",
+        "tipoSistema": "pje",
         "estadoUF": "trf1",
         "caixaProcesso": "#fPP\\:numProcesso-inputNumeroProcessoDecoration\\:numProcesso-inputNumeroProcesso",
         "btnSearch": "#fPP\\:searchProcessos",
@@ -180,6 +188,7 @@
     },
     "TRF3": {
         "url": "https://pje1g.trf3.jus.br/pje/ConsultaPublica/listView.seam",
+        "tipoSistema": "pje",
         "estadoUF": "trf3",
         "caixaProcesso": "#fPP\\:numProcesso-inputNumeroProcessoDecoration\\:numProcesso-inputNumeroProcesso",
         "btnSearch": "#fPP\\:searchProcessos",
@@ -195,6 +204,7 @@
     },
     "TRF5": {
         "url": "https://pje1g.trf5.jus.br/pje/ConsultaPublica/listView.seam",
+        "tipoSistema": "pje",
         "estadoUF": "trf5",
         "caixaProcesso": "#fPP\\:numProcesso-inputNumeroProcessoDecoration\\:numProcesso-inputNumeroProcesso",
         "btnSearch": "#fPP\\:searchProcessos",
