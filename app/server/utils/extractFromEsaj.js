@@ -1,9 +1,6 @@
 const puppeteer = require('puppeteer');
-const fs = require('fs');
-const path = require('path');
 const { logMessage } = require('./extrairUtils');
 
-const CONCURRENT_LIMIT = 2;
 const URLS_POR_ESTADO = {
     SP: 'https://esaj.tjsp.jus.br/cpopg/open.do',
     MS: 'https://esaj.tjms.jus.br/cpopg5/open.do',
@@ -11,23 +8,6 @@ const URLS_POR_ESTADO = {
     AL: 'https://www2.tjal.jus.br/cpopg/open.do',
     AM: 'https://consultasaj.tjam.jus.br/cpopg/open.do'
 };
-
-const now = new Date();
-const dateStr = `${now.getDate().toString().padStart(2, '0')}-${(now.getMonth() + 1).toString().padStart(2, '0')}-${now.getFullYear()}`;
-//alterar pasta 
-const pasta = `N:\\resultados\\ESAJ-${dateStr}`;
-
-if (!fs.existsSync(pasta)) {
-  fs.mkdirSync(pasta, { recursive: true });
-} 
-
-const outputFile = path.join(pasta, `ESAJ_${dateStr}.csv`);
-const errorFile = path.join(pasta, `ESAJ-erros_${dateStr}.txt`);
-
-async function importPLimit() {
-    const pLimit = (await import('p-limit')).default;
-    return pLimit(CONCURRENT_LIMIT);
-}
 
 async function extractFromEsaj(processo, estado) {
     if (global.cancelProcessing) return
@@ -92,7 +72,4 @@ async function extractFromEsaj(processo, estado) {
 
 module.exports = {
     extractFromEsaj,
-    outputFile,
-    errorFile,
-    importPLimit,
 };

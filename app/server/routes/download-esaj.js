@@ -1,9 +1,9 @@
 const express = require('express');
 const router = express.Router();
-const { outputFile } = require('../utils/extractFromEsaj');
+const { esajOutput } = require('../utils/outputFile');
 
 router.get('/', (req, res) => {
-    res.download(outputFile, 'resultados.csv', (err) => {
+    res.download(esajOutput, 'resultados.csv', (err) => {
         if (err) {
             res.status(500).send({ error: 'Erro ao baixar o arquivo' });
         }

@@ -1,8 +1,9 @@
 const express = require('express');
 const router = express.Router();
 const fs = require('fs');
-const { sanitizeCSVValue, importPLimit, outputFile, logMessage, setCancelFlag } = require('../utils/extrairUtils');
+const { sanitizeCSVValue, importPLimit, logMessage, setCancelFlag } = require('../utils/extrairUtils');
 const { extractFromPje } = require('../utils/extractFromPje');
+const { pjeOutput, pjeError } = require('../utils/outputFile');
 
 router.post('/', async (req, res) => {
     global.logs = [];
@@ -26,7 +27,7 @@ router.post('/', async (req, res) => {
     if (incluirUltimaMovimentacao) header += "Última Movimentação;";
     header += "Audiência\n";
 
-    fs.writeFileSync(outputFile, header, 'latin1');
+    fs.writeFileSync(pjeOutput, header, 'latin1');
 
     const limit = await importPLimit();
     const processosExecutados = [];
@@ -50,7 +51,9 @@ router.post('/', async (req, res) => {
                         linha += `${sanitizeCSVValue(resultado.ultimaMovimentacao)};`;
 
                     linha += `${sanitizeCSVValue(resultado.audiencia)}\n`;
-                    fs.appendFileSync(outputFile, linha, 'latin1');
+                    fs.appendFileSync(pjeOutput, linha, 'latin1');
+                } else {
+                    fs.appendFileSync(pjeError, `${estado} - ${processo}\n`, 'latin1');
                 }
             }));
         }

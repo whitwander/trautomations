@@ -1,7 +1,8 @@
 const express = require('express');
 const fs = require('fs');
-const { extractFromEsaj, outputFile, errorFile, importPLimit } = require('../utils/extractFromEsaj');
-const { logMessage, sanitizeCSVValue } = require('../utils/extrairUtils');
+const { extractFromEsaj } = require('../utils/extractFromEsaj');
+const { logMessage, sanitizeCSVValue, importPLimit } = require('../utils/extrairUtils');
+const { esajOutput, esajError } = require('../utils/outputFile')
 
 const router = express.Router();
 
@@ -24,7 +25,7 @@ router.post('/', async (req, res) => {
     if (incluirArquivado) header += "Situação Processo;";
     if (incluirUltimaMovimentacao) header += "Última Movimentação;\n";
 
-    fs.writeFileSync(outputFile, header, 'latin1');
+    fs.writeFileSync(esajOutput, header, 'latin1');
 
     const limit = await importPLimit();
     const promessas = [];
@@ -48,9 +49,9 @@ router.post('/', async (req, res) => {
                         linha += `${sanitizeCSVValue(result.ultimaMovimentacao)};`;
                     linha += "\n"
 
-                    fs.appendFileSync(outputFile, linha, 'latin1');
+                    fs.appendFileSync(esajOutput, linha, 'latin1');
                 } else {
-                    fs.appendFileSync(errorFile, `${estado} - ${processo}\n`, 'latin1');
+                    fs.appendFileSync(esajError, `${estado} - ${processo}\n`, 'latin1');
                 }
             }));
         }
