@@ -13,8 +13,6 @@ app.use(express.urlencoded({ limit: "100mb", extended: true }));
 app.use('/extrairPje', require('./routes/extrairPje'));
 app.use('/extrairEsaj', require('./routes/extrairEsaj'))
 app.use('/logs', require('./routes/logs'));
-app.use('/download-pje', require('./routes/download-pje'));
-app.use('/download-esaj', require('./routes/download-esaj'));
 app.use('/cancelar', require('./routes/cancelar'));
 
 app.listen(port, () => {

@@ -1,4 +1,9 @@
-const CONCURRENT_LIMIT = 2;
+const CONCURRENT_LIMIT = 1;
+
+// true para não visualizar
+const noTabs = true
+
+const fs = require('fs');
 
 async function importPLimit() {
     const pLimit = (await import('p-limit')).default;
@@ -17,6 +22,14 @@ function setCancelFlag(value) {
     global.cancelProcessing = value;
 }
 
+async function saveErrorToFile(processo, errorFile) {
+    try {
+        fs.appendFileSync(errorFile, `Erro no processo ${processo}\n`, 'utf-8');
+    } catch (err) {
+        console.error('Erro ao registrar no arquivo de erros:', err);
+    }
+}
+
 function sanitizeCSVValue(value) {
     if (!value) return '';
     return value
@@ -28,6 +41,8 @@ function sanitizeCSVValue(value) {
 
 module.exports = {
     sanitizeCSVValue,
+    noTabs,
+    saveErrorToFile,
     importPLimit,
     logMessage,
     setCancelFlag

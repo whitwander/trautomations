@@ -59,8 +59,6 @@ router.post('/', async (req, res) => {
 
     await Promise.all(promessas);
 
-    res.json({ message: 'Processamento concluído!', downloadUrl: `http://localhost:8080/download-esaj` });
-
     if (global.cancelProcessing){
         logMessage("❌ Processo cancelado!")
     } else {

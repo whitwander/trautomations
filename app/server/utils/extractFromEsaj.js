@@ -1,5 +1,5 @@
 const puppeteer = require('puppeteer');
-const { logMessage } = require('./extrairUtils');
+const { logMessage, noTabs } = require('./extrairUtils');
 
 const URLS_POR_ESTADO = {
     SP: 'https://esaj.tjsp.jus.br/cpopg/open.do',
@@ -18,7 +18,7 @@ async function extractFromEsaj(processo, estado) {
         return null;
     }
 
-    const browser = await puppeteer.launch({ headless: true });
+    const browser = await puppeteer.launch({ headless: noTabs });
     const page = await browser.newPage();
 
     try {

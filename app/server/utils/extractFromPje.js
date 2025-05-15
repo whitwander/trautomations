@@ -1,7 +1,8 @@
-const { saveErrorToFile, logMessage } = require('../utils/extrairUtils')
+const { saveErrorToFile, logMessage, noTabs } = require('../utils/extrairUtils')
 const puppeteer = require('puppeteer');
 
 const variables = require('../variablesPJE.json');
+const { pjeError } = require('./outputFile');
 const constantesSitePje = {
     "caixaProcesso": "#fPP\\:numProcesso-inputNumeroProcessoDecoration\\:numProcesso-inputNumeroProcesso",
     "btnSearch": "#fPP\\:searchProcessos",
@@ -19,7 +20,7 @@ async function extractFromPje(processo, stateId) {
         return { error: `Processo ${processo} já processado.` };
     }
 
-    const browser = await puppeteer.launch({ headless: true, product: 'chrome', executablePath: puppeteer.executablePath() });
+    const browser = await puppeteer.launch({ headless: noTabs, product: 'chrome', executablePath: puppeteer.executablePath() });
     const page = await browser.newPage();
     const stateConfig = variables[stateId];
 
@@ -137,7 +138,7 @@ async function extractFromPje(processo, stateId) {
     } catch (error) {
         await browser.close();
         errorProcesso.add(processo);
-        await saveErrorToFile(processo);
+        await saveErrorToFile(processo, pjeError);
         logMessage(`⨉ Erro ao processar ${processo}: ${error.message}`);
         return { error: `Erro ao processar ${processo}: ${error.message}` };
     }

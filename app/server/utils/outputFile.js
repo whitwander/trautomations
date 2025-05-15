@@ -7,6 +7,10 @@ const dateStr = `${now.getDate().toString().padStart(2, '0')}-${(now.getMonth() 
 const pastaPje = `N:\\resultados\\PJE-${dateStr}`;
 const pastaEsaj = `N:\\resultados\\ESAJ-${dateStr}`;
 
+// preencher para pastas fixas
+// const pastaPje = `M:\\resultados\\PJE-${dateStr}`;
+// const pastaEsaj = `M:\\resultados\\ESAJ-${dateStr}`;
+
 if (!fs.existsSync(pastaPje)) {
   fs.mkdirSync(pastaPje, { recursive: true });
 }

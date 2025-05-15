@@ -46,7 +46,7 @@
         "divDadosProcesso": "#j_id132\\:processoTrfViewView\\:j_id135",
         "tbodyMovimentacaoProcesso": "#j_id132\\:processoEvento\\:tb",
         "poloAtivoParticipante": "#j_id132\\:processoPartesPoloAtivoResumidoList\\:tb .text-bold",
-        "working": "time out"
+        "working": "sim"
     },
     "PE": {
         "url": "https://pje.cloud.tjpe.jus.br/1g/ConsultaPublica/listView.seam",
@@ -70,7 +70,7 @@
         "working": "Não pesquisa"
     },
     "RN": {
-        "url": "https://pje1gconsul ta.tjrn.jus.br/consultapublica/ConsultaPublica/listView.seam",
+        "url": "https://pje1gconsulta.tjrn.jus.br/consultapublica/ConsultaPublica/listView.seam",
         "divDadosProcesso": "#j_id132\\:processoTrfViewView\\:j_id135",
         "tbodyMovimentacaoProcesso": "#j_id132\\:processoEvento\\:tb",
         "poloAtivoParticipante": "#j_id132\\:processoPartesPoloAtivoResumidoList\\:tb .text-bold",

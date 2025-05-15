@@ -60,7 +60,6 @@ router.post('/', async (req, res) => {
     }
 
     await Promise.all(processosExecutados);
-    res.json({ message: 'Processamento concluído!', downloadUrl: `http://localhost:8080/download-pje` });
 
     if (global.cancelProcessing) {
         logMessage("❌ Processo cancelado!");

@@ -2,11 +2,10 @@ import { useState } from "react";
 import "./App.css";
 import Logs from "./components/Logs";
 import processarArquivoXLSX from "./components/Regex";
-import { Download, ArchiveRestore, SquareX } from 'lucide-react';
+import { ArchiveRestore, SquareX } from 'lucide-react';
 
 function App() {
   const [status, setStatus] = useState("...");
-  const [downloadUrl, setDownloadUrl] = useState(null);
   const [abortController, setAbortController] = useState(null);
   const [tipoSistema, setTipoSistema] = useState('esaj');
 
@@ -69,7 +68,6 @@ function App() {
         const finalResult = JSON.parse(resultText);
         if (finalResult.downloadUrl) {
           setStatus("\nProcessamento concluído!");
-          setDownloadUrl(finalResult.downloadUrl);
         } else {
           setStatus((prev) => prev + "\nErro ao processar os dados!");
         }
@@ -143,10 +141,6 @@ function App() {
             <input type="file" accept=".xlsx" id="upload-file" onChange={uploadFile} />
             <button className="btn-cancel" onClick={cancelarOperacao}><SquareX size={"18px"}/> Cancelar execução</button>
           </div>
-
-          {downloadUrl && (
-            <a className="link" href={downloadUrl} download><Download size={"18px"} /> Baixar Resultados</a>
-          )}
         </div>
 
         <div className="status">
