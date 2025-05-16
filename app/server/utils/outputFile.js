@@ -4,12 +4,12 @@ const path = require('path');
 const now = new Date();
 const dateStr = `${now.getDate().toString().padStart(2, '0')}-${(now.getMonth() + 1).toString().padStart(2, '0')}-${now.getFullYear()}`;
 
-const pastaPje = `N:\\resultados\\PJE-${dateStr}`;
-const pastaEsaj = `N:\\resultados\\ESAJ-${dateStr}`;
+// const pastaPje = `N:\\resultados\\PJE-${dateStr}`;
+// const pastaEsaj = `N:\\resultados\\ESAJ-${dateStr}`;
 
 // preencher para pastas fixas
-// const pastaPje = `M:\\resultados\\PJE-${dateStr}`;
-// const pastaEsaj = `M:\\resultados\\ESAJ-${dateStr}`;
+const pastaPje = `M:\\JURIDICO\\CONSULTAS ROBÔ\\resultados-thiago\\PJE-${dateStr}`;
+const pastaEsaj = `M:\\JURIDICO\\CONSULTAS ROBÔ\\resultados-thiago\\ESAJ-${dateStr}`;
 
 if (!fs.existsSync(pastaPje)) {
   fs.mkdirSync(pastaPje, { recursive: true });
