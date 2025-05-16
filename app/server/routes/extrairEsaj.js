@@ -59,11 +59,13 @@ router.post('/', async (req, res) => {
 
     await Promise.all(promessas);
 
-    if (global.cancelProcessing){
-        logMessage("❌ Processo cancelado!")
+    if (global.cancelProcessing) {
+        logMessage("❌ Processo cancelado!");
     } else {
-        logMessage("✔ Processo finalizado!")
+        logMessage("✔ Processo finalizado!");
     }
+
+    res.status(200).end(); 
 });
 
 module.exports = router;

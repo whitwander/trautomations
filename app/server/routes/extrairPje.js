@@ -66,6 +66,7 @@ router.post('/', async (req, res) => {
     } else {
         logMessage("✔ Processo finalizado!");
     }
+    res.status(200).end(); 
 });
 
 module.exports = router;

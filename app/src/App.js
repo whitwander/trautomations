@@ -7,7 +7,6 @@ import { ArchiveRestore, SquareX } from 'lucide-react';
 function App() {
   const [status, setStatus] = useState("...");
   const [abortController, setAbortController] = useState(null);
-  const [tipoSistema, setTipoSistema] = useState('esaj');
 
   const [incluirPartes, setIncluirPartes] = useState(true);
   const [incluirData, setIncluirData] = useState(true);
@@ -24,64 +23,87 @@ function App() {
     const reader = new FileReader();
     reader.onload = async (e) => {
       try {
-        if (tipoSistema === '-') {
-          alert("Selecione o tipo de sistema (e-SAJ ou PJe) antes de continuar!");
-          return;
-        }
-
         setStatus("Processando arquivo...\n");
 
         const processosPorEstado = processarArquivoXLSX(e.target.result);
+        console.log(processosPorEstado)
 
-        // Adiciona a config dos checkboxes ao JSON
-        processosPorEstado.config = {
+        // Adiciona a config dos checkboxes a cada grupo
+        const config = {
           incluirPartesAdvogados: incluirPartes,
           incluirDataDistribuicao: incluirData,
           incluirArquivado: incluirSituacao,
           incluirUltimaMovimentacao: incluirUltima
         };
 
-        setStatus("Arquivo processado. Enviando para o servidor...\n");
+        // Separa por sistema automaticamente
+        const pjeStates = ['AP', 'CE', 'DF', 'ES', 'MA', 'MG', 'PB', 'PI', 'RO', 'RN', 'TRF1', 'TRF3', 'TRF5', 'TRF6'];
+        const esajStates = ['AC', 'AL', 'AM', 'MS', 'SP'];
+
+        const dadosPje = {};
+        const dadosEsaj = {};
+
+        for (const estado in processosPorEstado) {
+          if (pjeStates.includes(estado)) {
+            dadosPje[estado] = processosPorEstado[estado];
+          } else if (esajStates.includes(estado)) {
+            dadosEsaj[estado] = processosPorEstado[estado];
+          }
+        }
 
         const controller = new AbortController();
         setAbortController(controller);
 
-        const rota = tipoSistema === "esaj" ? "extrairEsaj" : "extrairPje";
-        const response = await fetch(`http://localhost:8080/${rota}`, {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(processosPorEstado),
-          signal: controller.signal,
-        });
+        const resultados = [];
 
-        const reader = response.body.getReader();
-        const decoder = new TextDecoder();
-        let resultText = "";
+        const enviar = async (url, dadosPorEstado) => {
+          const total = Object.values(dadosPorEstado).reduce((acc, lista) => acc + lista.length, 0);
+          if (!total) return;
 
-        while (true) {
-          const { done, value } = await reader.read();
-          if (done) break;
-          resultText += decoder.decode(value, { stream: true });
-          setStatus(resultText);
-        }
+          setStatus(`Enviando ${total} processos para ${url}...\n`);
 
-        const finalResult = JSON.parse(resultText);
-        if (finalResult.downloadUrl) {
-          setStatus("\nProcessamento concluído!");
-        } else {
-          setStatus((prev) => prev + "\nErro ao processar os dados!");
-        }
+          const response = await fetch(`http://localhost:8080/${url}`, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+              ...dadosPorEstado,
+              config
+            }),
+            signal: controller.signal,
+          });
+
+          const reader = response.body.getReader();
+          const decoder = new TextDecoder();
+          let resultText = "";
+
+          while (true) {
+            const { done, value } = await reader.read();
+            if (done) break;
+            resultText += decoder.decode(value, { stream: true });
+            setStatus(prev => prev + decoder.decode(value, { stream: true }));
+          }
+
+          resultados.push(resultText);
+        };
+
+        await enviar("extrairPje", dadosPje);
+        await enviar("extrairEsaj", dadosEsaj);
+
+
+        setStatus("Processamento concluído!");
+
       } catch (error) {
         if (error.name === "AbortError") {
           setStatus("Operação cancelada pelo usuário.");
         } else {
-          setStatus((prev) => prev + "\nErro na requisição!");
+          setStatus("Erro na requisição!");
         }
       }
     };
 
     reader.readAsArrayBuffer(file);
   };
+
 
   const cancelarOperacao = async () => {
     if (abortController) {
@@ -101,21 +123,6 @@ function App() {
       <h1 className="container-title">Pesquisa de Processos</h1>
       <div className="container">
         <div className="left-side-box">
-          <div className="select-container">
-            <label>Selecione o sistema: </label>
-            <select
-              id="tipoSistema"
-              value={tipoSistema}
-              onChange={(e) => setTipoSistema(e.target.value)}
-            >
-              <option value="esaj">e-SAJ</option>
-              <option value="pje">PJe</option>
-            </select>
-        
-            {tipoSistema === 'esaj' && <p className="state-list">AC | AL | AM | MS | SP</p>}
-            {tipoSistema === 'pje' && <p className="state-list">AP | CE | DF | ES | MA | MG | PB | PI | RO | RN | TRFs</p>}
-          </div>
-
           <div className="box-select">
             <p className="box-select-title">Informações para extrair:</p>
             <div>
@@ -139,7 +146,7 @@ function App() {
           <div className="box-btn">
             <label className="custom-file-upload" htmlFor="upload-file"><ArchiveRestore size={"18px"} />Carregar arquivo XLSX</label>
             <input type="file" accept=".xlsx" id="upload-file" onChange={uploadFile} />
-            <button className="btn-cancel" onClick={cancelarOperacao}><SquareX size={"18px"}/> Cancelar execução</button>
+            <button className="btn-cancel" onClick={cancelarOperacao}><SquareX size={"18px"} /> Cancelar execução</button>
           </div>
         </div>
 
