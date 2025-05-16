@@ -10,7 +10,6 @@ const constantesSitePje = {
     "btnVerDetalhes": "a[title='Ver Detalhes']"
 }
 
-
 let processedProcesses = new Set();
 let errorProcesso = new Set();
 

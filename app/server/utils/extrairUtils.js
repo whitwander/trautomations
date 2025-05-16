@@ -1,7 +1,7 @@
 const CONCURRENT_LIMIT = 1;
 
 // true para não visualizar
-const noTabs = true
+const noTabs = false
 
 const fs = require('fs');
 
