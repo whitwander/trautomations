@@ -1,9 +1,9 @@
 @echo off
 REM Caminho para a primeira pasta onde será executado o npm start
-set "PASTA_NPM=C:\Users\marcelino.amaral\Documents\git testes\trs-automations\app"
+set "PASTA_NPM=C:\Users\thiago.silva\Desktop\trautomations\app"
 
 REM Caminho para a segunda pasta onde será executado o node main.js
-set "PASTA_NODE=C:\Users\marcelino.amaral\Documents\git testes\trs-automations\app\server"
+set "PASTA_NODE=C:\Users\thiago.silva\Desktop\trautomations\app\server"
 
 REM Abre um novo terminal e executa npm start
 start "Iniciando npm start" cmd /k "cd /d %PASTA_NPM% && npm start"
