@@ -2,8 +2,8 @@
   display: flex;
   flex-direction: column;
   justify-content: center;
+  gap: 10px;
   align-items:center ;
-  gap: 50px;
   height: 100vh
 }
 
@@ -15,11 +15,30 @@
   border-radius: 10px;
 }
 
+.search-states {
+  display: flex;
+  flex-direction: column;
+  font-size: 15px;
+  background-color: var(--cor-secundaria);
+  padding: 0px 15px;
+  border-radius: 10px;
+}
+
+.search-states h3 {
+  align-self: center;
+  margin-bottom: -5px;
+}
+
+.search-states span {
+  font-weight: 700;
+}
+
 .container {
   display: flex;
   justify-content: center;
   align-items: center;
-  gap: 50px;
+  gap: 15px;
+  margin-top: 10px;
 }
 
 .container-state {
