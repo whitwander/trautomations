@@ -47,6 +47,7 @@ async function extractFromPje(processo, stateId) {
         await page.type(constantesSitePje.caixaProcesso, processo);
         await new Promise(resolve => setTimeout(resolve, 1000));
         await page.click(constantesSitePje.btnSearch);
+        //teste rj
 
         try {
             await page.waitForSelector(constantesSitePje.tblProcessos, { timeout: 30000 });
@@ -95,7 +96,7 @@ async function extractFromPje(processo, stateId) {
                     audiencia: 'não foi possível verificar'
                 };
             }
-        
+
             const linhas = Array.from(container.querySelectorAll('tr'));
             if (linhas.length === 0) {
                 return {
@@ -104,9 +105,9 @@ async function extractFromPje(processo, stateId) {
                     audiencia: 'não'
                 };
             }
-        
+
             const ultima = linhas[0].innerText.trim();
-        
+
             const achouArquivado = linhas.some(linha =>
                 linha.innerText.toLowerCase().includes('arquivado definitivamente')
             );
@@ -115,7 +116,7 @@ async function extractFromPje(processo, stateId) {
                 const texto = linha.innerText.toLowerCase();
                 return texto.includes('audiência') || texto.includes('audiencia');
             });
-        
+
             return {
                 ultimaMovimentacao: ultima,
                 arquivado: achouArquivado ? 'sim' : 'não',
