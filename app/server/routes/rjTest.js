@@ -17,9 +17,8 @@ const puppeteer = require('puppeteer');
   await page.type('#fPP\\:numProcesso-inputNumeroProcessoDecoration\\:numProcesso-inputNumeroProcesso', processo);
   await page.click('#fPP\\:searchProcessos');
 
-  async function consultaProcessual() {
+  async function pesquisaRj() {
     await page.waitForSelector('ul li a');
-    page.setDefaultTimeout(3000); 
 
     // Detecta quando nova aba for criada
     const [newPagePromise] = await Promise.all([
@@ -40,7 +39,6 @@ const puppeteer = require('puppeteer');
     await newPage.click('#fPP\\:searchProcessos');
   }
 
-  consultaProcessual()
-  consultaProcessual()
-  consultaProcessual()
+  await pesquisaRj()
+  await new Promise(resolve => setTimeout(resolve, 5000));
 })();
