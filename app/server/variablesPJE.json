@@ -63,7 +63,7 @@
         "working": "sim"
     },
     "RJ": {
-        "url": "https://tjrj.pje.jus.br:443/1g/ConsultaPublica/listView.seam",
+        "url": "https://tjrj.pje.jus.br/1g/ConsultaPublica/listView.seam",
         "divDadosProcesso": "#j_id131\\:processoTrfViewView\\:j_id134",
         "tbodyMovimentacaoProcesso": "#j_id131\\:processoEvento\\:tb",
         "poloAtivoParticipante": "#j_id131\\:processoPartesPoloAtivoResumidoList\\:tb .text-bold",

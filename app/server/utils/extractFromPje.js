@@ -20,7 +20,7 @@ async function extractFromPje(processo, stateId) {
     }
 
     const browser = await puppeteer.launch({ headless: noTabs, product: 'chrome', executablePath: puppeteer.executablePath() });
-    const page = await browser.newPage();
+    let page = await browser.newPage();
     const stateConfig = variables[stateId];
 
     if (!stateConfig) {
@@ -47,8 +47,37 @@ async function extractFromPje(processo, stateId) {
         await page.type(constantesSitePje.caixaProcesso, processo);
         await new Promise(resolve => setTimeout(resolve, 1000));
         await page.click(constantesSitePje.btnSearch);
-        //teste rj
+        //Teste RJ
 
+        async function consultaRj() {
+            await page.waitForSelector('ul li a');
+
+            const [newPagePromise] = await Promise.all([
+                new Promise(resolve => browser.once('targetcreated', target => resolve(target.page()))),
+                page.evaluate(() => {
+                    const links = Array.from(document.querySelectorAll('a'));
+                    const link = links.find(a => a.textContent.trim().toLowerCase() === 'consulta processual');
+                    new Promise(resolve => setTimeout(resolve, 1000));
+                    if (link) link.click();
+                })
+            ]);
+
+            const newPage = await newPagePromise;
+            page = newPage
+            await page.bringToFront(); // Garante que você está focando na nova aba
+
+            // Espera campo de processo na nova aba
+            await page.waitForSelector(constantesSitePje.caixaProcesso, { timeout: 15000 });
+            await page.type(constantesSitePje.caixaProcesso, processo);
+            await page.click(constantesSitePje.btnSearch);
+        }
+
+        if (stateId == "RJ") {
+            await consultaRj()
+            await new Promise(resolve => setTimeout(resolve, 3000));
+            await consultaRj()
+        }
+        //Teste RJ
         try {
             await page.waitForSelector(constantesSitePje.tblProcessos, { timeout: 30000 });
         } catch {
