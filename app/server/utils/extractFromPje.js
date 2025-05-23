@@ -1,5 +1,8 @@
 const { saveErrorToFile, logMessage, noTabs } = require('../utils/extrairUtils')
-const puppeteer = require('puppeteer');
+
+const puppeteer = require('puppeteer-extra');
+const StealthPlugin = require('puppeteer-extra-plugin-stealth');
+puppeteer.use(StealthPlugin());
 
 const variables = require('../variablesPJE.json');
 const { pjeError } = require('./outputFile');
@@ -19,7 +22,18 @@ async function extractFromPje(processo, stateId) {
         return { error: `Processo ${processo} já processado.` };
     }
 
-    const browser = await puppeteer.launch({ headless: noTabs, product: 'chrome', executablePath: puppeteer.executablePath() });
+    if(stateId === "RJ"){
+        noTabs = false
+    } else {
+        noTabs = true
+    }
+
+    const browser = await puppeteer.launch({ 
+        headless: noTabs,
+        product: 'chrome',
+        executablePath: puppeteer.executablePath(),
+        args: ['--no-sandbox', 'disable-setuid-sandbox']
+    });
     let page = await browser.newPage();
     const stateConfig = variables[stateId];
 
@@ -72,10 +86,15 @@ async function extractFromPje(processo, stateId) {
             await page.click(constantesSitePje.btnSearch);
         }
 
-        if (stateId == "RJ") {
-            await consultaRj()
-            await new Promise(resolve => setTimeout(resolve, 3000));
-            await consultaRj()
+        if (stateId === "RJ") {
+            await consultaRj();
+            const detalhesJaDisponivel = await page.$(constantesSitePje.btnVerDetalhes);
+            if (detalhesJaDisponivel) {
+                logMessage(`Botão 'Ver Detalhes' já visível após primeira tentativa RJ. Pulando segunda chamada.`);
+            } else {
+                await new Promise(resolve => setTimeout(resolve, 3000));
+                await consultaRj();
+            }
         }
         //Teste RJ
         try {
