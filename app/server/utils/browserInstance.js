@@ -26,7 +26,6 @@ async function getBrowser(isHeadless = true) {
 async function closeBrowser() {
     if (browser && browser.isConnected()) {
         await browser.close();
-        browser = null;
     }
 }
 

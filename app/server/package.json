@@ -18,6 +18,7 @@
     "cors": "^2.8.5",
     "express": "^5.1.0",
     "p-limit": "^6.2.0",
+    "p-queue": "^8.1.0",
     "puppeteer": "^24.9.0",
     "puppeteer-extra": "^3.3.6",
     "puppeteer-extra-plugin-stealth": "^2.11.2",
