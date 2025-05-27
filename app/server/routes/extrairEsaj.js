@@ -1,7 +1,7 @@
 const express = require('express');
 const fs = require('fs');
 const { extractFromEsaj } = require('../utils/extractFromEsaj');
-const { logMessage, sanitizeCSVValue, importPLimit } = require('../utils/extrairUtils');
+const { logMessage, sanitizeCSVValue, importQueue } = require('../utils/extrairUtils');
 const { esajOutput, esajError } = require('../utils/outputFile')
 
 const router = express.Router();
@@ -27,12 +27,13 @@ router.post('/', async (req, res) => {
 
     fs.writeFileSync(esajOutput, header, 'latin1');
 
-    const limit = await importPLimit();
     const promessas = [];
+
+    const queue = await importQueue();
 
     for (const [estado, processos] of Object.entries(estados)) {
         for (const processo of processos) {
-            promessas.push(limit(async () => {
+            queue.add(async () => {
                 if (global.cancelProcessing) return
                 const result = await extractFromEsaj(processo, estado);
                 if (result) {
@@ -53,11 +54,12 @@ router.post('/', async (req, res) => {
                 } else {
                     fs.appendFileSync(esajError, `${estado} - ${processo}\n`, 'latin1');
                 }
-            }));
+            });
         }
     }
 
     await Promise.all(promessas);
+    await queue.onIdle();
 
     if (global.cancelProcessing) {
         logMessage("❌ Processo cancelado!");
@@ -65,7 +67,7 @@ router.post('/', async (req, res) => {
         logMessage("✔ Processo finalizado!");
     }
 
-    res.status(200).end(); 
+    res.status(200).end();
 });
 
 module.exports = router;

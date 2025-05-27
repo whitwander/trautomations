@@ -1,9 +1,12 @@
-const CONCURRENT_LIMIT = 2;
 const fs = require('fs');
+let queueInstance;
 
-async function importPLimit() {
-    const pLimit = (await import('p-limit')).default;
-    return pLimit(CONCURRENT_LIMIT);
+async function importQueue(concurrency = 3) {
+  if (!queueInstance) {
+    const { default: PQueue } = await import('p-queue');
+    queueInstance = new PQueue({ concurrency });
+  }
+  return queueInstance;
 }
 
 global.logs = [];
@@ -38,7 +41,7 @@ function sanitizeCSVValue(value) {
 module.exports = {
     sanitizeCSVValue,
     saveErrorToFile,
-    importPLimit,
     logMessage,
+    importQueue,
     setCancelFlag
 };

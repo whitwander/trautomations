@@ -4,13 +4,13 @@ const fs = require('fs');
 const {
     sanitizeCSVValue,
     logMessage,
-    setCancelFlag
+    setCancelFlag,
+    importQueue
 } = require('../utils/extrairUtils');
 const { extractFromPje } = require('../utils/extractFromPje');
 const { pjeOutput, pjeError } = require('../utils/outputFile');
 
 router.post('/', async (req, res) => {
-    const PQueue = (await import('p-queue')).default
     global.logs = [];
     setCancelFlag(false);
 
@@ -27,9 +27,6 @@ router.post('/', async (req, res) => {
     const incluirArquivado = config.incluirArquivado !== false;
     const incluirUltimaMovimentacao = config.incluirUltimaMovimentacao !== false;
 
-    const concurrency = config.concurrency || 3; 
-    const queue = new PQueue({ concurrency });
-
     let header = "Estado;Processo;";
     if (incluirPartesAdvogados) header += "Partes e Advogados;";
     if (incluirDataDistribuicao) header += "Data de Distribuição;";
@@ -38,6 +35,8 @@ router.post('/', async (req, res) => {
     header += "Audiência\n";
 
     fs.writeFileSync(pjeOutput, header, 'latin1');
+
+    const queue = await importQueue();
 
     for (const [estado, processos] of Object.entries(estados)) {
         for (const processo of processos) {
