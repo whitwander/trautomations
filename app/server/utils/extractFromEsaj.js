@@ -23,6 +23,16 @@ async function extractFromEsaj(processo, estado) {
     const browser = await getBrowser(isHeadless);
     const page = await browser.newPage();
 
+    await page.setRequestInterception(true);
+    page.on('request', (req) => {
+        const type = req.resourceType();
+        if (['image', 'stylesheet', 'font', 'media'].includes(type)) {
+            req.abort();
+        } else {
+            req.continue();
+        }
+    });
+
     try {
         await page.goto(url, { waitUntil: 'networkidle2' });
 

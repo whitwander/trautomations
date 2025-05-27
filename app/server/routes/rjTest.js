@@ -1,51 +1,159 @@
-const puppeteer = require('puppeteer');
+async function extractFromPje(processo, stateId) {
+    if (global.cancelProcessing) return;
+    if (processedProcesses.has(processo)) {
+        return { error: `Processo ${processo} já processado.` };
+    }
 
-(async () => {
-  const browser = await puppeteer.launch({
-    headless: false,
-    product: 'chrome',
-    executablePath: puppeteer.executablePath()
-  });
+    const browser = await getBrowser(isHeadless);
+    const page = await browser.newPage();
 
-  const page = await browser.newPage();
+    await page.setRequestInterception(true);
+    page.on('request', (req) => {
+        const type = req.resourceType();
+        if (['image', 'stylesheet', 'font', 'media'].includes(type)) {
+            req.abort();
+        } else {
+            req.continue();
+        }
+    });
 
-  const processo = '0805385-21.2024.8.19.0010';
+    try {
+        page.on('dialog', async (dialog) => {
+            logMessage(`Alerta detectado: "${dialog.message()}" - Clicando em OK.`);
+            await dialog.accept();
+        });
 
-  await page.goto("https://tjrj.pje.jus.br/1g/ConsultaPublica/listView.seam");
+        await page.goto(stateConfig.url, { waitUntil: 'domcontentloaded' });
+        if (global.cancelProcessing) throw new Error('Processo cancelado pelo usuário.');
+        await page.waitForSelector(constantesSitePje.caixaProcesso, { timeout: 15000 });
+        await page.type(constantesSitePje.caixaProcesso, processo);
+        await new Promise(resolve => setTimeout(resolve, 1000));
+        await page.click(constantesSitePje.btnSearch);
 
-  await page.waitForSelector('#fPP\\:numProcesso-inputNumeroProcessoDecoration\\:numProcesso-inputNumeroProcesso', { timeout: 15000 });
-  await page.type('#fPP\\:numProcesso-inputNumeroProcessoDecoration\\:numProcesso-inputNumeroProcesso', processo);
-  await page.click('#fPP\\:searchProcessos');
+        async function consultaRj() {
+            await page.waitForSelector('ul li a');
 
-  async function pesquisaRj() {
-    await page.waitForSelector('ul li a');
+            const [newPagePromise] = await Promise.all([
+                new Promise(resolve => browser.once('targetcreated', target => resolve(target.page()))),
+                page.evaluate(() => {
+                    const links = Array.from(document.querySelectorAll('a'));
+                    const link = links.find(a => a.textContent.trim().toLowerCase() === 'consulta processual');
+                    new Promise(resolve => setTimeout(resolve, 1000));
+                    if (link) link.click();
+                })
+            ]);
 
-    // Detecta quando nova aba for criada
-    const [newPagePromise] = await Promise.all([
-      new Promise(resolve => browser.once('targetcreated', target => resolve(target.page()))),
-      page.evaluate(() => {
-        const links = Array.from(document.querySelectorAll('a'));
-        const link = links.find(a => a.textContent.trim().toLowerCase() === 'consulta processual');
-        if (link) link.click();
-      })
-    ]);
+            const newPage = await newPagePromise;
+            page = newPage
+            await page.bringToFront(); 
 
-    const newPage = await newPagePromise;
-    await newPage.bringToFront(); // Garante que você está focando na nova aba
+            await page.waitForSelector(constantesSitePje.caixaProcesso, { timeout: 15000 });
+            await page.type(constantesSitePje.caixaProcesso, processo);
+            await page.click(constantesSitePje.btnSearch);
+        }
 
-    // Espera campo de processo na nova aba
-    await newPage.waitForSelector('#fPP\\:numProcesso-inputNumeroProcessoDecoration\\:numProcesso-inputNumeroProcesso', { timeout: 15000 });
-    await newPage.type('#fPP\\:numProcesso-inputNumeroProcessoDecoration\\:numProcesso-inputNumeroProcesso', processo, { timeout: 1000 });
-    await newPage.click('#fPP\\:searchProcessos');
-  }
+        if (stateId === "RJ") {
+            await consultaRj();
+            const detalhesJaDisponivel = await page.$(constantesSitePje.btnVerDetalhes);
+            if (detalhesJaDisponivel) {
+                logMessage(`Botão 'Ver Detalhes' já visível após primeira tentativa RJ. Pulando segunda chamada.`);
+            } else {
+                await new Promise(resolve => setTimeout(resolve, 3000));
+                await consultaRj();
+            }
+        }
+        //Teste RJ
+        try {
+            await page.waitForSelector(constantesSitePje.tblProcessos, { timeout: 30000 });
+        } catch {
+            logMessage(`Nenhum resultado encontrado para o processo ${processo} ou alerta foi acionado.`);
+            await browser.close();
+            return { error: `${processo} sem resultado.` };
+        }
 
-  await pesquisaRj()
-  await new Promise(resolve => setTimeout(resolve, 5000));
-})();
+        await page.waitForSelector(constantesSitePje.btnVerDetalhes, { timeout: 15000 });
+        const linkDetalhes = await page.$(constantesSitePje.btnVerDetalhes);
+        if (!linkDetalhes) throw new Error('Botão "Ver Detalhes" não encontrado');
 
+        const popupPromise = new Promise(resolve => browser.once('targetcreated', resolve));
+        await linkDetalhes.click();
+        const popupTarget = await popupPromise;
+        const popupPage = await popupTarget.page();
+        if (!popupPage) throw new Error('Erro ao abrir pop-up');
 
-// teste de função
-await page.waitForFunction(() => {
-    return !!document.querySelector('a[title="Ver Detalhes"]');
-}, { timeout: 5000 }).catch(() => {});
+        await popupPage.waitForSelector(stateConfig.divDadosProcesso, { timeout: 10000 });
 
+        //Data de distribuição
+        const dataDistribuicao = await popupPage.evaluate(() => {
+            const elementos = document.querySelectorAll('.propertyView');
+            for (let elemento of elementos) {
+                const label = elemento.querySelector('.name label');
+                if (label && label.innerText.trim() === 'Data da Distribuição') {
+                    return elemento.querySelector('.value')?.innerText.trim() || 'Não informado';
+                }
+            }
+            return 'Não informado';
+        });
+
+        await popupPage.waitForSelector(stateConfig.tbodyMovimentacaoProcesso, {
+            visible: true,
+            timeout: 15000
+        });
+        //Última movimentação, arquivado e audiência
+        const { ultimaMovimentacao, arquivado, audiencia } = await popupPage.evaluate((selector) => {
+            const container = document.querySelector(selector);
+            if (!container) {
+                return {
+                    ultimaMovimentacao: 'não foi possível verificar',
+                    arquivado: 'não foi possível verificar',
+                    audiencia: 'não foi possível verificar'
+                };
+            }
+
+            const linhas = Array.from(container.querySelectorAll('tr'));
+            if (linhas.length === 0) {
+                return {
+                    ultimaMovimentacao: 'Data não encontrada',
+                    arquivado: 'não',
+                    audiencia: 'não'
+                };
+            }
+
+            const ultima = linhas[0].innerText.trim();
+
+            const achouArquivado = linhas.some(linha =>
+                linha.innerText.toLowerCase().includes('arquivado definitivamente')
+            );
+
+            const linhaAudiencia = linhas.find(linha => {
+                const texto = linha.innerText.toLowerCase();
+                return texto.includes('audiência') || texto.includes('audiencia');
+            });
+
+            return {
+                ultimaMovimentacao: ultima,
+                arquivado: achouArquivado ? 'sim' : 'não',
+                audiencia: linhaAudiencia ? linhaAudiencia.innerText.trim() : 'não'
+            };
+        }, stateConfig.tbodyMovimentacaoProcesso);
+
+        //Partes e advogados
+        const partesAdvogados = await popupPage.evaluate((selector) => {
+            return Array.from(document.querySelectorAll(selector)).map(el => el.innerText.trim()).join(' | ') || 'Não informado';
+        }, stateConfig.poloAtivoParticipante);
+
+        await page.close();
+        await popupPage.close();
+        await browser.close();
+        processedProcesses.add(processo);
+
+        logMessage(`√ Processo ${stateId} ${processo} extraído com sucesso.`);
+        return { processo, partesAdvogados, dataDistribuicao, ultimaMovimentacao, arquivado, audiencia };
+    } catch (error) {
+        await browser.close();
+        errorProcesso.add(processo);
+        await saveErrorToFile(processo, pjeError);
+        logMessage(`⨉ Erro ao processar ${stateId} ${processo}`);
+        return { error: `Erro ao processar ${processo}: ${error.message}` };
+    }
+}
