@@ -1,10 +1,6 @@
 const { saveErrorToFile, logMessage } = require('../utils/extrairUtils')
 const { getBrowser, closeBrowser } = require('./browserInstance');
 
-const puppeteer = require('puppeteer-extra');
-const StealthPlugin = require('puppeteer-extra-plugin-stealth');
-puppeteer.use(StealthPlugin());
-
 const variables = require('../variablesPJE.json');
 const { pjeError } = require('./outputFile');
 const constantesSitePje = {
@@ -69,7 +65,6 @@ async function extractFromPje(processo, stateId) {
         await new Promise(resolve => setTimeout(resolve, 1000));
         await page.click(constantesSitePje.btnSearch);
         //Teste RJ
-
         async function consultaRj() {
             await page.waitForSelector('ul li a');
 
@@ -139,7 +134,6 @@ async function extractFromPje(processo, stateId) {
             visible: true,
             timeout: 15000
         });
-
         //Última movimentação, arquivado e audiência
         const { ultimaMovimentacao, arquivado, audiencia } = await popupPage.evaluate((selector) => {
             const container = document.querySelector(selector);
@@ -194,7 +188,7 @@ async function extractFromPje(processo, stateId) {
         await closeBrowser();
         errorProcesso.add(processo);
         await saveErrorToFile(processo, pjeError);
-        logMessage(`⨉ Erro ao processar ${processo}`);
+        logMessage(`⨉ Erro ao processar ${stateId} ${processo}`);
         return { error: `Erro ao processar ${processo}: ${error.message}` };
     }
 }

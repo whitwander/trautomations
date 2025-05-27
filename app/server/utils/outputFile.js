@@ -11,13 +11,13 @@ const pastaEsaj = `N:\\resultados\\ESAJ-${dateStr}`;
 // const pastaPje = `M:\\JURIDICO\\CONSULTAS ROBÔ\\resultados-thiago\\PJE-${dateStr}`;
 // const pastaEsaj = `M:\\JURIDICO\\CONSULTAS ROBÔ\\resultados-thiago\\ESAJ-${dateStr}`;
 
-if (!fs.existsSync(pastaPje)) {
-  fs.mkdirSync(pastaPje, { recursive: true });
-}
+const pastas = [pastaPje, pastaEsaj];
 
-if (!fs.existsSync(pastaEsaj)) {
-  fs.mkdirSync(pastaEsaj, { recursive: true });
-} 
+pastas.forEach((pasta) => {
+  if (!fs.existsSync(pasta)) {
+    fs.mkdirSync(pasta, { recursive: true });
+  }
+});
 
 const pjeOutput = path.join(pastaPje, `PJE_${dateStr}.csv`);
 const pjeError = path.join(pastaPje, `PJE-erros_${dateStr}.txt`);

@@ -1,5 +1,5 @@
-const puppeteer = require('puppeteer');
 const { logMessage } = require('./extrairUtils');
+const { getBrowser, closeBrowser } = require('./browserInstance')
 
 const URLS_POR_ESTADO = {
     SP: 'https://esaj.tjsp.jus.br/cpopg/open.do',
@@ -20,7 +20,7 @@ async function extractFromEsaj(processo, estado) {
         return null;
     }
 
-    const browser = await puppeteer.launch({ headless: isHeadless });
+    const browser = await getBrowser(isHeadless);
     const page = await browser.newPage();
 
     try {
@@ -65,10 +65,10 @@ async function extractFromEsaj(processo, estado) {
 
         return { estado, processo, ...data };
     } catch (error) {
-        logMessage(`Erro ao processar ${processo} (${estado}): ${error.message}`);
+        logMessage(`Erro ao processar ${estado} ${processo}`);
         return null;
     } finally {
-        await browser.close();
+        await closeBrowser();
     }
 }
 
