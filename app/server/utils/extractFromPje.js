@@ -1,4 +1,5 @@
 const { saveErrorToFile, logMessage } = require('../utils/extrairUtils')
+const { getBrowser, closeBrowser } = require('./browserInstance');
 
 const puppeteer = require('puppeteer-extra');
 const StealthPlugin = require('puppeteer-extra-plugin-stealth');
@@ -24,19 +25,23 @@ async function extractFromPje(processo, stateId) {
         return { error: `Processo ${processo} já processado.` };
     }
 
-    if(stateId === "RJ") {
+    if (stateId === "RJ") {
         isHeadless = false
     }
 
-    console.log(isHeadless)
-
-    const browser = await puppeteer.launch({ 
-        headless: isHeadless,
-        product: 'chrome',
-        executablePath: puppeteer.executablePath(),
-        args: ['--no-sandbox', '--disable-setuid-sandbox']
-    });
+    const browser = await getBrowser(isHeadless);
     let page = await browser.newPage();
+
+    await page.setRequestInterception(true);
+    page.on('request', (req) => {
+        const type = req.resourceType();
+        if (['image', 'stylesheet', 'font', 'media'].includes(type)) {
+            req.abort();
+        } else {
+            req.continue();
+        }
+    });
+
     const stateConfig = variables[stateId];
 
     if (!stateConfig) {
@@ -80,9 +85,8 @@ async function extractFromPje(processo, stateId) {
 
             const newPage = await newPagePromise;
             page = newPage
-            await page.bringToFront(); // Garante que você está focando na nova aba
+            await page.bringToFront(); 
 
-            // Espera campo de processo na nova aba
             await page.waitForSelector(constantesSitePje.caixaProcesso, { timeout: 15000 });
             await page.type(constantesSitePje.caixaProcesso, processo);
             await page.click(constantesSitePje.btnSearch);
@@ -103,7 +107,7 @@ async function extractFromPje(processo, stateId) {
             await page.waitForSelector(constantesSitePje.tblProcessos, { timeout: 30000 });
         } catch {
             logMessage(`Nenhum resultado encontrado para o processo ${processo} ou alerta foi acionado.`);
-            await browser.close();
+            await closeBrowser();
             return { error: `${processo} sem resultado.` };
         }
 
@@ -179,17 +183,18 @@ async function extractFromPje(processo, stateId) {
             return Array.from(document.querySelectorAll(selector)).map(el => el.innerText.trim()).join(' | ') || 'Não informado';
         }, stateConfig.poloAtivoParticipante);
 
+        await page.close();
         await popupPage.close();
-        await browser.close();
+        await closeBrowser();
         processedProcesses.add(processo);
 
         logMessage(`√ Processo ${stateId} ${processo} extraído com sucesso.`);
         return { processo, partesAdvogados, dataDistribuicao, ultimaMovimentacao, arquivado, audiencia };
     } catch (error) {
-        await browser.close();
+        await closeBrowser();
         errorProcesso.add(processo);
         await saveErrorToFile(processo, pjeError);
-        logMessage(`⨉ Erro ao processar ${processo}: ${error.message}`);
+        logMessage(`⨉ Erro ao processar ${processo}`);
         return { error: `Erro ao processar ${processo}: ${error.message}` };
     }
 }

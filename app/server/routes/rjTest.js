@@ -42,3 +42,10 @@ const puppeteer = require('puppeteer');
   await pesquisaRj()
   await new Promise(resolve => setTimeout(resolve, 5000));
 })();
+
+
+// teste de função
+await page.waitForFunction(() => {
+    return !!document.querySelector('a[title="Ver Detalhes"]');
+}, { timeout: 5000 }).catch(() => {});
+
