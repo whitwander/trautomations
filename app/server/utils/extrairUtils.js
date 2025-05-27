@@ -1,8 +1,4 @@
 const CONCURRENT_LIMIT = 2;
-
-// true para não visualizar
-let noTabs = true
-
 const fs = require('fs');
 
 async function importPLimit() {
@@ -41,7 +37,6 @@ function sanitizeCSVValue(value) {
 
 module.exports = {
     sanitizeCSVValue,
-    noTabs,
     saveErrorToFile,
     importPLimit,
     logMessage,

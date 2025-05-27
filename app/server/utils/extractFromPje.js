@@ -1,4 +1,4 @@
-const { saveErrorToFile, logMessage, noTabs } = require('../utils/extrairUtils')
+const { saveErrorToFile, logMessage } = require('../utils/extrairUtils')
 
 const puppeteer = require('puppeteer-extra');
 const StealthPlugin = require('puppeteer-extra-plugin-stealth');
@@ -13,6 +13,8 @@ const constantesSitePje = {
     "btnVerDetalhes": "a[title='Ver Detalhes']"
 }
 
+let isHeadless = true
+
 let processedProcesses = new Set();
 let errorProcesso = new Set();
 
@@ -22,17 +24,17 @@ async function extractFromPje(processo, stateId) {
         return { error: `Processo ${processo} já processado.` };
     }
 
-    if(stateId === "RJ"){
-        noTabs = false
-    } else {
-        noTabs = true
+    if(stateId === "RJ") {
+        isHeadless = false
     }
 
+    console.log(isHeadless)
+
     const browser = await puppeteer.launch({ 
-        headless: noTabs,
+        headless: isHeadless,
         product: 'chrome',
         executablePath: puppeteer.executablePath(),
-        args: ['--no-sandbox', 'disable-setuid-sandbox']
+        args: ['--no-sandbox', '--disable-setuid-sandbox']
     });
     let page = await browser.newPage();
     const stateConfig = variables[stateId];
