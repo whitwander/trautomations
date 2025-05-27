@@ -1,5 +1,5 @@
 const { logMessage } = require('./extrairUtils');
-const { getBrowser, closeBrowser } = require('./browserInstance')
+const { getBrowser } = require('./browserInstance')
 
 const URLS_POR_ESTADO = {
     SP: 'https://esaj.tjsp.jus.br/cpopg/open.do',
@@ -68,7 +68,8 @@ async function extractFromEsaj(processo, estado) {
         logMessage(`Erro ao processar ${estado} ${processo}`);
         return null;
     } finally {
-        await closeBrowser();
+        await page.close();
+        await browser.close();
     }
 }
 

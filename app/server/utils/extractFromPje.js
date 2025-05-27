@@ -1,5 +1,5 @@
 const { saveErrorToFile, logMessage } = require('../utils/extrairUtils')
-const { getBrowser, closeBrowser } = require('./browserInstance');
+const { getBrowser } = require('./browserInstance');
 
 const variables = require('../variablesPJE.json');
 const { pjeError } = require('./outputFile');
@@ -26,7 +26,7 @@ async function extractFromPje(processo, stateId) {
     }
 
     const browser = await getBrowser(isHeadless);
-    let page = await browser.newPage();
+    const page = await browser.newPage();
 
     await page.setRequestInterception(true);
     page.on('request', (req) => {
@@ -102,7 +102,7 @@ async function extractFromPje(processo, stateId) {
             await page.waitForSelector(constantesSitePje.tblProcessos, { timeout: 30000 });
         } catch {
             logMessage(`Nenhum resultado encontrado para o processo ${processo} ou alerta foi acionado.`);
-            await closeBrowser();
+            await browser.close();
             return { error: `${processo} sem resultado.` };
         }
 
@@ -179,13 +179,13 @@ async function extractFromPje(processo, stateId) {
 
         await page.close();
         await popupPage.close();
-        await closeBrowser();
+        await browser.close();
         processedProcesses.add(processo);
 
         logMessage(`√ Processo ${stateId} ${processo} extraído com sucesso.`);
         return { processo, partesAdvogados, dataDistribuicao, ultimaMovimentacao, arquivado, audiencia };
     } catch (error) {
-        await closeBrowser();
+        await browser.close();
         errorProcesso.add(processo);
         await saveErrorToFile(processo, pjeError);
         logMessage(`⨉ Erro ao processar ${stateId} ${processo}`);
