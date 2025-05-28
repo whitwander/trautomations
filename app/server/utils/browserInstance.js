@@ -2,12 +2,13 @@ const puppeteer = require('puppeteer-extra');
 const StealthPlugin = require('puppeteer-extra-plugin-stealth');
 puppeteer.use(StealthPlugin());
 
+const { executablePath } = require('puppeteer'); 
 
 async function getBrowser(isHeadless = true) {
     const browser = await puppeteer.launch({
         headless: isHeadless,
         product: 'chrome',
-        executablePath: puppeteer.executablePath(),
+        executablePath: executablePath(),
         args: [
             '--no-sandbox',
             '--disable-setuid-sandbox',

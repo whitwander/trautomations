@@ -1,7 +1,7 @@
 const fs = require('fs');
 let queueInstance;
 
-async function importQueue(concurrency = 3) {
+async function importQueue(concurrency = 2) {
   if (!queueInstance) {
     const { default: PQueue } = await import('p-queue');
     queueInstance = new PQueue({ concurrency });

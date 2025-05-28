@@ -1,4 +1,21 @@
-async function extractFromPje(processo, stateId) {
+const { saveErrorToFile, logMessage } = require('./extrairUtils')
+const { getBrowser } = require('./browserInstance');
+
+const variables = require('../variablesPJE.json');
+const { pjeError } = require('./outputFile');
+const constantesSitePje = {
+    "caixaProcesso": "#fPP\\:numProcesso-inputNumeroProcessoDecoration\\:numProcesso-inputNumeroProcesso",
+    "btnSearch": "#fPP\\:searchProcessos",
+    "tblProcessos": "#fPP\\:processosTable",
+    "btnVerDetalhes": "a[title='Ver Detalhes']"
+}
+
+let isHeadless = false
+
+let processedProcesses = new Set();
+let errorProcesso = new Set();
+
+async function extractFromRj(processo, stateId) {
     if (global.cancelProcessing) return;
     if (processedProcesses.has(processo)) {
         return { error: `Processo ${processo} já processado.` };
@@ -7,15 +24,29 @@ async function extractFromPje(processo, stateId) {
     const browser = await getBrowser(isHeadless);
     const page = await browser.newPage();
 
-    await page.setRequestInterception(true);
-    page.on('request', (req) => {
-        const type = req.resourceType();
-        if (['image', 'stylesheet', 'font', 'media'].includes(type)) {
-            req.abort();
-        } else {
-            req.continue();
-        }
-    });
+    // await page.setRequestInterception(true);
+    // page.on('request', (req) => {
+    //     const type = req.resourceType();
+    //     if (['image', 'stylesheet', 'font', 'media'].includes(type)) {
+    //         req.abort();
+    //     } else {
+    //         req.continue();
+    //     }
+    // });
+
+    const stateConfig = variables[stateId];
+
+    if (!stateConfig) {
+        await browser.close();
+        logMessage(`Erro: Estado ${stateId} não encontrado no arquivo de configuração.`);
+        return { error: `${stateId} - não existe` };
+    }
+
+    if (stateConfig.working?.trim().toLowerCase() !== "sim") {
+        await browser.close();
+        logMessage(`Erro: Estado ${stateId} não está disponível para processamento.`);
+        return { error: `${stateId} - ${stateId.working}` };
+    }
 
     try {
         page.on('dialog', async (dialog) => {
@@ -30,6 +61,8 @@ async function extractFromPje(processo, stateId) {
         await new Promise(resolve => setTimeout(resolve, 1000));
         await page.click(constantesSitePje.btnSearch);
 
+        let newPage;
+
         async function consultaRj() {
             await page.waitForSelector('ul li a');
 
@@ -43,36 +76,29 @@ async function extractFromPje(processo, stateId) {
                 })
             ]);
 
-            const newPage = await newPagePromise;
-            page = newPage
-            await page.bringToFront(); 
+            newPage = await newPagePromise;
+            await newPage.bringToFront();
 
-            await page.waitForSelector(constantesSitePje.caixaProcesso, { timeout: 15000 });
-            await page.type(constantesSitePje.caixaProcesso, processo);
-            await page.click(constantesSitePje.btnSearch);
+            await newPage.waitForSelector(constantesSitePje.caixaProcesso, { timeout: 15000 });
+            await newPage.type(constantesSitePje.caixaProcesso, processo);
+            await newPage.click(constantesSitePje.btnSearch);
         }
 
-        if (stateId === "RJ") {
-            await consultaRj();
-            const detalhesJaDisponivel = await page.$(constantesSitePje.btnVerDetalhes);
-            if (detalhesJaDisponivel) {
-                logMessage(`Botão 'Ver Detalhes' já visível após primeira tentativa RJ. Pulando segunda chamada.`);
-            } else {
-                await new Promise(resolve => setTimeout(resolve, 3000));
-                await consultaRj();
-            }
-        }
+        await consultaRj()
+        await new Promise(resolve => setTimeout(resolve, 3000));
+        await consultaRj();
+
         //Teste RJ
         try {
-            await page.waitForSelector(constantesSitePje.tblProcessos, { timeout: 30000 });
+            await newPage.waitForSelector(constantesSitePje.tblProcessos, { timeout: 30000 });
         } catch {
             logMessage(`Nenhum resultado encontrado para o processo ${processo} ou alerta foi acionado.`);
             await browser.close();
             return { error: `${processo} sem resultado.` };
         }
 
-        await page.waitForSelector(constantesSitePje.btnVerDetalhes, { timeout: 15000 });
-        const linkDetalhes = await page.$(constantesSitePje.btnVerDetalhes);
+        await newPage.waitForSelector(constantesSitePje.btnVerDetalhes, { timeout: 15000 });
+        const linkDetalhes = await newPage.$(constantesSitePje.btnVerDetalhes);
         if (!linkDetalhes) throw new Error('Botão "Ver Detalhes" não encontrado');
 
         const popupPromise = new Promise(resolve => browser.once('targetcreated', resolve));
@@ -142,7 +168,7 @@ async function extractFromPje(processo, stateId) {
             return Array.from(document.querySelectorAll(selector)).map(el => el.innerText.trim()).join(' | ') || 'Não informado';
         }, stateConfig.poloAtivoParticipante);
 
-        await page.close();
+        await newPage.close();
         await popupPage.close();
         await browser.close();
         processedProcesses.add(processo);
@@ -156,4 +182,8 @@ async function extractFromPje(processo, stateId) {
         logMessage(`⨉ Erro ao processar ${stateId} ${processo}`);
         return { error: `Erro ao processar ${processo}: ${error.message}` };
     }
+}
+
+module.exports = {
+    extractFromRj
 }

@@ -21,10 +21,6 @@ async function extractFromPje(processo, stateId) {
         return { error: `Processo ${processo} já processado.` };
     }
 
-    if (stateId === "RJ") {
-        isHeadless = false
-    }
-
     const browser = await getBrowser(isHeadless);
     const page = await browser.newPage();
 
@@ -64,40 +60,7 @@ async function extractFromPje(processo, stateId) {
         await page.type(constantesSitePje.caixaProcesso, processo);
         await new Promise(resolve => setTimeout(resolve, 1000));
         await page.click(constantesSitePje.btnSearch);
-        //Teste RJ
-        async function consultaRj() {
-            await page.waitForSelector('ul li a');
-
-            const [newPagePromise] = await Promise.all([
-                new Promise(resolve => browser.once('targetcreated', target => resolve(target.page()))),
-                page.evaluate(() => {
-                    const links = Array.from(document.querySelectorAll('a'));
-                    const link = links.find(a => a.textContent.trim().toLowerCase() === 'consulta processual');
-                    new Promise(resolve => setTimeout(resolve, 1000));
-                    if (link) link.click();
-                })
-            ]);
-
-            const newPage = await newPagePromise;
-            page = newPage
-            await page.bringToFront(); 
-
-            await page.waitForSelector(constantesSitePje.caixaProcesso, { timeout: 15000 });
-            await page.type(constantesSitePje.caixaProcesso, processo);
-            await page.click(constantesSitePje.btnSearch);
-        }
-
-        if (stateId === "RJ") {
-            await consultaRj();
-            const detalhesJaDisponivel = await page.$(constantesSitePje.btnVerDetalhes);
-            if (detalhesJaDisponivel) {
-                logMessage(`Botão 'Ver Detalhes' já visível após primeira tentativa RJ. Pulando segunda chamada.`);
-            } else {
-                await new Promise(resolve => setTimeout(resolve, 3000));
-                await consultaRj();
-            }
-        }
-        //Teste RJ
+      
         try {
             await page.waitForSelector(constantesSitePje.tblProcessos, { timeout: 30000 });
         } catch {

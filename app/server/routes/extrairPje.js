@@ -8,6 +8,7 @@ const {
     importQueue
 } = require('../utils/extrairUtils');
 const { extractFromPje } = require('../utils/extractFromPje');
+const { extractFromRj } = require('../utils/extractFromRj');
 const { pjeOutput, pjeError } = require('../utils/outputFile');
 
 router.post('/', async (req, res) => {
@@ -42,8 +43,14 @@ router.post('/', async (req, res) => {
         for (const processo of processos) {
             queue.add(async () => {
                 if (global.cancelProcessing) return;
+                                                                                                                             
+                let resultado;
 
-                const resultado = await extractFromPje(processo, estado);
+                if (estado == "RJ") {
+                    resultado = await extractFromRj(processo, estado);
+                } else {
+                    resultado = await extractFromPje(processo, estado);
+                }
 
                 if (!resultado.error) {
                     let linha = `${sanitizeCSVValue(estado)};${resultado.processo};`;
@@ -62,6 +69,7 @@ router.post('/', async (req, res) => {
                 } else {
                     fs.appendFileSync(pjeError, `${estado} - ${processo}\n`, 'latin1');
                 }
+
             });
         }
     }
