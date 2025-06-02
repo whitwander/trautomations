@@ -24,15 +24,15 @@ async function extractFromRj(processo, stateId) {
     const browser = await getBrowser(isHeadless);
     const page = await browser.newPage();
 
-    // await page.setRequestInterception(true);
-    // page.on('request', (req) => {
-    //     const type = req.resourceType();
-    //     if (['image', 'stylesheet', 'font', 'media'].includes(type)) {
-    //         req.abort();
-    //     } else {
-    //         req.continue();
-    //     }
-    // });
+    await page.setRequestInterception(true);
+    page.on('request', (req) => {
+        const type = req.resourceType();
+        if (['image', 'stylesheet', 'font', 'media'].includes(type)) {
+            req.abort();
+        } else {
+            req.continue();
+        }
+    });
 
     const stateConfig = variables[stateId];
 
