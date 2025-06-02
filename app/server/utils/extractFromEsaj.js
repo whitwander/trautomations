@@ -9,7 +9,7 @@ const URLS_POR_ESTADO = {
     AM: 'https://consultasaj.tjam.jus.br/cpopg/open.do'
 };
 
-let isHeadless = false
+let isHeadless = true
 
 async function extractFromEsaj(processo, estado) {
     if (global.cancelProcessing) return
