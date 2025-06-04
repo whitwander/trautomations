@@ -5,7 +5,8 @@ const {
     sanitizeCSVValue,
     logMessage,
     setCancelFlag,
-    importQueue
+    importQueue,
+    clearQueues
 } = require('../utils/extrairUtils');
 const { extractFromPje } = require('../utils/extractFromPje');
 const { extractFromRj } = require('../utils/extractFromRj');
@@ -37,16 +38,20 @@ router.post('/', async (req, res) => {
 
     fs.writeFileSync(pjeOutput, header, 'latin1');
 
-    const queue = await importQueue();
+    const filas = [];
 
     for (const [estado, processos] of Object.entries(estados)) {
+        const concurrency = (estado === "RJ") ? 1 : 2;
+        const queue = await importQueue(estado, concurrency);
+        filas.push(queue); // <== guarda a fila
+
         for (const processo of processos) {
             queue.add(async () => {
                 if (global.cancelProcessing) return;
-                                                                                                                             
+
                 let resultado;
 
-                if (estado == "RJ") {
+                if (estado === "RJ") {
                     resultado = await extractFromRj(processo, estado);
                 } else {
                     resultado = await extractFromPje(processo, estado);
@@ -69,22 +74,27 @@ router.post('/', async (req, res) => {
                 } else {
                     fs.appendFileSync(pjeError, `${estado} - ${processo}\n`, 'latin1');
                 }
-
             });
         }
     }
 
     try {
-        await queue.onIdle();
+        // Espera todas as filas terminarem
+        await Promise.all(filas.map(queue => queue.onIdle()));
+
         if (global.cancelProcessing) {
             logMessage("❌ Processo cancelado!");
         } else {
             logMessage("✔ Processo finalizado!");
         }
+
+        clearQueues()
+
         res.status(200).end();
     } catch (err) {
         res.status(500).json({ error: 'Erro inesperado durante o processamento.' });
     }
+
 });
 
 module.exports = router;

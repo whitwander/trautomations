@@ -95,7 +95,7 @@
         "divDadosProcesso": "#j_id142\\:processoTrfViewView\\:j_id145",
         "tbodyMovimentacaoProcesso": "#j_id142\\:processoEvento\\:tb",
         "poloAtivoParticipante": "#j_id142\\:processoPartesPoloAtivoResumidoList\\:tb .text-bold",
-        "working": "ERR_HTTP2_PROTOCOL_ERROR time out"
+        "working": "sim"
     },
     "TRF5": {
         "url": "https://pje1g.trf5.jus.br/pje/ConsultaPublica/listView.seam",
@@ -109,6 +109,6 @@
         "divDadosProcesso": "#j_id145\\:processoTrfViewView\\:j_id148",
         "tbodyMovimentacaoProcesso": "#j_id145\\:processoEvento\\:tb",
         "poloAtivoParticipante": "#j_id145\\:processoPartesPoloAtivoResumidoList\\:tb .text-bold",
-        "working": "em teste"
+        "working": "sim"
     }
 }

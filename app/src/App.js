@@ -37,7 +37,7 @@ function App() {
         };
 
         // Separa por sistema automaticamente
-        const pjeStates = ['AP', 'CE', 'DF', 'ES', 'MA', 'MG', 'PB', 'PI', 'RJ','RO', 'RN', 'TRF1', 'TRF3', 'TRF5', 'TRF6'];
+        const pjeStates = ['AP', 'CE', 'DF', 'ES', 'MA', 'PB', 'PI', 'MG', 'RJ', 'RO', 'TRF1', 'TRF5'];
         const esajStates = ['AC', 'AL', 'AM', 'MS', 'SP'];
 
         const dadosPje = {};

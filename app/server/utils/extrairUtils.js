@@ -1,12 +1,16 @@
 const fs = require('fs');
-let queueInstance;
+const queueMap = {};
 
-async function importQueue(concurrency = 2) {
-  if (!queueInstance) {
+async function importQueue(estado, concurrency = 2) {
+  if (!queueMap[estado]) {
     const { default: PQueue } = await import('p-queue');
-    queueInstance = new PQueue({ concurrency });
+    queueMap[estado] = new PQueue({ concurrency });
   }
-  return queueInstance;
+  return queueMap[estado];
+}
+
+function clearQueues() {
+  queueMap = {}; // limpa todas as filas após uso
 }
 
 global.logs = [];
@@ -43,5 +47,6 @@ module.exports = {
     saveErrorToFile,
     logMessage,
     importQueue,
+    clearQueues,
     setCancelFlag
 };

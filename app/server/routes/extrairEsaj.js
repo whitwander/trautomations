@@ -1,7 +1,7 @@
 const express = require('express');
 const fs = require('fs');
 const { extractFromEsaj } = require('../utils/extractFromEsaj');
-const { logMessage, sanitizeCSVValue, importQueue } = require('../utils/extrairUtils');
+const { logMessage, sanitizeCSVValue, importQueue, clearQueues } = require('../utils/extrairUtils');
 const { esajOutput, esajError } = require('../utils/outputFile')
 
 const router = express.Router();
@@ -27,15 +27,14 @@ router.post('/', async (req, res) => {
 
     fs.writeFileSync(esajOutput, header, 'latin1');
 
-    const promessas = [];
-
-    const queue = await importQueue();
+    const queue = await importQueue(); 
 
     for (const [estado, processos] of Object.entries(estados)) {
         for (const processo of processos) {
             queue.add(async () => {
-                if (global.cancelProcessing) return
+                if (global.cancelProcessing) return;
                 const result = await extractFromEsaj(processo, estado);
+
                 if (result) {
                     logMessage(`√ Processo ${estado} ${processo} extraído com sucesso.`);
                     let linha = `${sanitizeCSVValue(estado)};${result.processo};${result.valorCausa};`;
@@ -48,8 +47,8 @@ router.post('/', async (req, res) => {
                         linha += `${sanitizeCSVValue(result.situacaoProcesso)};`;
                     if (incluirUltimaMovimentacao)
                         linha += `${sanitizeCSVValue(result.ultimaMovimentacao)};`;
-                    linha += "\n"
 
+                    linha += "\n";
                     fs.appendFileSync(esajOutput, linha, 'latin1');
                 } else {
                     fs.appendFileSync(esajError, `${estado} - ${processo}\n`, 'latin1');
@@ -58,14 +57,15 @@ router.post('/', async (req, res) => {
         }
     }
 
-    await Promise.all(promessas);
-    await queue.onIdle();
+    await queue.onIdle(); 
 
     if (global.cancelProcessing) {
         logMessage("❌ Processo cancelado!");
     } else {
         logMessage("✔ Processo finalizado!");
     }
+
+    clearQueues(); 
 
     res.status(200).end();
 });
