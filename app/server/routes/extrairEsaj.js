@@ -1,7 +1,8 @@
 const express = require('express');
 const fs = require('fs');
+const getPQueue = require('../utils/pqueue-wrapper');
 const { extractFromEsaj } = require('../utils/extractFromEsaj');
-const { logMessage, sanitizeCSVValue, importQueue, clearQueues } = require('../utils/extrairUtils');
+const { logMessage, sanitizeCSVValue, clearQueues } = require('../utils/extrairUtils');
 const { esajOutput, esajError } = require('../utils/outputFile')
 
 const router = express.Router();
@@ -27,7 +28,8 @@ router.post('/', async (req, res) => {
 
     fs.writeFileSync(esajOutput, header, 'latin1');
 
-    const queue = await importQueue(); 
+    const PQueue = await getPQueue();
+    const queue = new PQueue({ concurrency: 2 });
 
     for (const [estado, processos] of Object.entries(estados)) {
         for (const processo of processos) {
@@ -57,7 +59,7 @@ router.post('/', async (req, res) => {
         }
     }
 
-    await queue.onIdle(); 
+    await queue.onIdle();
 
     if (global.cancelProcessing) {
         logMessage("❌ Processo cancelado!");
@@ -65,7 +67,7 @@ router.post('/', async (req, res) => {
         logMessage("✔ Processo finalizado!");
     }
 
-    clearQueues(); 
+    clearQueues();
 
     res.status(200).end();
 });

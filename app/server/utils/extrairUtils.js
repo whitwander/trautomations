@@ -10,7 +10,10 @@ async function importQueue(estado, concurrency = 2) {
 }
 
 function clearQueues() {
-  queueMap = {}; // limpa todas as filas após uso
+  for (const estado in queueMap) {
+    queueMap[estado].clear(); // limpa tarefas pendentes
+    delete queueMap[estado];  // remove a fila do mapa
+  }
 }
 
 global.logs = [];

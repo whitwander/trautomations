@@ -1,11 +1,11 @@
 const puppeteer = require('puppeteer-extra');
 const StealthPlugin = require('puppeteer-extra-plugin-stealth');
 puppeteer.use(StealthPlugin());
+const { executablePath } = require('puppeteer');
 
-const { executablePath } = require('puppeteer'); 
 
 async function getBrowser(isHeadless = true) {
-    const browser = await puppeteer.launch({
+    return await puppeteer.launch({
         headless: isHeadless,
         product: 'chrome',
         executablePath: executablePath(),
@@ -18,7 +18,6 @@ async function getBrowser(isHeadless = true) {
             '--disable-features=site-per-process'
         ]
     });
-    return browser
 }
 
 module.exports = { getBrowser };

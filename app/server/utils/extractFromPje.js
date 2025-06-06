@@ -21,7 +21,7 @@ async function extractFromPje(processo, stateId) {
         return { error: `Processo ${processo} já processado.` };
     }
 
-    const browser = await getBrowser(isHeadless);
+    const browser = await getBrowser(stateId, isHeadless);
     const page = await browser.newPage();
 
     await page.setRequestInterception(true);

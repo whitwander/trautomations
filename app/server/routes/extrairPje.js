@@ -1,11 +1,11 @@
 const express = require('express');
 const router = express.Router();
 const fs = require('fs');
+const getPQueue = require('../utils/pqueue-wrapper');
 const {
     sanitizeCSVValue,
     logMessage,
     setCancelFlag,
-    importQueue,
     clearQueues
 } = require('../utils/extrairUtils');
 const { extractFromPje } = require('../utils/extractFromPje');
@@ -41,8 +41,11 @@ router.post('/', async (req, res) => {
     const filas = [];
 
     for (const [estado, processos] of Object.entries(estados)) {
+
         const concurrency = (estado === "RJ") ? 1 : 2;
-        const queue = await importQueue(estado, concurrency);
+        const PQueue = await getPQueue();
+        const queue = new PQueue({ concurrency });
+
         filas.push(queue); // <== guarda a fila
 
         for (const processo of processos) {
