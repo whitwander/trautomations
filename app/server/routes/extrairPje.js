@@ -11,8 +11,10 @@ const {
 const { extractFromPje } = require('../utils/extractFromPje');
 const { extractFromRj } = require('../utils/extractFromRj');
 const { pjeOutput, pjeError } = require('../utils/outputFile');
+const { initProgress, incrementProgress } = require('../utils/progressManager');
 
 router.post('/', async (req, res) => {
+
     global.logs = [];
     setCancelFlag(false);
 
@@ -40,6 +42,9 @@ router.post('/', async (req, res) => {
 
     const filas = [];
 
+    const totalProcessos = Object.values(estados).reduce((acc, lista) => acc + lista.length, 0);
+    initProgress(totalProcessos);
+
     for (const [estado, processos] of Object.entries(estados)) {
 
         const concurrency = (estado === "RJ") ? 1 : 2;
@@ -59,6 +64,8 @@ router.post('/', async (req, res) => {
                 } else {
                     resultado = await extractFromPje(processo, estado);
                 }
+
+                incrementProgress();
 
                 if (!resultado.error) {
                     let linha = `${sanitizeCSVValue(estado)};${resultado.processo};`;

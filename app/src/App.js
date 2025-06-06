@@ -3,6 +3,7 @@ import "./App.css";
 import Logs from "./components/Logs";
 import processarArquivoXLSX from "./components/Regex";
 import { ArchiveRestore, SquareX } from 'lucide-react';
+import ProgressBar from "./components/ProgressBar";
 
 function App() {
   const [status, setStatus] = useState("...");
@@ -156,6 +157,7 @@ function App() {
 
         <div className="status">
           <p className="status-title">{status}</p>
+          <ProgressBar />
           <Logs />
         </div>
       </div>

@@ -4,6 +4,7 @@ const getPQueue = require('../utils/pqueue-wrapper');
 const { extractFromEsaj } = require('../utils/extractFromEsaj');
 const { logMessage, sanitizeCSVValue, clearQueues } = require('../utils/extrairUtils');
 const { esajOutput, esajError } = require('../utils/outputFile')
+const { initProgress, incrementProgress } = require('../utils/progressManager');
 
 const router = express.Router();
 
@@ -31,11 +32,16 @@ router.post('/', async (req, res) => {
     const PQueue = await getPQueue();
     const queue = new PQueue({ concurrency: 2 });
 
+    const totalProcessos = Object.values(estados).reduce((acc, lista) => acc + lista.length, 0);
+    initProgress(totalProcessos);
+
     for (const [estado, processos] of Object.entries(estados)) {
         for (const processo of processos) {
             queue.add(async () => {
                 if (global.cancelProcessing) return;
                 const result = await extractFromEsaj(processo, estado);
+
+                incrementProgress();
 
                 if (result) {
                     logMessage(`√ Processo ${estado} ${processo} extraído com sucesso.`);

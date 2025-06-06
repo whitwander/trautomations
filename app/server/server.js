@@ -14,6 +14,7 @@ app.use('/extrairPje', require('./routes/extrairPje'));
 app.use('/extrairEsaj', require('./routes/extrairEsaj'))
 app.use('/logs', require('./routes/logs'));
 app.use('/cancelar', require('./routes/cancelar'));
+app.use('/progress', require('./routes/progress'));
 
 app.listen(port, () => {
     console.log(`Servidor rodando em http://localhost:${port}`);
