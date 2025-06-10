@@ -85,6 +85,8 @@ function App() {
           }
 
           resultados.push(resultText);
+
+          console.log(resultados)
         };
 
         await enviar("extrairPje", dadosPje);

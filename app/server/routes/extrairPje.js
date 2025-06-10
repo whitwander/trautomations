@@ -51,8 +51,6 @@ router.post('/', async (req, res) => {
         const PQueue = await getPQueue();
         const queue = new PQueue({ concurrency });
 
-        filas.push(queue); // <== guarda a fila
-
         for (const processo of processos) {
             queue.add(async () => {
                 if (global.cancelProcessing) return;
@@ -86,7 +84,11 @@ router.post('/', async (req, res) => {
                 }
             });
         }
+
+        await queue.onIdle();
     }
+
+    clearQueues()
 
     try {
         // Espera todas as filas terminarem
@@ -97,8 +99,6 @@ router.post('/', async (req, res) => {
         } else {
             logMessage("✔ Processo finalizado!");
         }
-
-        clearQueues()
 
         res.status(200).end();
     } catch (err) {
