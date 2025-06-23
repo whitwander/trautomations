@@ -23,7 +23,7 @@ Este projeto utiliza **Puppeteer** para extrair informações sobre processos ju
 
 ## 📌 Funcionalidades
 
-- Acessa sites de tribunais estaduais configurados no arquivo `variables.json` e `variablesPJE.json`
+- Acessa sites de tribunais estaduais configurados no arquivo `variables.json`
 - Pesquisa processos informados no input de arquivo `.xlsx`
 - Extrai informações como:
   - Partes e advogados
@@ -49,8 +49,8 @@ Este projeto utiliza as seguintes bibliotecas:
 
 1. Clone este repositório:
    ```bash
-   git clone https://github.com/whitwander/trs-automations.git
-   cd trs-automations
+   git clone https://github.com/whitwander/trautomations.git
+   cd trautomations
    ```
 
 2. Execute o comando duas vezes, uma para o React e outra para o servidor em Express nas pastas (App e Server) e instale as dependências:
