@@ -1,23 +1,33 @@
-const puppeteer = require('puppeteer-extra');
+// browserInstance.js
+const puppeteerExtra = require('puppeteer-extra');
 const StealthPlugin = require('puppeteer-extra-plugin-stealth');
-puppeteer.use(StealthPlugin());
-const { executablePath } = require('puppeteer');
+const fs = require('fs');
+const os = require('os');
+const path = require('path');
 
+// Adiciona o plugin stealth
+puppeteerExtra.use(StealthPlugin());
 
 async function getBrowser(isHeadless = true) {
-    return await puppeteer.launch({
-        headless: isHeadless,
-        product: 'chrome',
-        executablePath: executablePath(),
-        args: [
-            '--no-sandbox',
-            '--disable-setuid-sandbox',
-            '--disable-dev-shm-usage',
-            '--disable-extensions',
-            '--disable-infobars',
-            '--disable-features=site-per-process'
-        ]
-    });
+  // Gera pasta temporária única
+  const tempDir = fs.mkdtempSync(path.join(os.tmpdir(), 'puppeteer_profile_'));
+  console.log(`[BrowserInstance] Usando perfil temporário: ${tempDir}`);
+
+  const browser = await puppeteerExtra.launch({
+    headless: isHeadless,
+    userDataDir: tempDir,
+    args: [
+      '--no-sandbox',
+      '--disable-setuid-sandbox',
+      '--disable-dev-shm-usage',
+      '--disable-extensions',
+      '--disable-infobars',
+      '--disable-features=site-per-process'
+    ]
+  });
+
+  // Retorna ambos
+  return { browser, tempDir };
 }
 
 module.exports = { getBrowser };

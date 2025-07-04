@@ -1,5 +1,6 @@
 const { saveErrorToFile, logMessage } = require('../utils/extrairUtils')
 const { getBrowser } = require('./browserInstance');
+const fs = require('fs')
 
 const variables = require('../variablesPJE.json');
 const { pjeError } = require('./outputFile');
@@ -10,7 +11,7 @@ const constantesSitePje = {
     "btnVerDetalhes": "a[title='Ver Detalhes']"
 }
 
-let isHeadless = false
+let isHeadless = true
 
 let processedProcesses = new Set();
 let errorProcesso = new Set();
@@ -21,7 +22,7 @@ async function extractFromPje(processo, stateId) {
         return { error: `Processo ${processo} já processado.` };
     }
 
-    const browser = await getBrowser(stateId, isHeadless);
+    const { browser, tempDir } = await getBrowser(isHeadless);
     const page = await browser.newPage();
 
     await page.setRequestInterception(true);
@@ -60,7 +61,7 @@ async function extractFromPje(processo, stateId) {
         await page.type(constantesSitePje.caixaProcesso, processo);
         await new Promise(resolve => setTimeout(resolve, 1000));
         await page.click(constantesSitePje.btnSearch);
-      
+
         try {
             await page.waitForSelector(constantesSitePje.tblProcessos, { timeout: 30000 });
         } catch {
@@ -146,9 +147,19 @@ async function extractFromPje(processo, stateId) {
         processedProcesses.add(processo);
 
         logMessage(`√ Processo ${stateId} ${processo} extraído com sucesso.`);
+
+        if (tempDir) {
+            fs.rmSync(tempDir, { recursive: true, force: true });
+            console.log(`[Cleanup] Perfil TEMP removido: ${tempDir}`);
+        }
         return { processo, partesAdvogados, dataDistribuicao, ultimaMovimentacao, arquivado, audiencia };
     } catch (error) {
         await browser.close();
+
+        if (tempDir) {
+            fs.rmSync(tempDir, { recursive: true, force: true });
+            console.log(`[Cleanup] Perfil TEMP removido: ${tempDir}`);
+        }
         errorProcesso.add(processo);
         await saveErrorToFile(processo, pjeError);
         logMessage(`⨉ Erro ao processar ${stateId} ${processo}`);

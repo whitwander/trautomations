@@ -1,5 +1,6 @@
 const { logMessage } = require('./extrairUtils');
 const { getBrowser } = require('./browserInstance')
+const fs = require('fs')
 
 const URLS_POR_ESTADO = {
     SP: 'https://esaj.tjsp.jus.br/cpopg/open.do',
@@ -20,7 +21,7 @@ async function extractFromEsaj(processo, estado) {
         return null;
     }
 
-    const browser = await getBrowser(isHeadless);
+    const { browser, tempDir } = await getBrowser(isHeadless);
     const page = await browser.newPage();
 
     await page.setRequestInterception(true);
@@ -48,7 +49,7 @@ async function extractFromEsaj(processo, estado) {
 
         if (regras[estado]) {
             processoFormatado = processo.replace(regras[estado], '');
-          }
+        }
 
         await page.type('#numeroDigitoAnoUnificado', processoFormatado, { delay: 100 });
         await page.click('#botaoConsultarProcessos');
@@ -80,6 +81,11 @@ async function extractFromEsaj(processo, estado) {
     } finally {
         await page.close();
         await browser.close();
+
+        if (tempDir) {
+            fs.rmSync(tempDir, { recursive: true, force: true });
+            console.log(`[Cleanup] Perfil TEMP removido: ${tempDir}`);
+        }
     }
 }
 

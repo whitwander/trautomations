@@ -9,6 +9,7 @@ const { initProgress, incrementProgress } = require('../utils/progressManager');
 const router = express.Router();
 
 router.post('/', async (req, res) => {
+
     const processosPorEstado = req.body;
 
     if (!processosPorEstado || typeof processosPorEstado !== 'object') {

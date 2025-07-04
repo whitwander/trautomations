@@ -21,7 +21,7 @@ async function extractFromRj(processo, stateId) {
         return { error: `Processo ${processo} já processado.` };
     }
 
-    const browser = await getBrowser(isHeadless);
+    const {browser, tempDir} = await getBrowser(isHeadless);
     const page = await browser.newPage();
 
     await page.setRequestInterception(true);
