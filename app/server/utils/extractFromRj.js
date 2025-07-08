@@ -1,5 +1,6 @@
 const { saveErrorToFile, logMessage } = require('./extrairUtils')
 const { getBrowser } = require('./browserInstance');
+const fs = require('fs');
 
 const variables = require('../variablesPJE.json');
 const { pjeError } = require('./outputFile');
@@ -21,7 +22,7 @@ async function extractFromRj(processo, stateId) {
         return { error: `Processo ${processo} já processado.` };
     }
 
-    const {browser, tempDir} = await getBrowser(isHeadless);
+    const { browser, tempDir } = await getBrowser(isHeadless);
     const page = await browser.newPage();
 
     await page.setRequestInterception(true);
@@ -171,12 +172,20 @@ async function extractFromRj(processo, stateId) {
         await newPage.close();
         await popupPage.close();
         await browser.close();
+        if (tempDir) {
+            fs.rmSync(tempDir, { recursive: true, force: true });
+            console.log(`[Cleanup] Perfil TEMP removido: ${tempDir}`);
+        }
         processedProcesses.add(processo);
 
         logMessage(`√ Processo ${stateId} ${processo} extraído com sucesso.`);
         return { processo, partesAdvogados, dataDistribuicao, ultimaMovimentacao, arquivado, audiencia };
     } catch (error) {
         await browser.close();
+        if (tempDir) {
+            fs.rmSync(tempDir, { recursive: true, force: true });
+            console.log(`[Cleanup] Perfil TEMP removido: ${tempDir}`);
+        }
         errorProcesso.add(processo);
         await saveErrorToFile(processo, pjeError);
         logMessage(`⨉ Erro ao processar ${stateId} ${processo}`);
