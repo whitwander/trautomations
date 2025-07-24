@@ -38,8 +38,8 @@ function App() {
         };
 
         // Separa por sistema automaticamente
-        const pjeStates = ['AP', 'CE', 'DF', 'ES', 'MA', 'PB', 'PI', 'MG', 'RJ', 'RO', 'TRF1', 'TRF5'];
-        const esajStates = ['AC', 'AL', 'AM', 'MS', 'SP'];
+        const pjeStates = ['AP', 'CE', 'ES', 'MA', 'PI', 'MG', 'RO', 'TRF1', 'TRF5'];
+        const esajStates = ['AC', 'AL', 'SP'];
 
         const dadosPje = {};
         const dadosEsaj = {};
@@ -126,7 +126,7 @@ function App() {
       <h1 className="container-title">Pesquisa de Processos</h1>
       <div className="search-states">
         <h3>Estados pesquisados</h3>
-        <p><span>PJE:</span> AP - CE - DF - ES - MA - MG - PB - PI - RJ - TRF/1-3-5-6<br/><span>ESAJ:</span> AC - AL - AM - MS - SP</p>
+        <p><span>PJE:</span> AP - CE - ES - MA - MG - PI - TRF/1-5<br/><span>ESAJ:</span> AC - AL - SP</p>
       </div>
       <div className="container">
         <div className="left-side-box">

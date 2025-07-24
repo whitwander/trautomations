@@ -24,15 +24,18 @@ export default function ProgressBar() {
           borderRadius: '10px',
           height: '100%',
           fontSize: '14px',
-          justifyContent: 'center',
-          backgroundColor:'rgb(111, 196, 218)',
+          backgroundColor: 'rgb(111, 196, 218)',
           transition: 'width 0.3s ease',
-          textAlign: 'center',
           color: 'white',
-          fontWeight: '700'
+          fontWeight: '700',
+          display: 'flex',
+          alignItems: 'center', // centraliza verticalmente
+          justifyContent: 'center', // centraliza horizontalmente
         }}
       >
-        {progress}%
+        <div style={{ display: 'flex', justifyContent: 'center', paddingLeft: '30px' }}>
+          {progress}%
+        </div>
       </div>
     </div>
   );
