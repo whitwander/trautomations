@@ -12,6 +12,7 @@ app.use(express.urlencoded({ limit: "100mb", extended: true }));
 // Rotas
 app.use('/extrairPje', require('./routes/extrairPje'));
 app.use('/extrairEsaj', require('./routes/extrairEsaj'))
+app.use('/extrairRs', require('./routes/extrairRS'))
 app.use('/logs', require('./routes/logs'));
 app.use('/cancelar', require('./routes/cancelar'));
 app.use('/progress', require('./routes/progress'));
