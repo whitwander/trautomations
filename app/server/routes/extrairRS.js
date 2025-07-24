@@ -8,7 +8,8 @@ const {
     setCancelFlag,
     clearQueues
 } = require('../utils/extrairUtils');
-const { pjeOutput, pjeError } = require('../utils/outputFile');
+const { rsError, rsOutput } = require('../utils/outputFile');
+const { extractFromRs } = require('../utils/extractFromRs')
 const { initProgress, incrementProgress } = require('../utils/progressManager');
 
 router.post('/', async (req, res) => {
@@ -23,9 +24,10 @@ router.post('/', async (req, res) => {
         });
     }
 
+    const { config = {}, ...estados } = processosPorEstado;
     let header = "Estado;Processo;Situação;Última Movimentação\n";
 
-    fs.writeFileSync(pjeOutput, header, 'latin1'); // ALTERAR PASTA
+    fs.writeFileSync(rsOutput, header, 'latin1'); // ALTERAR PASTA
 
     const filas = [];
 
@@ -34,7 +36,7 @@ router.post('/', async (req, res) => {
 
     for (const [estado, processos] of Object.entries(estados)) {
 
-        const concurrency = 1
+        const concurrency = 2
         const PQueue = await getPQueue();
         const queue = new PQueue({ concurrency });
 
@@ -43,17 +45,17 @@ router.post('/', async (req, res) => {
                 if (global.cancelProcessing) return;
 
                 let resultado;
-                
-                resultado = await extractFromRs(processo, estado);
+
+                resultado = await extractFromRs(processo);
 
                 incrementProgress();
 
                 if (!resultado.error) {
                     let linha = `${sanitizeCSVValue(estado)};${resultado.processo};${sanitizeCSVValue(resultado.situaçãoProcesso)};${sanitizeCSVValue(resultado.ultimaMovimentacao)}\n`;
 
-                    fs.appendFileSync(pjeOutput, linha, 'latin1');
+                    fs.appendFileSync(rsOutput, linha, 'latin1');
                 } else {
-                    fs.appendFileSync(pjeError, `${estado} - ${processo}\n`, 'latin1');
+                    fs.appendFileSync(rsError, `${estado} - ${processo}\n`, 'latin1');
                 }
             });
         }

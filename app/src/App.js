@@ -40,15 +40,19 @@ function App() {
         // Separa por sistema automaticamente
         const pjeStates = ['AP', 'CE', 'ES', 'MA', 'PI', 'MG', 'RO', 'TRF1', 'TRF5'];
         const esajStates = ['AC', 'AL', 'SP'];
+        const rsState = ['RS']
 
         const dadosPje = {};
         const dadosEsaj = {};
+        const dadosRs = {};
 
         for (const estado in processosPorEstado) {
           if (pjeStates.includes(estado)) {
             dadosPje[estado] = processosPorEstado[estado];
           } else if (esajStates.includes(estado)) {
             dadosEsaj[estado] = processosPorEstado[estado];
+          } else if(rsState.includes(estado)){
+            dadosRs[estado] = processosPorEstado[estado];
           }
         }
 
@@ -91,6 +95,7 @@ function App() {
 
         await enviar("extrairPje", dadosPje);
         await enviar("extrairEsaj", dadosEsaj);
+        await enviar("extrairRs", dadosRs);
 
 
         setStatus("Processamento concluído!");

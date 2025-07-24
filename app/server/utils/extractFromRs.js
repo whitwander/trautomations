@@ -1,85 +1,98 @@
-import puppeteer from 'puppeteer';
+const { saveErrorToFile, logMessage } = require('./extrairUtils')
+const { getBrowser } = require('./browserInstance');
+const fs = require('fs');
 
-async function extractRs(processo) {
-    const browser = await puppeteer.launch({
-        headless: false,
-    });
+const { rsError } = require('./outputFile');
+let isHeadless = true
+
+async function extractFromRs(processo) {
+
+    const { browser, tempDir } = await getBrowser(isHeadless);
     const page = await browser.newPage();
 
     const stateId = "RS"
 
     await page.setUserAgent('Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/115.0.0.0 Safari/537.36');
 
-    await page.goto('https://www.tjrs.jus.br/novo/busca/?return=proc&client=wp_index', { waitUntil: 'networkidle2' });
+    try {
+        await page.goto('https://www.tjrs.jus.br/novo/busca/?return=proc&client=wp_index', { waitUntil: 'networkidle2' });
 
-    const frame = page.frames().find(f => f.name() === 'iframeBusca');
+        const frame = page.frames().find(f => f.name() === 'iframeBusca');
 
-    if (frame) {
-        await frame.waitForSelector('input[formcontrolname="numeroProcesso"]', { visible: true });
-        await frame.type('input[formcontrolname="numeroProcesso"]', processo);
-        await frame.waitForSelector('button[type="submit"]', { visible: true });
-        await frame.click('button[type="submit"]');
+        if (frame) {
+            await frame.waitForSelector('input[formcontrolname="numeroProcesso"]', { visible: true });
+            await frame.type('input[formcontrolname="numeroProcesso"]', processo);
+            await frame.waitForSelector('button[type="submit"]', { visible: true });
+            await frame.click('button[type="submit"]');
 
-        await frame.waitForSelector('span.titulo-detalhe', {
-            visible: true,
-            timeout: 15000
-        });
+            await frame.waitForSelector('span.titulo-detalhe', {
+                visible: true,
+                timeout: 15000
+            });
 
-        const situacao = await frame.evaluate(() => {
-            const spans = Array.from(document.querySelectorAll('span.titulo-detalhe'));
-            for (const span of spans) {
-                if (span.textContent.trim() === 'Situação do Processo:') {
-                    let node = span.nextSibling;
-                    while (node && node.nodeType !== Node.TEXT_NODE) {
-                        node = node.nextSibling;
+            const situacao = await frame.evaluate(() => {
+                const spans = Array.from(document.querySelectorAll('span.titulo-detalhe'));
+                for (const span of spans) {
+                    if (span.textContent.trim() === 'Situação do Processo:') {
+                        let node = span.nextSibling;
+                        while (node && node.nodeType !== Node.TEXT_NODE) {
+                            node = node.nextSibling;
+                        }
+                        return node ? node.nodeValue.trim() : null;
                     }
-                    return node ? node.nodeValue.trim() : null;
                 }
-            }
-            return null;
-        });
+                return null;
+            });
 
-        const primeiraLinha = await frame.evaluate(() => {
-            function getTableHeaders(table) {
-                const ths = table.querySelectorAll('thead th');
-                return Array.from(ths).map(th => th.innerText.trim());
-            }
+            const primeiraLinha = await frame.evaluate(() => {
+                function getTableHeaders(table) {
+                    const ths = table.querySelectorAll('thead th');
+                    return Array.from(ths).map(th => th.innerText.trim());
+                }
 
-            const nomesColunasEsperados = ['Evento', 'Data', 'Descrição'];
-            const tabelas = Array.from(document.querySelectorAll('table'));
+                const nomesColunasEsperados = ['Evento', 'Data', 'Descrição'];
+                const tabelas = Array.from(document.querySelectorAll('table'));
 
-            for (const tabela of tabelas) {
-                const headers = getTableHeaders(tabela);
+                for (const tabela of tabelas) {
+                    const headers = getTableHeaders(tabela);
 
-                const bate = nomesColunasEsperados.every((nome, idx) => headers[idx] === nome);
-                if (!bate) continue;
+                    const bate = nomesColunasEsperados.every((nome, idx) => headers[idx] === nome);
+                    if (!bate) continue;
 
-                const tbody = tabela.querySelector('tbody');
-                if (!tbody) continue;
+                    const tbody = tabela.querySelector('tbody');
+                    if (!tbody) continue;
 
-                const primeiraTr = tbody.querySelector('tr');
-                if (!primeiraTr) continue;
+                    const primeiraTr = tbody.querySelector('tr');
+                    if (!primeiraTr) continue;
 
-                const colunas = primeiraTr.querySelectorAll('td');
-                return {
-                    evento: colunas[0]?.innerText.trim() || null,
-                    data: colunas[1]?.innerText.trim() || null,
-                    descricao: colunas[2]?.innerText.trim() || null,
-                };
-            }
+                    const colunas = primeiraTr.querySelectorAll('td');
+                    return {
+                        evento: colunas[0]?.innerText.trim() || null,
+                        data: colunas[1]?.innerText.trim() || null,
+                        descricao: colunas[2]?.innerText.trim() || null,
+                    };
+                }
 
-            return null; 
-        });
+                return null;
+            });
 
+            // console.log('Situação:', JSON.stringify(situacao, null, 2), JSON.stringify(primeiraLinha, null, 2));
 
-        console.log('Situação:', JSON.stringify(situacao, null, 2), JSON.stringify(primeiraLinha, null, 2));
-
-        logMessage(`√ Processo ${stateId} ${processo} extraído com sucesso.`);
-        return {stateId, processo, situacao, primeiraLinha}
-    } else {
-        console.log('iframeBusca não encontrado');
+            logMessage(`√ Processo ${stateId} ${processo} extraído com sucesso.`);
+            return { stateId, processo, situacao, primeiraLinha }
+        }
+    } catch (error) {
+        await browser.close();
+        if (tempDir) {
+            fs.rmSync(tempDir, { recursive: true, force: true });
+            console.log(`[Cleanup] Perfil TEMP removido: ${tempDir}`);
+        }
+        await saveErrorToFile(processo, rsError);
+        logMessage(`⨉ Erro ao processar ${stateId} ${processo}`);
+        return { error: `Erro ao processar ${processo}: ${error.message}` };
     }
-
 }
 
-extractRs()
+module.exports = {
+    extractFromRs
+}
