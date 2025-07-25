@@ -76,20 +76,26 @@ async function extractFromRs(processo) {
                 return null;
             });
 
-            // console.log('Situação:', JSON.stringify(situacao, null, 2), JSON.stringify(primeiraLinha, null, 2));
+            const resultadoString = primeiraLinha
+                ? `${primeiraLinha.evento} | ${primeiraLinha.data} | ${primeiraLinha.descricao}`
+                : 'Nenhum dado encontrado';
 
             logMessage(`√ Processo ${stateId} ${processo} extraído com sucesso.`);
-            return { stateId, processo, situacao, primeiraLinha }
+
+            return { stateId, processo, situacao, resultadoString }
         }
     } catch (error) {
-        await browser.close();
-        if (tempDir) {
-            fs.rmSync(tempDir, { recursive: true, force: true });
-            console.log(`[Cleanup] Perfil TEMP removido: ${tempDir}`);
-        }
         await saveErrorToFile(processo, rsError);
         logMessage(`⨉ Erro ao processar ${stateId} ${processo}`);
-        return { error: `Erro ao processar ${processo}: ${error.message}` };
+        console.log(error)
+        return error
+    } finally {
+        await page.close();
+        await browser.close();
+
+        if (tempDir) {
+            fs.rmSync(tempDir, { recursive: true, force: true });
+        }
     }
 }
 

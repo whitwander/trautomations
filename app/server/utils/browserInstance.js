@@ -11,7 +11,6 @@ puppeteerExtra.use(StealthPlugin());
 async function getBrowser(isHeadless = true) {
   // Gera pasta temporária única
   const tempDir = fs.mkdtempSync(path.join(os.tmpdir(), 'puppeteer_profile_'));
-  console.log(`[BrowserInstance] Usando perfil temporário: ${tempDir}`);
 
   const browser = await puppeteerExtra.launch({
     headless: isHeadless,

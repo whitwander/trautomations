@@ -51,7 +51,7 @@ router.post('/', async (req, res) => {
                 incrementProgress();
 
                 if (!resultado.error) {
-                    let linha = `${sanitizeCSVValue(estado)};${resultado.processo};${sanitizeCSVValue(resultado.situaçãoProcesso)};${sanitizeCSVValue(resultado.ultimaMovimentacao)}\n`;
+                    let linha = `${sanitizeCSVValue(estado)};${resultado.processo};${sanitizeCSVValue(resultado.situacao)};${sanitizeCSVValue(resultado.resultadoString)}\n`;
 
                     fs.appendFileSync(rsOutput, linha, 'latin1');
                 } else {

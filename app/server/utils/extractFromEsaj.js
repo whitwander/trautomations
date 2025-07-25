@@ -84,7 +84,6 @@ async function extractFromEsaj(processo, estado) {
 
         if (tempDir) {
             fs.rmSync(tempDir, { recursive: true, force: true });
-            console.log(`[Cleanup] Perfil TEMP removido: ${tempDir}`);
         }
     }
 }
