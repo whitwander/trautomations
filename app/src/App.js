@@ -97,7 +97,6 @@ function App() {
         await enviar("extrairEsaj", dadosEsaj);
         await enviar("extrairRs", dadosRs);
 
-
         setStatus("Processamento concluído!");
 
       } catch (error) {

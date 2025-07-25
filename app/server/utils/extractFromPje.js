@@ -155,6 +155,7 @@ async function extractFromPje(processo, stateId) {
         return { processo, partesAdvogados, dataDistribuicao, ultimaMovimentacao, arquivado, audiencia };
     } catch (error) {
         await browser.close();
+        console.log(error)
 
         if (tempDir) {
             fs.rmSync(tempDir, { recursive: true, force: true });

@@ -77,6 +77,7 @@ async function extractFromEsaj(processo, estado) {
         return { estado, processo, ...data };
     } catch (error) {
         logMessage(`Erro ao processar ${estado} ${processo}`);
+        console.log(error)
         return null;
     } finally {
         await page.close();

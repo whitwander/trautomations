@@ -27,7 +27,7 @@ async function extractFromRs(processo) {
 
             await frame.waitForSelector('span.titulo-detalhe', {
                 visible: true,
-                timeout: 15000
+                timeout: 35000
             });
 
             const situacao = await frame.evaluate(() => {
@@ -88,7 +88,7 @@ async function extractFromRs(processo) {
         await saveErrorToFile(processo, rsError);
         logMessage(`⨉ Erro ao processar ${stateId} ${processo}`);
         console.log(error)
-        return error
+        return { error: true, message: error.message }; 
     } finally {
         await page.close();
         await browser.close();
