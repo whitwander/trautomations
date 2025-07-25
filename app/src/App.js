@@ -40,11 +40,13 @@ function App() {
         // Separa por sistema automaticamente
         const pjeStates = ['AP', 'CE', 'ES', 'MA', 'PI', 'MG', 'RO', 'TRF1', 'TRF5'];
         const esajStates = ['AC', 'AL', 'SP'];
-        const rsState = ['RS']
+        const rsState = ['RS'];
+        const goState = ['GO'];
 
         const dadosPje = {};
         const dadosEsaj = {};
         const dadosRs = {};
+        const dadosGo = {};
 
         for (const estado in processosPorEstado) {
           if (pjeStates.includes(estado)) {
@@ -53,6 +55,8 @@ function App() {
             dadosEsaj[estado] = processosPorEstado[estado];
           } else if (rsState.includes(estado)) {
             dadosRs[estado] = processosPorEstado[estado];
+          } else if(goState.includes(estado)){
+            dadosGo[estado] = processosPorEstado[estado];
           }
         }
 
@@ -96,6 +100,7 @@ function App() {
         await enviar("extrairPje", dadosPje);
         await enviar("extrairEsaj", dadosEsaj);
         await enviar("extrairRs", dadosRs);
+        await enviar("extrairGo", dadosGo);
 
         setStatus("Processamento concluído!");
 
@@ -132,7 +137,7 @@ function App() {
         <div className="left-side-box">
           <div className="search-states">
             <h3>Estados pesquisados</h3>
-            <p><span>PJE:</span> AP - CE - ES - MA - MG - PI - TRF/1-5<br /><span>ESAJ:</span> AC - AL - SP<br /><span>OUTROS:</span> RS</p>
+            <p><span>PJE:</span> AP - CE - ES - MA - MG - PI - TRF/1-5<br /><span>ESAJ:</span> AC - AL - SP<br /><span>OUTROS:</span> RS - GO</p>
           </div>
           <div className="box-select">
             <p className="box-select-title">Informações para extrair:</p>
