@@ -51,7 +51,7 @@ function App() {
             dadosPje[estado] = processosPorEstado[estado];
           } else if (esajStates.includes(estado)) {
             dadosEsaj[estado] = processosPorEstado[estado];
-          } else if(rsState.includes(estado)){
+          } else if (rsState.includes(estado)) {
             dadosRs[estado] = processosPorEstado[estado];
           }
         }
@@ -129,12 +129,12 @@ function App() {
   return (
     <div className="main-container">
       <h1 className="container-title">Pesquisa de Processos</h1>
-      <div className="search-states">
-        <h3>Estados pesquisados</h3>
-        <p><span>PJE:</span> AP - CE - ES - MA - MG - PI - TRF/1-5<br/><span>ESAJ:</span> AC - AL - SP</p>
-      </div>
       <div className="container">
         <div className="left-side-box">
+          <div className="search-states">
+            <h3>Estados pesquisados</h3>
+            <p><span>PJE:</span> AP - CE - ES - MA - MG - PI - TRF/1-5<br /><span>ESAJ:</span> AC - AL - SP<br /><span>OUTROS:</span> RS</p>
+          </div>
           <div className="box-select">
             <p className="box-select-title">Informações para extrair:</p>
             <div>
