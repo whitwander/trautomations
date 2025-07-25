@@ -5,16 +5,16 @@ const now = new Date();
 const dateStr = `${now.getDate().toString().padStart(2, '0')}-${(now.getMonth() + 1).toString().padStart(2, '0')}-${now.getFullYear()}`;
 
 
-const pastaGeral = `N:\\resultados\\${dateStr}`;
-const pastaPje = `N:\\resultados\\${dateStr}\\PJE`;
-const pastaEsaj = `N:\\resultados\\${dateStr}\\ESAJ`;
-const pastaRs = `N:\\resultados\\${dateStr}\\RS`;
+// const pastaGeral = `N:\\resultados\\${dateStr}`;
+// const pastaPje = `N:\\resultados\\${dateStr}\\PJE`;
+// const pastaEsaj = `N:\\resultados\\${dateStr}\\ESAJ`;
+// const pastaRs = `N:\\resultados\\${dateStr}\\RS`;
 
 // preencher para pastas fixas
-// const pastaGeral = `M:\\JURIDICO\\CONSULTAS ROBÔ\\resultados-thiago\\${dateStr}`;
-// const pastaPje = `M:\\JURIDICO\\CONSULTAS ROBÔ\\resultados-thiago\\${dateStr}\\PJE`;
-// const pastaEsaj = `M:\\JURIDICO\\CONSULTAS ROBÔ\\resultados-thiago\\${dateStr}\\ESAJ`;
-// const pastaRs = `M:\\JURIDICO\\CONSULTAS ROBÔ\\resultados-thiago\\${dateStr}\\RS`;
+const pastaGeral = `M:\\JURIDICO\\CONSULTAS ROBÔ\\resultados-thiago\\${dateStr}`;
+const pastaPje = `M:\\JURIDICO\\CONSULTAS ROBÔ\\resultados-thiago\\${dateStr}\\PJE`;
+const pastaEsaj = `M:\\JURIDICO\\CONSULTAS ROBÔ\\resultados-thiago\\${dateStr}\\ESAJ`;
+const pastaRs = `M:\\JURIDICO\\CONSULTAS ROBÔ\\resultados-thiago\\${dateStr}\\RS`;
 
 
 const pastas = [pastaPje, pastaEsaj, pastaRs, pastaGeral];
