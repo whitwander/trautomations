@@ -15,7 +15,9 @@ async function extractFromRs(processo) {
     await page.setUserAgent('Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/115.0.0.0 Safari/537.36');
 
     try {
-        await page.goto('https://www.tjrs.jus.br/novo/busca/?return=proc&client=wp_index', { waitUntil: 'networkidle2' });
+        await page.goto('https://www.tjrs.jus.br/novo/busca/?return=proc&client=wp_index', { waitUntil: 'domcontentloaded', timeout: 60000 });
+
+        await page.waitForFrame(frame => frame.name() === 'iframeBusca');
 
         const frame = page.frames().find(f => f.name() === 'iframeBusca');
 
@@ -27,7 +29,7 @@ async function extractFromRs(processo) {
 
             await frame.waitForSelector('span.titulo-detalhe', {
                 visible: true,
-                timeout: 35000
+                timeout: 30000
             });
 
             const situacao = await frame.evaluate(() => {
@@ -88,10 +90,23 @@ async function extractFromRs(processo) {
         await saveErrorToFile(processo, rsError);
         logMessage(`⨉ Erro ao processar ${stateId} ${processo}`);
         console.log(error)
-        return { error: true, message: error.message }; 
+        return { error: true, message: error.message };
     } finally {
-        await page.close();
-        await browser.close();
+        try {
+            if (page && !page.isClosed()) {
+                await page.close();
+            }
+        } catch (err) {
+            console.log('Erro ao fechar a página:', err.message);
+        }
+
+        try {
+            if (browser) {
+                await browser.close();
+            }
+        } catch (err) {
+            console.log('Erro ao fechar o browser:', err.message);
+        }
 
         if (tempDir) {
             fs.rmSync(tempDir, { recursive: true, force: true });

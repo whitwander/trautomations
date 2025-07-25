@@ -27,7 +27,7 @@ router.post('/', async (req, res) => {
     const { config = {}, ...estados } = processosPorEstado;
     let header = "Estado;Processo;Situação;Última Movimentação\n";
 
-    fs.writeFileSync(rsOutput, header, 'latin1'); // ALTERAR PASTA
+    fs.writeFileSync(rsOutput, header, 'latin1');
 
     const filas = [];
 
