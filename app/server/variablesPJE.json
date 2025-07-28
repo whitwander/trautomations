@@ -64,9 +64,9 @@
     },
     "RJ": {
         "url": "https://tjrj.pje.jus.br/1g/ConsultaPublica/listView.seam",
-        "divDadosProcesso": "#j_id131\\:processoTrfViewView\\:j_id134",
-        "tbodyMovimentacaoProcesso": "#j_id131\\:processoEvento\\:tb",
-        "poloAtivoParticipante": "#j_id131\\:processoPartesPoloAtivoResumidoList\\:tb .text-bold",
+        "divDadosProcesso": "#j_id133\\:processoTrfViewView\\:j_id136_body",
+        "tbodyMovimentacaoProcesso": "#j_id133\\:processoEvento\\:tb",
+        "poloAtivoParticipante": "#j_id133\\:processoPartesPoloAtivoResumidoList\\:tb .text-bold",
         "working": "sim"
     },
     "RN": {

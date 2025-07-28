@@ -186,6 +186,7 @@ async function extractFromRj(processo, stateId) {
             fs.rmSync(tempDir, { recursive: true, force: true });
             console.log(`[Cleanup] Perfil TEMP removido: ${tempDir}`);
         }
+        console.log(error)
         errorProcesso.add(processo);
         await saveErrorToFile(processo, pjeError);
         logMessage(`⨉ Erro ao processar ${stateId} ${processo}`);

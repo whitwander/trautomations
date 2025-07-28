@@ -38,7 +38,9 @@ function App() {
         };
 
         // Separa por sistema automaticamente
-        const pjeStates = ['AP', 'CE', 'ES', 'MA', 'PI', 'MG', 'RO', 'TRF1', 'TRF5'];
+
+        // IMPEDEM ROBÔ: ES, MA
+        const pjeStates = ['AP', 'CE', 'PI', 'MG', 'RO', 'TRF1', 'TRF5', 'RJ'];
         const esajStates = ['AC', 'AL', 'SP'];
         const rsState = ['RS'];
         const goState = ['GO'];
@@ -137,7 +139,7 @@ function App() {
         <div className="left-side-box">
           <div className="search-states">
             <h3>Estados pesquisados</h3>
-            <p><span>PJE:</span> AP - CE - ES - MA - MG - PI - TRF/1-5<br /><span>ESAJ:</span> AC - AL - SP<br /><span>OUTROS:</span> RS - GO</p>
+            <p><span>PJE:</span> AP - RJ - CE - MG - PI - TRF/1-5<br /><span>ESAJ:</span> AC - AL - SP<br /><span>OUTROS:</span> RS - GO</p>
           </div>
           <div className="box-select">
             <p className="box-select-title">Informações para extrair:</p>
