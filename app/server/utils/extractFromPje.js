@@ -11,7 +11,7 @@ const constantesSitePje = {
     "btnVerDetalhes": "a[title='Ver Detalhes']"
 }
 
-let isHeadless = false
+let isHeadless = true
 
 let processedProcesses = new Set();
 let errorProcesso = new Set();

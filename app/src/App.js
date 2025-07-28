@@ -40,7 +40,7 @@ function App() {
         // Separa por sistema automaticamente
 
         // IMPEDEM ROBÔ: ES, MA
-        const pjeStates = ['AP', 'CE', 'PI', 'MG', 'RO', 'TRF1', 'TRF5', 'RJ'];
+        const pjeStates = ['AP', 'CE', 'PI', 'MG', 'RO', 'TRF1', 'TRF5', 'RJ', 'DF'];
         const esajStates = ['AC', 'AL', 'SP'];
         const rsState = ['RS'];
         const goState = ['GO'];

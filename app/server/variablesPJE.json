@@ -15,9 +15,9 @@
     },
     "DF": {
         "url": "https://pje-consultapublica.tjdft.jus.br/consultapublica/ConsultaPublica/listView.seam",
-        "divDadosProcesso": "#j_id151\\:processoTrfViewView\\:j_id154",
-        "tbodyMovimentacaoProcesso": "#j_id151\\:processoEvento\\:tb",
-        "poloAtivoParticipante": "#j_id151\\:processoPartesPoloAtivoResumidoList\\:tb .text-bold",
+        "divDadosProcesso": "#j_id152\\:processoTrfViewView\\:j_id155_body",
+        "tbodyMovimentacaoProcesso": "#j_id152\\:processoEvento\\:tb",
+        "poloAtivoParticipante": "#j_id152\\:processoPartesPoloAtivoResumidoList\\:tb .text-bold",
         "working": "sim"
     },
     "ES": {
